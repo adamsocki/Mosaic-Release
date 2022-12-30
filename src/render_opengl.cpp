@@ -47,7 +47,7 @@ void InitOBJMesh(OBJMesh *mesh)
     // The following commands will talk about our 'vertexbuffer' buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, mesh->vertSize, mesh->verts, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh->size, mesh->data, GL_STATIC_DRAW);
 
     GLuint indexBuffer;
     glGenBuffers(1, &indexBuffer);
@@ -103,12 +103,12 @@ OBJMesh LoadOBJModel(const char *modelPath)
 {
     OBJMesh objMesh = {};
 
-    objMesh.verts = (real32*)malloc(10000 * 3 * sizeof(real32));
+    objMesh.verts = (real32*)malloc(100000 * 3 * sizeof(real32));
     memset(objMesh.verts, 0, sizeof(real32) * 10000 * 3);
     //    indicesArray = MakeDynamicArray<int32>(&Game->frameMem, indices.count);
         //indicesArrayPointer = (int32*)malloc(indices.count * sizeof(int32));
-    objMesh.indices = (int32*)malloc(10000 * sizeof(int32));
-    memset(objMesh.indices, 0, sizeof(int32) * 10000);
+    objMesh.indices = (int32*)malloc(100000 * sizeof(int32));
+    memset(objMesh.indices, 0, sizeof(int32) * 100000);
     objMesh.texcoords = (real32*)malloc(10000* 2 * sizeof(real32));
     memset(objMesh.texcoords, 0, sizeof(real32) * 10000 * 2);
     objMesh.normals = (real32*)malloc(10000 * 3 * sizeof(real32));
@@ -495,12 +495,33 @@ OBJMesh LoadOBJModel(const char *modelPath)
     objMesh.texcoordsCount = textures.count;
     //objMesh.texcoords = texturesArrayPointer;
 
-    objMesh.data = (void*)malloc((sizeof(vec3)* objMesh.vertCount) + (sizeof(vec2) * objMesh.texcoordsCount));
-    objMesh.size = (sizeof(vec3) * objMesh.vertCount) + (sizeof(vec2) * objMesh.texcoordsCount);
+    objMesh.data = (void*)malloc((sizeof(vec3)* objMesh.vertCount * 3) + (sizeof(vec2) * objMesh.texcoordsCount* 2));
+    objMesh.size = (sizeof(vec3) * objMesh.vertCount * 3) + (sizeof(vec2) * objMesh.texcoordsCount * 2);
 
-    //objMesh->verts = (vec3 *)mesh->data; // TODO > THIS IS THE ISSUE
-    objMesh.verts = verticesArrayPointer; // TODO > THIS IS THE ISSUE
-    objMesh.vertSize = (sizeof(real32) * objMesh.vertCount);
+    objMesh.verts = (real32 *)objMesh.data; // TODO > THIS IS THE ISSUE
+    //objMesh.verts = verticesArrayPointer; // TODO > THIS IS THE ISSUE
+    int32 vertCounter = 0;
+    for (int i = 0; i < vertices.count; i++)
+    {
+        objMesh.verts[vertCounter] = vertices[i].x;
+        vertCounter++;
+        objMesh.verts[vertCounter] = vertices[i].y;
+        vertCounter++;
+        objMesh.verts[vertCounter] = vertices[i].z;
+        vertCounter++;
+    }
+    objMesh.vertSize = (sizeof(real32) * objMesh.vertCount * 3);
+
+    int32 texCounter = 0;
+    objMesh.texcoords = (real32*)((uint8*)objMesh.data + (sizeof(vec3) * objMesh.vertCount * 3));
+    for (int i = 0; i < vertices.count; i++)
+    {
+        objMesh.texcoords[texCounter] = textures[i].x;
+        texCounter++;
+        objMesh.texcoords[texCounter] = textures[i].y;
+        texCounter++;
+    }
+    objMesh.texcoordsSize = (sizeof(real32) * objMesh.texcoordsCount * 2);
 
     DeallocateDynamicArray(&vertices);
     DeallocateDynamicArray(&textures);
