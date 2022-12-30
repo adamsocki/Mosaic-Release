@@ -10,6 +10,7 @@ MyData *Data = NULL;
 #include "LoadSprites.cpp"
 
 Sprite lemonSprite;
+OBJMesh stallMesh = {};
 
 void MyInit() {
     Game->myData = malloc(sizeof(MyData));
@@ -30,7 +31,10 @@ void MyInit() {
     LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
 
     //TinyObject();
-    LoadOBJModel("data/stall.obj");
+    stallMesh = LoadOBJModel("data/stall.obj");
+
+    InitOBJMesh(&stallMesh);
+
 }
 
 
@@ -41,6 +45,7 @@ vec2 scale = V2(1, 1);
 void MyGameUpdate() {
     // This sets the background color. 
     ClearColor(RGB(0.0f, 0.0f, 0.0f));
+
 
     if (InputHeld(Keyboard, Input_UpArrow)) {
         position.y += 2 * Game->deltaTime;
@@ -61,6 +66,20 @@ void MyGameUpdate() {
     if (InputPressed(Keyboard, Input_Space)) {
         PlaySound(&Game->audioPlayer, Data->sound, 1.0f, true);
     }
+    Camera* cam = &Game->camera;
+    real32 cameraSpeed = 18.0f;
+    real32 rotationSpeed = 0.4f;
+
+    if (InputHeld(Keyboard, Input_W))
+    {
+        Game->cameraPosition.z += cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_S))
+    {
+        Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
+
+    }
+
     
     // scale.x -= 0.2f * Game->deltaTime;
     // scale.y -= 0.2f * Game->deltaTime;
@@ -79,10 +98,11 @@ void MyGameUpdate() {
     // The height of our screen is 9 (-4.5 to 4.5) (bottom to top)
 
     // version that doesnt take an angle.
-    DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
+    DrawOBJModel(&stallMesh, V2(0), V2(10.0f, 10.0f), 0.0f, RGB(1.0f, 0.3f, 0.3f));
+      DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
 
-    DrawSprite(mousePos, V2(0.5f, 0.5f), &lemonSprite);
+    /*DrawSprite(mousePos, V2(0.5f, 0.5f), &lemonSprite);
     DrawRect(V2(0, 0), V2(1, 1), RGB(1.0f, 0.3f, 0.3f));
     DrawSprite(position, V2(0.5f, 0.5f), &Data->sprite);
-    DrawSprite(mousePos, V2(0.5f, 0.5f), &Data->sprites.testSprite);
+    DrawSprite(mousePos, V2(0.5f, 0.5f), &Data->sprites.testSprite);*/
 }

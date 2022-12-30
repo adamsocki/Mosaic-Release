@@ -1,5 +1,11 @@
 
 
+struct Model
+{
+
+};
+
+
 struct GameSprites
 {
     Sprite testSprite;

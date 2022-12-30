@@ -99,6 +99,7 @@ struct GameMemory {
 
 
     Shader colorShader;
+    Shader modelShader;
 
 
     Shader texturedQuadShader;

@@ -2,17 +2,136 @@
 #include <fstream>
 #include <string>
 
-void LoadOBJModel(const char *modelPath)
+
+void DrawOBJModel(OBJMesh *mesh, vec2 pos, vec2 scale, real32 angle, vec4 color)
 {
 
 
+    //GLuint vaoID glGenVertexArrays();
+    Shader* shader = &Game->shader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+   // Mesh* mesh = &Game->quad;
+
+    mat4 model = TRS(V3(pos.x, pos.y, 10), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 0.0f));
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+
+    glUniform4fv(shader->uniforms[2].id, 1, color.data);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    glDisableVertexAttribArray(vert);
+
+}
+
+
+void InitOBJMesh(OBJMesh *mesh)
+{
+    GLuint vertexBuffer;
+
+    glGenBuffers(1, &vertexBuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER, mesh->vertSize, mesh->verts, GL_STATIC_DRAW);
+
+    GLuint indexBuffer;
+    glGenBuffers(1, &indexBuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indexCount * sizeof(int32), mesh->indices, GL_STATIC_DRAW);
+
+
+
+    mesh->vertBufferID = vertexBuffer;
+    mesh->indexBufferID = indexBuffer;
+}
+
+void ProcessVertex(std::string vertexData0, std::string vertexData1, std::string vertexData2, 
+    DynamicArray<int32> indices, DynamicArray<vec2> textures, DynamicArray<vec3> normals,  
+    DynamicArray<real32> texturesArray, DynamicArray<real32> normalsArray)
+{
+    int32 currentVertexPointer = (std::stof(vertexData0) - 1);
+    PushBack(&indices, currentVertexPointer);
     
-    DynamicArray<vec3> vertices = MakeDynamicArray<vec3>(&Game->frameMem, 1000);
-    DynamicArray<vec3> textures = MakeDynamicArray<vec3>(&Game->frameMem, 1000);
-    DynamicArray<vec3> normals  = MakeDynamicArray<vec3>(&Game->frameMem, 1000);
-    DynamicArray<real32> verticesArray;
-    DynamicArray<real32> texturesArray;
-    DynamicArray<real32> normalsArray;
+    vec2 currentTexture = textures[std::stof(vertexData1) - 1];
+    InsertAtIndex(&texturesArray, currentVertexPointer * 2, currentTexture.x);
+    InsertAtIndex(&texturesArray, currentVertexPointer * 2 + 1, 1 - currentTexture.y);
+
+    vec3 currentNormal = normals[std::stof(vertexData2) - 2];
+    InsertAtIndex(&normalsArray, currentVertexPointer * 2, currentNormal.x);
+    InsertAtIndex(&normalsArray, currentVertexPointer * 2 + 1, currentNormal.y);
+    InsertAtIndex(&normalsArray, currentVertexPointer * 2 + 2, currentNormal.z);
+}
+
+void ProcessVertexPointer(std::string vertexData0, std::string vertexData1, std::string vertexData2,
+    DynamicArray<int32> indices, DynamicArray<vec2> textures, DynamicArray<vec3> normals,
+    real32* texturesArray, real32* normalsArray)
+{
+    int32 currentVertexPointer = (std::stof(vertexData0) - 1);
+    PushBack(&indices, currentVertexPointer);
+    
+    vec2 currentTexture = textures[std::stof(vertexData1) - 1];
+    texturesArray[currentVertexPointer * 2] = currentTexture.x;
+    
+    texturesArray[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;
+
+    vec3 currentNormal = normals[std::stof(vertexData2) - 1];
+    normalsArray[currentVertexPointer * 3] = currentNormal.x;
+    normalsArray[currentVertexPointer * 3 + 1] = currentNormal.y;
+    normalsArray[currentVertexPointer * 3 + 2] = currentNormal.z;
+
+}
+
+
+OBJMesh LoadOBJModel(const char *modelPath)
+{
+    OBJMesh objMesh = {};
+
+    objMesh.verts = (real32*)malloc(10000 * 3 * sizeof(real32));
+    memset(objMesh.verts, 0, sizeof(real32) * 10000 * 3);
+    //    indicesArray = MakeDynamicArray<int32>(&Game->frameMem, indices.count);
+        //indicesArrayPointer = (int32*)malloc(indices.count * sizeof(int32));
+    objMesh.indices = (int32*)malloc(10000 * sizeof(int32));
+    memset(objMesh.indices, 0, sizeof(int32) * 10000);
+    objMesh.texcoords = (real32*)malloc(10000* 2 * sizeof(real32));
+    memset(objMesh.texcoords, 0, sizeof(real32) * 10000 * 2);
+    objMesh.normals = (real32*)malloc(10000 * 3 * sizeof(real32));
+    memset(objMesh.normals, 0, sizeof(real32) * 10000 * 3);
+
+    DynamicArray<vec3> vertices = MakeDynamicArray<vec3>(&Game->frameMem, 10000);
+    DynamicArray<vec2> textures = MakeDynamicArray<vec2>(&Game->frameMem, 10000);
+    DynamicArray<vec3> normals  = MakeDynamicArray<vec3>(&Game->frameMem, 10000);
+    DynamicArray<int32> indices = MakeDynamicArray<int32>(&Game->frameMem, 10000);
+    
+    real32* verticesArrayPointer;
+    real32* texturesArrayPointer;
+    real32* normalsArrayPointer;
+    int32* indicesArrayPointer;
+
+    int32 currentIndex = 0;
+
+    bool firstF = false;
+    
+    //DynamicArray<real32> verticesArray;
+    //DynamicArray<real32> texturesArray;
+    //DynamicArray<real32> normalsArray;
+   // DynamicArray<int32> indicesArray;
 
     std::ifstream myFile;
     myFile.open(modelPath);
@@ -28,18 +147,15 @@ void LoadOBJModel(const char *modelPath)
             char delim = ' '; 
             int i = 0;
             int j = 0;
+       //     break;
             if (myLine.substr(0, 2) == "v ")
             {
                 vec3 vertex = {};
-                //char* s = {};
                 std::string arr = {};
-
-
                 while (myLine[i] != '\0')
                 {
                     if (myLine[i] != delim) {
                         arr.push_back(myLine[i]);
-                        //arr.append(myLine[i]);
                     }
                     else 
                     {
@@ -52,26 +168,20 @@ void LoadOBJModel(const char *modelPath)
                             }
                             case 1:
                             {
-                                //vertex.x = strtod(arr, NULL);
                                 vertex.x = std::stof(arr);
                                 arr.clear();
-
                                 break;
                             }
                             case 2:
                             {
-                                //vertex.y = strtod(arr, NULL);
                                 vertex.y = std::stof(arr);
                                 arr.clear();
-
                                 break;
                             }
                             case 3:
                             {
-                                //vertex.z = strtod(arr, NULL);
                                 vertex.z = std::stof(arr);
                                 arr.clear();
-
                                 break;
                             }
                             default:
@@ -81,16 +191,19 @@ void LoadOBJModel(const char *modelPath)
                             }
                         }
                         j++;
-                       // arr[100] = {};
+                    }
+                    if (myLine[i + 1] == '\0')
+                    {
+                        vertex.z = std::stof(arr);
+                        arr.clear();
                     }
                     i++;
                 }
                 PushBack(&vertices, vertex);
-                //myLine[i];
             }
             else if (myLine.substr(0, 3) == "vt ")
             {
-                vec3 texture = {};
+                vec2 texture = {};
                 //char* s = {};
                 std::string arr = {};
 
@@ -112,26 +225,14 @@ void LoadOBJModel(const char *modelPath)
                         }
                         case 1:
                         {
-                            //vertex.x = strtod(arr, NULL);
                             texture.x = std::stof(arr);
                             arr.clear();
-
                             break;
                         }
                         case 2:
                         {
-                            //vertex.y = strtod(arr, NULL);
                             texture.y = std::stof(arr);
                             arr.clear();
-
-                            break;
-                        }
-                        case 3:
-                        {
-                            //vertex.z = strtod(arr, NULL);
-                            texture.z = std::stof(arr);
-                            arr.clear();
-
                             break;
                         }
                         default:
@@ -141,7 +242,11 @@ void LoadOBJModel(const char *modelPath)
                         }
                         }
                         j++;
-                        // arr[100] = {};
+                    }
+                    if (myLine[i + 1] == '\0')
+                    {
+                        texture.y = std::stof(arr);
+                        arr.clear();
                     }
                     i++;
                 }
@@ -203,6 +308,11 @@ void LoadOBJModel(const char *modelPath)
                         j++;
                         // arr[100] = {};
                     }
+                    if (myLine[i + 1] == '\0')
+                    {
+                        normal.z = std::stof(arr);
+                        arr.clear();
+                    }
                     i++;
                 }
                 PushBack(&normals, normal);
@@ -210,15 +320,223 @@ void LoadOBJModel(const char *modelPath)
             }
             else if (myLine.substr(0, 2) == "f ")
             {
+               // texturesArray = MakeDynamicArray<real32>(&Game->frameMem, textures.count * 2);
+               // normalsArray  = MakeDynamicArray<real32>(&Game->frameMem, normals.count * 3);
+               // texturesArrayPointer = (real32*)malloc(textures.count * 2 * sizeof(real32));
+               // normalsArrayPointer = (real32*)malloc(normals.count * 3 * sizeof(real32));
+              /* objMesh.texcoords = (real32*)malloc(textures.count * 2 * sizeof(real32));
+               memset(objMesh.texcoords, 0, sizeof(real32)* textures.count * 2);
+               objMesh.normals = (real32*)malloc(textures.count * 3 * sizeof(real32));
+               memset(objMesh.normals, 0, sizeof(real32) * normals.count * 3);*/
 
-                verticesArray = MakeDynamicArray<real32>(&Game->frameMem, vertices.count);
-                texturesArray = MakeDynamicArray<real32>(&Game->frameMem, textures.count);
-                normalsArray  = MakeDynamicArray<real32>(&Game->frameMem, normals.count);
+
+                break;
+            } 
+        }
+        while (!myFile.eof())
+        {
+            vec3 index = {};
+            if (firstF == true)
+            {
+                std::getline(myFile, myLine);
             }
-            //if (myChar[0] == 'v' 
+            firstF = true;
+            char delimFace = '/';
+            if (myLine.substr(0, 2) != "f ")
+            {
+                std::getline(myFile, myLine);
+                continue;
+            }
+            int i = 0;
+            int j = 0;
+            int k = 0;
+            char delim = ' ';
+
+            std::string arr0[3] = {};
+            std::string arr1[3] = {};
+            std::string arr2[3] = {};
+
+            while (myLine[i] != '\0')
+            {
+                if (myLine[i] == 'f')
+                {
+                    i++;
+                    goto advance;
+                }
+                if (myLine[i] == '/')
+                {
+                    k++;
+                    goto advance;
+                }
+                if (myLine[i] != ' ')
+                {
+                    switch (j)
+                    {
+                        case 0:
+                        {
+                            arr0[k].push_back(myLine[i]);
+                            break;
+                        }
+                        case 1:
+                        {
+                            arr1[k].push_back(myLine[i]);
+                            break;
+                        }
+                        case 2:
+                        {
+                            arr2[k].push_back(myLine[i]);
+                            break;
+                        }
+                        default:
+                        {break; }
+                    }
+                }
+                else
+                {
+                    j++;
+                    k = 0;
+                }
+
+                if (myLine[i + 1] == '\0')
+                {
+                    //arr2[k].push_back(myLine[i]);
+                }
+            advance:
+                i++;
+            }
+
+            //ProcessVertex(arr0[0], arr0[1], arr0[2], indices, textures, normals, texturesArray, normalsArray);
+            //ProcessVertex(arr2[0], arr2[1], arr2[2], indices, textures, normals, texturesArray, normalsArray);
+            //ProcessVertex(arr1[0], arr1[1], arr1[2], indices, textures, normals, texturesArray, normalsArray);
+            int32 currentVertexPointer = (std::stof(arr0[0]) - 1);
+            //PushBack(&indices, currentVertexPointer);
+             objMesh.indices[currentIndex] = currentVertexPointer;
+             currentIndex++;
+             vec2 currentTexture = textures[std::stof(arr0[1]) - 1];
+             objMesh.texcoords[currentVertexPointer * 2] = currentTexture.x;
+             objMesh.texcoords[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;
+
+             vec3 currentNormal = normals[std::stof(arr0[2]) - 1];
+             objMesh.normals[currentVertexPointer * 3] = currentNormal.x;
+             objMesh.normals[currentVertexPointer * 3 + 1] = currentNormal.y;
+             objMesh.normals[currentVertexPointer * 3 + 2] = currentNormal.z;
+
+
+             //1
+             int32 currentVertexPointer1 = (std::stof(arr1[0]) - 1);
+             PushBack(&indices, currentVertexPointer1);
+             objMesh.indices[currentIndex] = currentVertexPointer1;
+             currentIndex++;
+
+             vec2 currentTexture1 = textures[std::stof(arr1[1]) - 1];
+             objMesh.texcoords[currentVertexPointer1 * 2] = currentTexture1.x;
+             objMesh.texcoords[currentVertexPointer1 * 2 + 1] = 1 - currentTexture1.y;
+
+             vec3 currentNormal1 = normals[std::stof(arr1[2]) - 1];
+             objMesh.normals[currentVertexPointer1 * 3] = currentNormal1.x;
+             objMesh.normals[currentVertexPointer1 * 3 + 1] = currentNormal1.y;
+             objMesh.normals[currentVertexPointer1 * 3 + 2] = currentNormal1.z;
+
+             //2
+             int32 currentVertexPointer2 = (std::stof(arr2[0]) - 1);
+             PushBack(&indices, currentVertexPointer2);
+             objMesh.indices[currentIndex] = currentVertexPointer2;
+             currentIndex++;
+
+             vec2 currentTexture2 = textures[std::stof(arr2[1]) - 1];
+             objMesh.texcoords[currentVertexPointer2 * 2] = currentTexture2.x;
+             objMesh.texcoords[currentVertexPointer2 * 2 + 1] = 1 - currentTexture2.y;
+
+             vec3 currentNormal2 = normals[std::stof(arr2[2]) - 1];
+             objMesh.normals[currentVertexPointer2 * 3] = currentNormal2.x;
+             objMesh.normals[currentVertexPointer2 * 3 + 1] = currentNormal2.y;
+             objMesh.normals[currentVertexPointer2 * 3 + 2] = currentNormal2.z;
+           // ProcessVertexPointer(arr0[0], arr0[1], arr0[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
+            //ProcessVertexPointer(arr2[0], arr2[1], arr2[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
+            //ProcessVertexPointer(arr1[0], arr1[1], arr1[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
+
         }
     }
+
+   // verticesArray = MakeDynamicArray<real32>(&Game->frameMem, vertices.count * 3);
+    verticesArrayPointer = (real32*)malloc(vertices.count * 3 * sizeof(real32));
+//    objMesh.verts = (real32*)malloc(vertices.count * 3 * sizeof(real32));
+//    memset(objMesh.verts, 0, sizeof(real32) * vertices.count * 3);
+////    indicesArray = MakeDynamicArray<int32>(&Game->frameMem, indices.count);
+//    //indicesArrayPointer = (int32*)malloc(indices.count * sizeof(int32));
+//    objMesh.indices = (int32*)malloc(indices.count * sizeof(int32));
+//    memset(objMesh.indices, 0, sizeof(int32)* indices.count);
+
+
+
+    int32 vertexPointer = 0;
+    
+    for (int i = 0; i < vertices.count; i++)
+    {
+        verticesArrayPointer[vertexPointer++] = vertices[i].x;
+        verticesArrayPointer[vertexPointer++] = vertices[i].y;
+        verticesArrayPointer[vertexPointer++] = vertices[i].z;
+    }
+    
+
+
+    /*for (int i = 0; i < indices.count; i++)
+    {
+        objMesh.indices[i] = indices[i];
+    }*/
+
+    objMesh.vertCount = vertices.count;
+   // objMesh.verts = verticesArrayPointer;
+    //objMesh.normals = normalsArrayPointer;
+   
+    objMesh.indexCount = indices.count;
+    //objMesh.indices = indicesArrayPointer;
+
+    objMesh.texcoordsCount = textures.count;
+    //objMesh.texcoords = texturesArrayPointer;
+
+    objMesh.data = (void*)malloc((sizeof(vec3)* objMesh.vertCount) + (sizeof(vec2) * objMesh.texcoordsCount));
+    objMesh.size = (sizeof(vec3) * objMesh.vertCount) + (sizeof(vec2) * objMesh.texcoordsCount);
+
+    //objMesh->verts = (vec3 *)mesh->data; // TODO > THIS IS THE ISSUE
+    objMesh.verts = verticesArrayPointer; // TODO > THIS IS THE ISSUE
+    objMesh.vertSize = (sizeof(real32) * objMesh.vertCount);
+
+    DeallocateDynamicArray(&vertices);
+    DeallocateDynamicArray(&textures);
+    DeallocateDynamicArray(&normals);
+    DeallocateDynamicArray(&indices);
+    
+        
+   return objMesh;
+
 }
+    //vec3* vertsForMesh = (vec3*)malloc(vertices.count * sizeof(vec3));
+    //real32* vertsForPointer = (real32*)malloc(vertices.count * 3 * sizeof(vec3));
+    //int32 counter = 0;
+    //for (int i = 0; i < verticesArray.count; i++)
+    //{
+    //    vertsForMesh[i].x = verticesArray[counter++];
+    //    vertsForMesh[i].y = verticesArray[counter++];
+    //    vertsForMesh[i].z = verticesArray[counter++];
+    //}
+    //mesh.vertCount = vertices.count;
+    //mesh.verts = vertsForMesh;
+    //
+    ////int* indicesForMesh = {};
+    //uint32* indicesForPointer = (uint32*)malloc(indices.count * sizeof(uint32));
+    //for (int i = 0; i < normals.count; i++)
+    //{
+    //    indicesForPointer[i] = indices[i];
+    //}
+    //mesh.indexCount = indices.count;
+    //mesh.indices = indicesForPointer;
+    //vec3* texcoordsForMesh = (vec3*)malloc(textures.count * sizeof();
+    //mesh.texcoordsCount = textures.count;
+    //mesh.texcoords = texturesArrayPointer;
+    //
+//    mesh.verts = &verticesArray;
+
 
 
 
@@ -230,7 +548,6 @@ inline bool glCheckError_(char *file, uint32 line) {
         Print("OpenGL error (%s:%d): 0x%x (%d)\n", file, line, _glError, _glError);
         return true;
     }
-
     return false;
 }
 
@@ -238,7 +555,6 @@ inline bool glCheckError_(char *file, uint32 line) {
 
 void LoadShader(const char *vertPath, const char *fragPath, Shader *shader) {
     FILE *file = fopen(vertPath, "r");
-
     if (file != NULL) {
         fseek(file, 0, SEEK_END);
         shader->vertSize = ftell(file);

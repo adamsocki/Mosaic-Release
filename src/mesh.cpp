@@ -1,4 +1,21 @@
 
+
+void AllocateModel(Mesh* mesh)
+{
+   // mesh->vertCount = 
+
+
+
+}
+
+
+
+
+
+
+
+
+
 void AllocateTriangle(Mesh *mesh) {
     mesh->vertCount = 3;
     
