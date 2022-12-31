@@ -28,7 +28,11 @@ struct OBJMesh
 
     uint32 vertSize;
 
+
+    int32 normalsCount;
     real32* normals;
+    real32* normals2;
+
 
     int32 indexCount;
     int32* indices;

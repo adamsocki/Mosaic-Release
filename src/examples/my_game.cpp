@@ -12,6 +12,7 @@ MyData *Data = NULL;
 Sprite lemonSprite;
 OBJMesh stallMesh = {};
 Sprite stallTexture;
+real32 rotation = {};
 
 void MyInit() {
     Game->myData = malloc(sizeof(MyData));
@@ -107,8 +108,9 @@ void MyGameUpdate() {
     // The width of our screen is 16 (-8 to 8) (left to right)
     // The height of our screen is 9 (-4.5 to 4.5) (bottom to top)
 
-    // version that doesnt take an angle.
-    DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), 0.0f, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+    // version that doesnt take an angle.    
+    rotation += (1.0f) * Game->deltaTime;
+    DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
     DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
 
     /*DrawSprite(mousePos, V2(0.5f, 0.5f), &lemonSprite);

@@ -264,12 +264,16 @@ void GameInit(GameMemory *gameMem) {
     {
         LoadShader("shaders/modelMesh.vert", "shaders/modelMesh.frag", &gameMem->modelShader);
         const char* uniforms[] = {
-             "model",
+            "model",
             "viewProjection",
             "texture0",
             "time",
+            "lightPosition",
+            "lightColor",
+            "shineDamper",
+            "reflectivity",
         };
-        CompileShader(&gameMem->modelShader, 4, uniforms);
+        CompileShader(&gameMem->modelShader, 8, uniforms);
     }
     {
         LoadShader("colorShader/mesh.vert", "colorShader/mesh.frag", &gameMem->colorShader);
