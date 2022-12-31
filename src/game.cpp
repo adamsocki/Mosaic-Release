@@ -262,11 +262,14 @@ void GameInit(GameMemory *gameMem) {
 
 #if WINDOWS
     {
-        LoadShader("colorShader/modelMesh.vert", "colorShader/modelMesh.frag", &gameMem->modelShader);
+        LoadShader("shaders/modelMesh.vert", "shaders/modelMesh.frag", &gameMem->modelShader);
         const char* uniforms[] = {
-            "transformationMatrix",
+             "model",
+            "viewProjection",
+            "texture0",
+            "time",
         };
-        CompileShader(&gameMem->modelShader, 1, uniforms);
+        CompileShader(&gameMem->modelShader, 4, uniforms);
     }
     {
         LoadShader("colorShader/mesh.vert", "colorShader/mesh.frag", &gameMem->colorShader);

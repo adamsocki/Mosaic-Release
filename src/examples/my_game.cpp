@@ -11,6 +11,7 @@ MyData *Data = NULL;
 
 Sprite lemonSprite;
 OBJMesh stallMesh = {};
+Sprite stallTexture;
 
 void MyInit() {
     Game->myData = malloc(sizeof(MyData));
@@ -25,6 +26,7 @@ void MyInit() {
     // In this case I have put the pngs inside the "data" directory.
     LoadSprite(&Data->sprite, "data/galaga_ship.png");
     LoadSprite(&Data->sprite2, "data/van_gogh.png");
+    LoadSprite(&stallTexture, "data/stallTexture.png");
 
     LoadSprite(&lemonSprite, "data/bad_lemon.png");
 
@@ -67,7 +69,7 @@ void MyGameUpdate() {
         PlaySound(&Game->audioPlayer, Data->sound, 1.0f, true);
     }
     Camera* cam = &Game->camera;
-    real32 cameraSpeed = 18.0f;
+    real32 cameraSpeed = 28.0f;
     real32 rotationSpeed = 0.4f;
 
     if (InputHeld(Keyboard, Input_W))
@@ -79,7 +81,15 @@ void MyGameUpdate() {
         Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
 
     }
+    if (InputHeld(Keyboard, Input_A))
+    {
+        Game->cameraPosition.x += cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_D))
+    {
+        Game->cameraPosition.x -= cameraSpeed * Game->deltaTime;
 
+    }
     
     // scale.x -= 0.2f * Game->deltaTime;
     // scale.y -= 0.2f * Game->deltaTime;
@@ -98,8 +108,8 @@ void MyGameUpdate() {
     // The height of our screen is 9 (-4.5 to 4.5) (bottom to top)
 
     // version that doesnt take an angle.
-    DrawOBJModel(&stallMesh, V2(0), V2(10.0f, 10.0f), 0.0f, RGB(1.0f, 0.3f, 0.3f));
-      DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
+    DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), 0.0f, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+    DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
 
     /*DrawSprite(mousePos, V2(0.5f, 0.5f), &lemonSprite);
     DrawRect(V2(0, 0), V2(1, 1), RGB(1.0f, 0.3f, 0.3f));

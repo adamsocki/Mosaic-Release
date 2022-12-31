@@ -3,25 +3,32 @@
 #include <string>
 
 
-void DrawOBJModel(OBJMesh *mesh, vec2 pos, vec2 scale, real32 angle, vec4 color)
+void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color, Sprite* texture)
 {
-
-
+    //glEnable(GL_DEPTH_TEST);
+   // glDepthMask(GL_FALSE);
     //GLuint vaoID glGenVertexArrays();
-    Shader* shader = &Game->shader;
+    Shader* shader = &Game->modelShader;
     SetShader(shader);
 
-    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   // glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
    // Mesh* mesh = &Game->quad;
 
-    mat4 model = TRS(V3(pos.x, pos.y, 10), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 0.0f));
+    mat4 model = TRS(pos, AxisAngle(V3(0, 0, 1), angle),scale);
 
     glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
     glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
 
-    glUniform4fv(shader->uniforms[2].id, 1, color.data);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    glUniform1i(shader->uniforms[2].id, 0);
+
+    glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
@@ -31,10 +38,16 @@ void DrawOBJModel(OBJMesh *mesh, vec2 pos, vec2 scale, real32 angle, vec4 color)
     glEnableVertexAttribArray(vert);
     glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
+    // 2nd attribute buffer : texcoords
+    int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+    glEnableVertexAttribArray(texcoord);
+    glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)((sizeof(real32) * mesh->vertCount)));
+  //  stbi_set_flip_vertically_on_load(true);
 
     glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
 
     glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(texcoord);
 
 }
 
@@ -55,7 +68,6 @@ void InitOBJMesh(OBJMesh *mesh)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indexCount * sizeof(int32), mesh->indices, GL_STATIC_DRAW);
-
 
 
     mesh->vertBufferID = vertexBuffer;
@@ -111,6 +123,9 @@ OBJMesh LoadOBJModel(const char *modelPath)
     memset(objMesh.indices, 0, sizeof(int32) * 100000);
     objMesh.texcoords = (real32*)malloc(10000* 2 * sizeof(real32));
     memset(objMesh.texcoords, 0, sizeof(real32) * 10000 * 2);
+    objMesh.texcoords2 = (real32*)malloc(10000 * 2 * sizeof(real32));
+
+    memset(objMesh.texcoords2, 0, sizeof(real32) * 10000 * 2);
     objMesh.normals = (real32*)malloc(10000 * 3 * sizeof(real32));
     memset(objMesh.normals, 0, sizeof(real32) * 10000 * 3);
 
@@ -409,12 +424,13 @@ OBJMesh LoadOBJModel(const char *modelPath)
             //ProcessVertex(arr2[0], arr2[1], arr2[2], indices, textures, normals, texturesArray, normalsArray);
             //ProcessVertex(arr1[0], arr1[1], arr1[2], indices, textures, normals, texturesArray, normalsArray);
             int32 currentVertexPointer = (std::stof(arr0[0]) - 1);
-            //PushBack(&indices, currentVertexPointer);
+             PushBack(&indices, currentVertexPointer);
              objMesh.indices[currentIndex] = currentVertexPointer;
              currentIndex++;
+
              vec2 currentTexture = textures[std::stof(arr0[1]) - 1];
-             objMesh.texcoords[currentVertexPointer * 2] = currentTexture.x;
-             objMesh.texcoords[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;
+             objMesh.texcoords2[currentVertexPointer * 2] = currentTexture.x;
+             objMesh.texcoords2[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;
 
              vec3 currentNormal = normals[std::stof(arr0[2]) - 1];
              objMesh.normals[currentVertexPointer * 3] = currentNormal.x;
@@ -429,8 +445,8 @@ OBJMesh LoadOBJModel(const char *modelPath)
              currentIndex++;
 
              vec2 currentTexture1 = textures[std::stof(arr1[1]) - 1];
-             objMesh.texcoords[currentVertexPointer1 * 2] = currentTexture1.x;
-             objMesh.texcoords[currentVertexPointer1 * 2 + 1] = 1 - currentTexture1.y;
+             objMesh.texcoords2[currentVertexPointer1 * 2] = currentTexture1.x;
+             objMesh.texcoords2[currentVertexPointer1 * 2 + 1] = 1 - currentTexture1.y;
 
              vec3 currentNormal1 = normals[std::stof(arr1[2]) - 1];
              objMesh.normals[currentVertexPointer1 * 3] = currentNormal1.x;
@@ -444,8 +460,8 @@ OBJMesh LoadOBJModel(const char *modelPath)
              currentIndex++;
 
              vec2 currentTexture2 = textures[std::stof(arr2[1]) - 1];
-             objMesh.texcoords[currentVertexPointer2 * 2] = currentTexture2.x;
-             objMesh.texcoords[currentVertexPointer2 * 2 + 1] = 1 - currentTexture2.y;
+             objMesh.texcoords2[currentVertexPointer2 * 2] = currentTexture2.x;
+             objMesh.texcoords2[currentVertexPointer2 * 2 + 1] = 1 - currentTexture2.y;
 
              vec3 currentNormal2 = normals[std::stof(arr2[2]) - 1];
              objMesh.normals[currentVertexPointer2 * 3] = currentNormal2.x;
@@ -485,23 +501,23 @@ OBJMesh LoadOBJModel(const char *modelPath)
         objMesh.indices[i] = indices[i];
     }*/
 
-    objMesh.vertCount = vertices.count;
+    objMesh.vertCount = vertices.count * 3;
    // objMesh.verts = verticesArrayPointer;
     //objMesh.normals = normalsArrayPointer;
    
     objMesh.indexCount = indices.count;
     //objMesh.indices = indicesArrayPointer;
 
-    objMesh.texcoordsCount = textures.count;
+    objMesh.texcoordsCount = textures.count * 2;
     //objMesh.texcoords = texturesArrayPointer;
 
-    objMesh.data = (void*)malloc((sizeof(vec3)* objMesh.vertCount * 3) + (sizeof(vec2) * objMesh.texcoordsCount* 2));
-    objMesh.size = (sizeof(vec3) * objMesh.vertCount * 3) + (sizeof(vec2) * objMesh.texcoordsCount * 2);
+    objMesh.data = (void*)malloc((sizeof(real32)* objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount));
+    objMesh.size = (sizeof(real32) * objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount);
 
     objMesh.verts = (real32 *)objMesh.data; // TODO > THIS IS THE ISSUE
     //objMesh.verts = verticesArrayPointer; // TODO > THIS IS THE ISSUE
     int32 vertCounter = 0;
-    for (int i = 0; i < vertices.count; i++)
+    for (int i = 0; i < vertices.count ; i++)
     {
         objMesh.verts[vertCounter] = vertices[i].x;
         vertCounter++;
@@ -510,18 +526,20 @@ OBJMesh LoadOBJModel(const char *modelPath)
         objMesh.verts[vertCounter] = vertices[i].z;
         vertCounter++;
     }
-    objMesh.vertSize = (sizeof(real32) * objMesh.vertCount * 3);
+    objMesh.vertSize = (sizeof(real32) * objMesh.vertCount);
 
     int32 texCounter = 0;
-    objMesh.texcoords = (real32*)((uint8*)objMesh.data + (sizeof(vec3) * objMesh.vertCount * 3));
-    for (int i = 0; i < vertices.count; i++)
+    objMesh.texcoords = (real32*)((uint8*)objMesh.data + (sizeof(real32) * objMesh.vertCount));
+    for (int i = 0; i < textures.count * 3; i++)
     {
-        objMesh.texcoords[texCounter] = textures[i].x;
+        /*objMesh.texcoords[texCounter] = textures[i].x;
         texCounter++;
         objMesh.texcoords[texCounter] = textures[i].y;
-        texCounter++;
+        texCounter++;*/
+        objMesh.texcoords[i] = objMesh.texcoords2[i];
     }
-    objMesh.texcoordsSize = (sizeof(real32) * objMesh.texcoordsCount * 2);
+   // objMesh.texcoords = objMesh.texcoords2;
+    objMesh.texcoordsSize = (sizeof(real32) * objMesh.texcoordsCount);
 
     DeallocateDynamicArray(&vertices);
     DeallocateDynamicArray(&textures);

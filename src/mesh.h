@@ -25,6 +25,7 @@ struct OBJMesh
 
     int32 vertCount;
     real32* verts;
+
     uint32 vertSize;
 
     real32* normals;
@@ -34,6 +35,7 @@ struct OBJMesh
 
     int32 texcoordsCount;
     real32* texcoords;
+    real32* texcoords2;
     uint32 texcoordsSize;
 
     int32 vertBufferID;
