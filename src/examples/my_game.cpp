@@ -6,8 +6,8 @@
 #include "structs.cpp"
 
 MyData *Data = NULL;
-
 #include "LoadSprites.cpp"
+#include "EntityManager.cpp"
 
 Sprite lemonSprite;
 OBJMesh stallMesh = {};
@@ -21,7 +21,10 @@ void MyInit() {
     Data = (MyData *)Game->myData;
 
     LoadSprites();
+    InitializeEntityManager();
+    InitializeEntityBuffers();
 
+    
     // All sprites must be png files
     // You provide the path to the png like "directory/to/my/file/file_name.png"
     // In this case I have put the pngs inside the "data" directory.

@@ -11,6 +11,7 @@ uniform vec3 lightPosition;
 out vec2 texcoord;
 out vec3 surfaceNormal;
 out vec3 toLightVector;
+out vec3 toCameraVector;
 
 void main() {
     vec4 worldVert4 = model * vec4(vertexPosition_modelspace, 1.0f);
@@ -22,5 +23,6 @@ void main() {
 
 	surfaceNormal = (model * vec4(normals, 0.0)).xyz;
 	toLightVector = lightPosition - worldVert;
+	toCameraVector = (inverse(viewProjection) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldVert;
 }
 
