@@ -45,11 +45,11 @@ void AllocateHashTable(HashTable<K, V> *table, uint32 capacity) {
     table->values = (V *)malloc(sizeof(V) * capacity);
 
 
-    memset(table->hashes, sizeof(uint32) * capacity);
-    memset(table->occupied, sizeof(bool) * capacity);
-    memset(table->keys, sizeof(K) * capacity);
-    memset(table->keyLengths , sizeof(uint32) * capacity);
-    memset(table->values , sizeof(V) * capacity);
+    memset(table->hashes, 0, sizeof(uint32) * capacity);
+    memset(table->occupied, 0, sizeof(bool) * capacity);
+    memset(table->keys, 0, sizeof(K) * capacity);
+    memset(table->keyLengths, 0, sizeof(uint32) * capacity);
+    memset(table->values, 0, sizeof(V) * capacity);
 }
 
 template <typename K, typename V>
@@ -64,11 +64,11 @@ void AllocateHashTable(HashTable<K, V> *table, uint32 capacity, MAllocator *allo
     table->values = (V *)allocator->allocate(allocator, sizeof(V) * capacity);
 
 
-    memset(table->hashes, sizeof(uint32) * capacity);
-    memset(table->occupied, sizeof(bool) * capacity);
-    memset(table->keys, sizeof(K) * capacity);
-    memset(table->keyLengths , sizeof(uint32) * capacity);
-    memset(table->values , sizeof(V) * capacity);
+    memset(table->hashes, 0, sizeof(uint32) * capacity);
+    memset(table->occupied, 0, sizeof(bool) * capacity);
+    memset(table->keys, 0, sizeof(K) * capacity);
+    memset(table->keyLengths, 0, sizeof(uint32) * capacity);
+    memset(table->values, 0, sizeof(V) * capacity);
 }
 
 template <typename K, typename V>

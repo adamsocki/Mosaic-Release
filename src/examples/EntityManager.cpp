@@ -79,6 +79,13 @@ void InitializeEntityBuffers()
 	terrainBuffer->entities = (Terrain*)malloc(terrainBuffer->capacity * terrainBuffer->sizeInBytes);
 	memset(terrainBuffer->entities, 0, sizeof(Terrain) * terrainBuffer->capacity);
 	
+	EntityTypeBuffer* testStallBuffer = &Data->em.buffers[EntityType_Test];
+	testStallBuffer->capacity = 8000;
+	testStallBuffer->sizeInBytes = sizeof(TestStall);
+	testStallBuffer->count = 0;
+	testStallBuffer->entities = (TestStall*)malloc(testStallBuffer->capacity * testStallBuffer->sizeInBytes);
+	memset(testStallBuffer->entities, 0, sizeof(TestStall) * testStallBuffer->capacity);
+	
 }
 
 
@@ -90,6 +97,18 @@ void InitializeStartingEntities()
 	EntityHandle terrainHandle = AddEntity(&Data->em, EntityType_Terrain);
 	Terrain* terrainEntity = (Terrain*)GetEntity(&Data->em, terrainHandle);
 	terrainEntity->handle = terrainHandle;
-	terrainEntity->position = V3(-0.0f, -0.0f, 0.0f);
-	terrainEntity->model = Data->models.terrainModel;
+	terrainEntity->transform.position = V3(-0.0f, -0.0f, 0.0f);
+	terrainEntity->transform.scale = V3(1.0f, 1.0f, 1.0f);
+	terrainEntity->model = Data->rm.models.terrainModel;
+
+	// TEST
+	for (int i = 0; i < 5; i++)
+	{
+		EntityHandle testStallHandle = AddEntity(&Data->em, EntityType_Test);
+		TestStall* testStallEntity = (TestStall*)GetEntity(&Data->em, testStallHandle);
+		testStallEntity->handle = testStallHandle;
+		testStallEntity->transform.position = V3(-0.0f, (i * 3.0f) * 10.0f, i* 10.0f);
+		testStallEntity->transform.scale = V3(10.0f, 10.0f, 10.0f);
+		testStallEntity->model = Data->rm.models.testStallModel;
+	}
 }

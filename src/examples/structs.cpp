@@ -1,6 +1,7 @@
 enum EntityType
 {
 	EntityType_Terrain,
+	EntityType_Test,
 	
 	EntityType_Count,
 };
@@ -13,6 +14,8 @@ struct Model
 
 struct Models
 {
+	Model testStallModel;
+
 	Model terrainModel;
 };
 
@@ -53,13 +56,37 @@ struct EntityManager {
 	int32 nextID;
 };
 
+struct RenderManager
+{
+	Models models;
+};
+
+struct TransformMatrixModelData
+{
+	vec3 position;
+	vec3 scale;
+	real32 angle;
+	vec4 color;
+};
+
+
+struct Light
+{
+	vec3 position;
+	vec3 color;
+};
+
+
 struct MyData {
     
     GameSprites sprites;
 
     EntityManager em;
-	
-	Models models;
+
+	RenderManager rm;
+
+	Light sunLight;
+		
 
     Sprite sprite;
     Sprite sprite2;
@@ -71,14 +98,13 @@ struct MyData {
 
 
 
-
-
 struct Entity
 {
 	Model model;
 	EntityHandle handle;
 
 	vec3 position;
+	TransformMatrixModelData transform;
 };
 
 
@@ -86,6 +112,12 @@ struct Entity
 
 
 struct Terrain : Entity
+{
+
+};
+
+
+struct TestStall : Entity
 {
 
 };

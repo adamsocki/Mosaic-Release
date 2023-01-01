@@ -8,6 +8,7 @@
 MyData *Data = NULL;
 #include "LoadSprites.cpp"
 #include "EntityManager.cpp"
+#include "RenderManager.cpp"
 
 Sprite lemonSprite;
 OBJMesh stallMesh = {};
@@ -19,6 +20,9 @@ void MyInit() {
     memset(Game->myData, 0, sizeof(MyData));
 
     Data = (MyData *)Game->myData;
+
+    Data->sunLight.position = V3(0, 30.0f, 0);
+    Data->sunLight.color = V3(0.8f, 0.8f, 1.0f);
 
     LoadSprites();
     InitializeEntityManager();
@@ -50,27 +54,34 @@ vec2 scale = V2(1, 1);
 
 void MyGameUpdate() {
     // This sets the background color. 
-    ClearColor(RGB(0.0f, 0.0f, 0.0f));
+    ClearColor(RGB(0.0f, 0.14f, 0.0f));
+
+    DynamicArray<EntityHandle> entitiesToRender = MakeDynamicArray<EntityHandle>(&Game->frameMem, 100);
+
+    DynamicArray<TransformMatrixModelData> testStallEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
 
 
-    if (InputHeld(Keyboard, Input_UpArrow)) {
-        position.y += 2 * Game->deltaTime;
+
+    // LOGIC
+
+    EntityTypeBuffer* testStallBuffer = &Data->em.buffers[EntityType_Test];
+
+    TestStall* testStallEntitiesInBuffer = (TestStall*)testStallBuffer->entities;
+
+    // set which to render
+    for (int i = 0; i < testStallBuffer->count; i++)
+    {
+        TransformMatrixModelData entityTransform = {};
+        TestStall* entity = (TestStall*)GetEntity(&Data->em, testStallEntitiesInBuffer[i].handle);
+        entityTransform = entity->transform;
+        PushBack(&testStallEntitiesToRender, entityTransform);
     }
 
-    // position in pixels
-    vec2 mousePos = Input->mousePosNormSigned;
-    mousePos.x =-mousePos.x * 8;
-    mousePos.y = mousePos.y * 4.5f;
+    HashTable<Models, DynamicArray<EntityHandle> > hash;
 
-    //DrawRect(V2(-2, -2), scale, RGB(0, 1, 1));
+    AllocateHashTable(&hash, 100, &Game->frameMem);
 
-    //DrawRect(V2(-2, -2), scale, V4(0.0f, 1.0f, 1.0f, 0.5f));
-
-    //DrawCoolRect(V2(0, 0), V2(1, 1), 0, RGB(0.0f, 0.3f, 0.3f));
-
-
-
-    
+    // INPUT LOGIC FOR CAMERA MOVEMENT
     Camera* cam = &Game->camera;
     real32 cameraSpeed = 28.0f;
     real32 rotationSpeed = 0.4f;
@@ -82,7 +93,6 @@ void MyGameUpdate() {
     if (InputHeld(Keyboard, Input_S))
     {
         Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
-
     }
     if (InputHeld(Keyboard, Input_A))
     {
@@ -91,32 +101,26 @@ void MyGameUpdate() {
     if (InputHeld(Keyboard, Input_D))
     {
         Game->cameraPosition.x -= cameraSpeed * Game->deltaTime;
-
     }
-    
-    // scale.x -= 0.2f * Game->deltaTime;
-    // scale.y -= 0.2f * Game->deltaTime;
-    // once scale goes negative we will have inverted the shape,
-    // it will continue to grow.
-
-    //position.y -= 2 * Game->deltaTime;
-
-    // things are drawn in the order you call the functions.
-    // The latest draw call will be on top of all previous, and so on.
-
+    if (InputHeld(Keyboard, Input_UpArrow)) {
+        Game->cameraPosition.y += cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_DownArrow)) {
+        Game->cameraPosition.y -= cameraSpeed * Game->deltaTime;
+    }
+   
     // (0, 0) is center of the screen
     // increasing values of y move up
     // We have negative coordinates
     // The width of our screen is 16 (-8 to 8) (left to right)
     // The height of our screen is 9 (-4.5 to 4.5) (bottom to top)
 
-    // version that doesnt take an angle.    
-    rotation += (1.0f) * Game->deltaTime;
-    DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+    rotation += (0.2f) * Game->deltaTime;
+
+
+    //  RENDER
+   // DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+    DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &stallMesh, &stallTexture);
     DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
 
-    /*DrawSprite(mousePos, V2(0.5f, 0.5f), &lemonSprite);
-    DrawRect(V2(0, 0), V2(1, 1), RGB(1.0f, 0.3f, 0.3f));
-    DrawSprite(position, V2(0.5f, 0.5f), &Data->sprite);
-    DrawSprite(mousePos, V2(0.5f, 0.5f), &Data->sprites.testSprite);*/
 }
