@@ -11,7 +11,7 @@ void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color,
     Shader* shader = &Game->modelShader;
     SetShader(shader);
 
-    vec3 lightPos = V3(10, 0, -40);
+    vec3 lightPos = V3(10, 0, -0);
     vec3 lightColor = V3(1,1,1);
     real32 shineDamper = 1;
     real32 reflectivity = 0;
@@ -42,8 +42,6 @@ void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color,
     glUniform1fv(shader->uniforms[6].id, 1, &shineDamper);
     glUniform1fv(shader->uniforms[7].id, 1, &reflectivity);
 
-
-
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
 
@@ -69,7 +67,7 @@ void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color,
     glDisableVertexAttribArray(texcoord);
     glDisableVertexAttribArray(normals);
 
-
+    glUseProgram(0);
 }
 
 

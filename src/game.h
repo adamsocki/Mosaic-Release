@@ -100,6 +100,7 @@ struct GameMemory {
 
     Shader colorShader;
     Shader modelShader;
+    Shader terrainShader;
 
 
     Shader texturedQuadShader;
@@ -119,6 +120,7 @@ struct GameMemory {
     Mesh glyphQuad;
     Mesh quadTopLeft;
     Mesh cube;
+    OBJMesh terrain;
 
     InputManager inputManager;
     InputDevice *keyboard;

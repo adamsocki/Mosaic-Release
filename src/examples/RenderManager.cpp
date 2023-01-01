@@ -10,27 +10,24 @@ void GetModelsFromEntities(DynamicArray<EntityHandle> entitiyHandleArray)
 }
 
 
-void DrawOBJModels(DynamicArray<TransformMatrixModelData> entityTransform, Light light ,OBJMesh* mesh, Sprite* texture)
+void DrawOBJModels(DynamicArray<TransformMatrixModelData> entityTransform, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
 {
-    Shader* shader = &Game->modelShader;
+   // Shader* shader = &Game->modelShader;
     SetShader(shader);
-
 
     real32 shineDamper = 1;
     real32 reflectivity = 0;
 
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    //glDepthFunc(GL_LESS);
 
     // Mesh* mesh = &Game->quad;
     
-
     glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
 
     glActiveTexture(GL_TEXTURE0);

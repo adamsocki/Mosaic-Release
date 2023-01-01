@@ -9,6 +9,8 @@ MyData *Data = NULL;
 #include "LoadSprites.cpp"
 #include "EntityManager.cpp"
 #include "RenderManager.cpp"
+#include "TerrainManager.cpp"
+
 
 Sprite lemonSprite;
 OBJMesh stallMesh = {};
@@ -29,6 +31,8 @@ void MyInit() {
     InitializeEntityBuffers();
 
     InitializeStartingEntities();
+
+    GenerateTerrain();
     // All sprites must be png files
     // You provide the path to the png like "directory/to/my/file/file_name.png"
     // In this case I have put the pngs inside the "data" directory.
@@ -44,6 +48,7 @@ void MyInit() {
     stallMesh = LoadOBJModel("data/stall.obj");
 
     InitOBJMesh(&stallMesh);
+    InitOBJMesh(&Game->terrain);
 
 }
 
@@ -59,14 +64,15 @@ void MyGameUpdate() {
     DynamicArray<EntityHandle> entitiesToRender = MakeDynamicArray<EntityHandle>(&Game->frameMem, 100);
 
     DynamicArray<TransformMatrixModelData> testStallEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
-
-
+    DynamicArray<TransformMatrixModelData> terrainEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
 
     // LOGIC
 
     EntityTypeBuffer* testStallBuffer = &Data->em.buffers[EntityType_Test];
+    EntityTypeBuffer* terrainBuffer = &Data->em.buffers[EntityType_Terrain];
 
     TestStall* testStallEntitiesInBuffer = (TestStall*)testStallBuffer->entities;
+    Terrain* terrainEntitiesInBuffer = (Terrain*)terrainBuffer->entities;
 
     // set which to render
     for (int i = 0; i < testStallBuffer->count; i++)
@@ -75,6 +81,14 @@ void MyGameUpdate() {
         TestStall* entity = (TestStall*)GetEntity(&Data->em, testStallEntitiesInBuffer[i].handle);
         entityTransform = entity->transform;
         PushBack(&testStallEntitiesToRender, entityTransform);
+    }
+    for (int i = 0; i < 1; i++)
+    {
+        TransformMatrixModelData entityTransform = {};
+        Terrain* entity = (Terrain*)GetEntity(&Data->em, terrainEntitiesInBuffer[i].handle);
+        entityTransform = entity->transform;
+        PushBack(&terrainEntitiesToRender, entityTransform);
+
     }
 
     HashTable<Models, DynamicArray<EntityHandle> > hash;
@@ -108,7 +122,15 @@ void MyGameUpdate() {
     if (InputHeld(Keyboard, Input_DownArrow)) {
         Game->cameraPosition.y -= cameraSpeed * Game->deltaTime;
     }
-   
+
+    /*if (InputHeld(Keyboard, Input_Y)) {
+        cameraAngle += cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_H)) {
+        cameraAngle -= cameraSpeed * Game->deltaTime;
+    }*/
+
+    
     // (0, 0) is center of the screen
     // increasing values of y move up
     // We have negative coordinates
@@ -117,10 +139,11 @@ void MyGameUpdate() {
 
     rotation += (0.2f) * Game->deltaTime;
 
-
     //  RENDER
-   // DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
-    DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &stallMesh, &stallTexture);
+   DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+   DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
+   // DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &stallMesh, &stallTexture, &Game->modelShader);
     DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
+
 
 }

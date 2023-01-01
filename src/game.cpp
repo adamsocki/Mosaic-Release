@@ -216,7 +216,9 @@ void GameInit(GameMemory *gameMem) {
     cam->projection = Perspective(DegToRad(80.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
 
     Game->cameraPosition = V3(0, 0, -10);
-    Game->cameraRotation = IdentityQuaternion();
+    //quaternion cameraRotation = IdentityQuaternion();
+   // cameraRotation = AxisAngle(V3(1, 0, 0), 0.175f);
+   // Game->cameraRotation = cameraRotation;
 
     mat4 camWorld = TRS(Game->cameraPosition, Game->cameraRotation, V3(1));
     cam->view = OrthogonalInverse(camWorld);
@@ -232,8 +234,8 @@ void GameInit(GameMemory *gameMem) {
     //                                cam->height * -0.5f * cam->size, cam->height * 0.5f * cam->size,
     //                                0.0, 100.0f);
 
-    gameMem->camAngle = 0;
-    //gameMem->cameraPosition = V3(0, 0, 3);
+    gameMem->camAngle = 0.175f;
+    ////gameMem->cameraPosition = V3(0, 0, 3);
     gameMem->cameraRotation = AxisAngle(V3(1, 0, 0), gameMem->camAngle);
 
     UpdateCamera(cam, gameMem->cameraPosition, gameMem->cameraRotation);
@@ -261,6 +263,20 @@ void GameInit(GameMemory *gameMem) {
     InitGlyphBuffers(GlyphBufferCount);
 
 #if WINDOWS
+    {
+        LoadShader("shaders/terrainShader.vert", "shaders/terrainShader.frag", &gameMem->terrainShader);
+        const char* uniforms[] = {
+            "model",
+            "viewProjection",
+            "texture0",
+            "time",
+            "lightPosition",
+            "lightColor",
+            "shineDamper",
+            "reflectivity",
+        };
+        CompileShader(&gameMem->terrainShader, 8, uniforms);
+    }
     {
         LoadShader("shaders/modelMesh.vert", "shaders/modelMesh.frag", &gameMem->modelShader);
         const char* uniforms[] = {
