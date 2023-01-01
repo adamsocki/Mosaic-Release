@@ -11,6 +11,11 @@ struct Model
 
 };
 
+struct Models
+{
+	Model terrainModel;
+};
+
 
 struct GameSprites
 {
@@ -53,11 +58,13 @@ struct MyData {
     GameSprites sprites;
 
     EntityManager em;
+	
+	Models models;
 
     Sprite sprite;
     Sprite sprite2;
-
-    SoundClip sound;
+	
+  
 };
 
 
@@ -70,6 +77,8 @@ struct Entity
 {
 	Model model;
 	EntityHandle handle;
+
+	vec3 position;
 };
 
 

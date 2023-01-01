@@ -24,7 +24,7 @@ void MyInit() {
     InitializeEntityManager();
     InitializeEntityBuffers();
 
-    
+    InitializeStartingEntities();
     // All sprites must be png files
     // You provide the path to the png like "directory/to/my/file/file_name.png"
     // In this case I have put the pngs inside the "data" directory.
@@ -34,7 +34,7 @@ void MyInit() {
 
     LoadSprite(&lemonSprite, "data/bad_lemon.png");
 
-    LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
+   // LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
 
     //TinyObject();
     stallMesh = LoadOBJModel("data/stall.obj");
@@ -69,9 +69,8 @@ void MyGameUpdate() {
     //DrawCoolRect(V2(0, 0), V2(1, 1), 0, RGB(0.0f, 0.3f, 0.3f));
 
 
-    if (InputPressed(Keyboard, Input_Space)) {
-        PlaySound(&Game->audioPlayer, Data->sound, 1.0f, true);
-    }
+
+    
     Camera* cam = &Game->camera;
     real32 cameraSpeed = 28.0f;
     real32 rotationSpeed = 0.4f;

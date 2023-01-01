@@ -80,3 +80,16 @@ void InitializeEntityBuffers()
 	memset(terrainBuffer->entities, 0, sizeof(Terrain) * terrainBuffer->capacity);
 	
 }
+
+
+
+
+void InitializeStartingEntities()
+{
+	
+	EntityHandle terrainHandle = AddEntity(&Data->em, EntityType_Terrain);
+	Terrain* terrainEntity = (Terrain*)GetEntity(&Data->em, terrainHandle);
+	terrainEntity->handle = terrainHandle;
+	terrainEntity->position = V3(-0.0f, -0.0f, 0.0f);
+	terrainEntity->model = Data->models.terrainModel;
+}
