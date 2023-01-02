@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #if OPENGL
 #define GLEW_STATIC
 #include <gl/glew.h>
@@ -28,6 +29,7 @@
 //#include <DirectXMath.h>
 //#include "dx12/d3dx12.h"
 #endif
+
 
 
 #include "types.h"

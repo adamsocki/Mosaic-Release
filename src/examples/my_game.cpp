@@ -10,11 +10,14 @@ MyData *Data = NULL;
 #include "EntityManager.cpp"
 #include "RenderManager.cpp"
 #include "TerrainManager.cpp"
+#include "assimpLoader.cpp"
 
 
 Sprite lemonSprite;
 OBJMesh stallMesh = {};
 OBJMesh fernMesh = {};
+OBJMesh stallMesh2 = {};
+
 
 Sprite stallTexture;
 real32 rotation = {};
@@ -53,6 +56,8 @@ void MyInit() {
     InitOBJMesh(&stallMesh);
     InitOBJMesh(&Game->terrain);
     InitOBJMesh(&fernMesh);
+
+    stallMesh2 = LoadOBJv2("data/stall.obj");
 
 }
 

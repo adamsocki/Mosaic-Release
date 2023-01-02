@@ -129,3 +129,19 @@ struct Fern :Entity
 {
 
 };
+
+
+
+
+struct Vertex
+{
+	vec3 position;
+	int32 textureIndex{ -1 };
+	int32 normalIndex{ -1 };
+
+	int32 index;
+	real32 length;
+
+	bool isSet;
+
+};
