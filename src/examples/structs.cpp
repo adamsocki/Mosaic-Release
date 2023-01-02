@@ -2,7 +2,8 @@ enum EntityType
 {
 	EntityType_Terrain,
 	EntityType_Test,
-	
+	EntityType_Fern,
+
 	EntityType_Count,
 };
 
@@ -23,6 +24,8 @@ struct Models
 struct GameSprites
 {
     Sprite testSprite;
+	Sprite fernTexture;
+
 };
 
 struct EntityHandle {
@@ -118,6 +121,11 @@ struct Terrain : Entity
 
 
 struct TestStall : Entity
+{
+
+};
+
+struct Fern :Entity
 {
 
 };

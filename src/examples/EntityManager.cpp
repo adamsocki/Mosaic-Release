@@ -85,7 +85,14 @@ void InitializeEntityBuffers()
 	testStallBuffer->count = 0;
 	testStallBuffer->entities = (TestStall*)malloc(testStallBuffer->capacity * testStallBuffer->sizeInBytes);
 	memset(testStallBuffer->entities, 0, sizeof(TestStall) * testStallBuffer->capacity);
-	
+
+	EntityTypeBuffer* fernBuffer = &Data->em.buffers[EntityType_Fern];
+	fernBuffer->capacity = 8000;
+	fernBuffer->sizeInBytes = sizeof(Fern);
+	fernBuffer->count = 0;
+	fernBuffer->entities = (Fern*)malloc(fernBuffer->capacity * fernBuffer->sizeInBytes);
+	memset(fernBuffer->entities, 0, sizeof(Fern) * fernBuffer->capacity);
+
 }
 
 
@@ -110,5 +117,15 @@ void InitializeStartingEntities()
 		testStallEntity->transform.position = V3(-0.0f, (i * 3.0f) * 10.0f, i* 10.0f);
 		testStallEntity->transform.scale = V3(10.0f, 10.0f, 10.0f);
 		testStallEntity->model = Data->rm.models.testStallModel;
+	}
+
+	for (int i = 0; i < 40; i++)
+	{
+		EntityHandle fernHandle = AddEntity(&Data->em, EntityType_Fern);
+		Fern* fernEntity = (Fern*)GetEntity(&Data->em, fernHandle);
+		fernEntity->handle = fernHandle;
+		fernEntity->transform.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
+		fernEntity->transform.scale = V3(10.0f, 10.0f, 10.0f);
+		fernEntity->model = Data->rm.models.testStallModel;
 	}
 }

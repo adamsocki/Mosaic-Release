@@ -14,6 +14,8 @@ MyData *Data = NULL;
 
 Sprite lemonSprite;
 OBJMesh stallMesh = {};
+OBJMesh fernMesh = {};
+
 Sprite stallTexture;
 real32 rotation = {};
 
@@ -41,14 +43,16 @@ void MyInit() {
     LoadSprite(&stallTexture, "data/stallTexture.png");
 
     LoadSprite(&lemonSprite, "data/bad_lemon.png");
+    LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
 
    // LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
 
     //TinyObject();
     stallMesh = LoadOBJModel("data/stall.obj");
-
+    fernMesh = LoadOBJModel("data/fern.obj");
     InitOBJMesh(&stallMesh);
     InitOBJMesh(&Game->terrain);
+    InitOBJMesh(&fernMesh);
 
 }
 
@@ -65,14 +69,17 @@ void MyGameUpdate() {
 
     DynamicArray<TransformMatrixModelData> testStallEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
     DynamicArray<TransformMatrixModelData> terrainEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
+    DynamicArray<TransformMatrixModelData> fernEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
 
     // LOGIC
 
     EntityTypeBuffer* testStallBuffer = &Data->em.buffers[EntityType_Test];
     EntityTypeBuffer* terrainBuffer = &Data->em.buffers[EntityType_Terrain];
+    EntityTypeBuffer* fernBuffer = &Data->em.buffers[EntityType_Fern];
 
     TestStall* testStallEntitiesInBuffer = (TestStall*)testStallBuffer->entities;
     Terrain* terrainEntitiesInBuffer = (Terrain*)terrainBuffer->entities;
+    Fern* fernEntitiesInBuffer = (Fern*)fernBuffer->entities;
 
     // set which to render
     for (int i = 0; i < testStallBuffer->count; i++)
@@ -90,7 +97,14 @@ void MyGameUpdate() {
         PushBack(&terrainEntitiesToRender, entityTransform);
 
     }
+    for (int i = 0; i < 1; i++)
+    {
+        TransformMatrixModelData entityTransform = {};
+        Fern* entity = (Fern*)GetEntity(&Data->em, fernEntitiesInBuffer[i].handle);
+        entityTransform = entity->transform;
+        PushBack(&fernEntitiesToRender, entityTransform);
 
+    }
     HashTable<Models, DynamicArray<EntityHandle> > hash;
 
     AllocateHashTable(&hash, 100, &Game->frameMem);
@@ -142,7 +156,7 @@ void MyGameUpdate() {
     //  RENDER
    DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
    DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
-   // DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &stallMesh, &stallTexture, &Game->modelShader);
+   DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
     DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
 
 
