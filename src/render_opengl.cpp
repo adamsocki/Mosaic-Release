@@ -67,7 +67,7 @@ void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color,
     glDisableVertexAttribArray(texcoord);
     glDisableVertexAttribArray(normals);
 
-    glUseProgram(0);
+   // glUseProgram(0);
 }
 
 

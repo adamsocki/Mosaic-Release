@@ -130,7 +130,18 @@ struct Fern :Entity
 
 };
 
+struct VertexDuplicate
+{
+	vec3 position;
+	int32 textureIndex{ -1 };
+	int32 normalIndex{ -1 };
 
+	int32 index;
+	real32 length;
+
+	bool isSet;
+
+};
 
 
 struct Vertex
@@ -141,6 +152,9 @@ struct Vertex
 
 	int32 index;
 	real32 length;
+
+	bool hasDuplicate;
+	void* duplicateVertex{ NULL };
 
 	bool isSet;
 

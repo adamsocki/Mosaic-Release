@@ -58,6 +58,7 @@ void MyInit() {
     InitOBJMesh(&fernMesh);
 
     stallMesh2 = LoadOBJv2("data/stall.obj");
+    InitOBJMesh(&stallMesh2);
 
 }
 
@@ -159,10 +160,10 @@ void MyGameUpdate() {
     rotation += (0.2f) * Game->deltaTime;
 
     //  RENDER
-   DrawOBJModel(&stallMesh, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
-   DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
-   DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
-    DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
-
+    DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+  // DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
+  // DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
+   // DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
+    //DrawOBJModel(&stallMesh2, V3(0, 0, 0), V3(10, 10, 10),rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
 
 }

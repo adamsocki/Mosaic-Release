@@ -46,6 +46,7 @@ struct OBJMesh
     int32 indexBufferID;
     int32 texturesBufferID;
 
+    real32 furthestPoint;
 
     int32 vaoID;
 
