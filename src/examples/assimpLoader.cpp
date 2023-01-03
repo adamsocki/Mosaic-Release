@@ -4,10 +4,10 @@
 
 
 
-bool isVertSet(Vertex *vert)
+bool isVertSet(Vertex vert)
 {
 	bool isSet = false;
-	if (vert->textureIndex != -1 && vert->normalIndex != -1)
+	if (vert.textureIndex != -1 && vert.normalIndex != -1)
 	{
 		isSet = true;
 	}
@@ -66,7 +66,7 @@ bool hasSameTextureAndNormal(Vertex vert, int32 textureIndexOther, int32 normalI
 //	}
 //}
 
-void dealWithAlreadyProcessedVertex(Vertex* previousVertex, int32 newTextureIndex, int32 newNormalIndex, DynamicArray<int32> *indices, DynamicArray<Vertex> vertices)
+void dealWithAlreadyProcessedVertex(Vertex* previousVertex, int32 newTextureIndex, int32 newNormalIndex, DynamicArray<int32> *indices, DynamicArray<Vertex> *vertices)
 {
     if (hasSameTextureAndNormal(*previousVertex, newTextureIndex, newNormalIndex))
     {
@@ -74,9 +74,9 @@ void dealWithAlreadyProcessedVertex(Vertex* previousVertex, int32 newTextureInde
     }
     else
     {
-        Vertex* anotherVertex = (Vertex*)&previousVertex->duplicateVertex;
+        Vertex* anotherVertex = (Vertex*)previousVertex->duplicateVertex;
 
-        if (!anotherVertex)
+        if (anotherVertex->hasDuplicate != false)
         {
             dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex, indices, vertices);
         }
@@ -84,22 +84,22 @@ void dealWithAlreadyProcessedVertex(Vertex* previousVertex, int32 newTextureInde
         {
             Vertex duplicateVertex;
             duplicateVertex.position = previousVertex->position;
-            duplicateVertex.index = vertices.count;
+            duplicateVertex.index = vertices->count;
             duplicateVertex.textureIndex = newTextureIndex;
             duplicateVertex.normalIndex = newNormalIndex;
-
+            duplicateVertex.hasDuplicate = true;
             //previousVertex->duplicateVertex = (Vertex*)malloc(sizeof(Vertex));
             //memset(previousVertex->duplicateVertex, 0, sizeof(Vertex));
             previousVertex->duplicateVertex = &duplicateVertex;
-            PushBack(&vertices, duplicateVertex);
+            PushBack(vertices, duplicateVertex);
             PushBack(indices, duplicateVertex.index);
         }
     }
 }
-void ProcessVertex_v2(std::string vertex0, std::string vertex1, std::string vertex2, DynamicArray<Vertex> vertices, DynamicArray<int32> *indices)
+void ProcessVertex_v2(std::string vertex0, std::string vertex1, std::string vertex2, DynamicArray<Vertex>* vertices, DynamicArray<int32> *indices)
 {
-	int32 index = (std::stof(vertex0) - 1);
-	Vertex *currentVertex = &vertices[index];
+	/*int32 index = (std::stof(vertex0) - 1);
+	Vertex *currentVertex = *vertices[index];
 	int32 textureIndex = (std::stof(vertex1) - 1);
 	int32 normalIndex = (std::stof(vertex2) - 1);
 	
@@ -112,7 +112,7 @@ void ProcessVertex_v2(std::string vertex0, std::string vertex1, std::string vert
 	else
 	{
 		dealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices, vertices); 
-	}
+	}*/
     
 }
 
@@ -422,10 +422,60 @@ OBJMesh LoadOBJv2(const char *modelPath)
                 i++;
             }
 			
-			ProcessVertex_v2(arr0[0], arr0[1], arr0[2], vertices, &indices);
-			ProcessVertex_v2(arr1[0], arr1[1], arr1[2], vertices, &indices);
-			ProcessVertex_v2(arr2[0], arr2[1], arr2[2], vertices, &indices);
-			
+			/*ProcessVertex_v2(arr0[0], arr0[1], arr0[2], &vertices, &indices);
+			ProcessVertex_v2(arr1[0], arr1[1], arr1[2], &vertices, &indices);
+			ProcessVertex_v2(arr2[0], arr2[1], arr2[2], &vertices, &indices);
+			*/
+
+            int32 index_Value0 = (std::stof(arr0[0]) - 1);
+           // Vertex* currentVertex = *vertices[index];
+            int32 textureIndex0 = (std::stof(arr0[1]) - 1);
+            int32 normalIndex0 = (std::stof(arr0[2]) - 1);
+
+            if (!isVertSet(vertices[index_Value0]))
+            {
+                vertices[index_Value0].textureIndex = textureIndex0;
+                vertices[index_Value0].normalIndex = normalIndex0;
+                PushBack(&indices, index_Value0);
+            }
+            else
+            {
+                dealWithAlreadyProcessedVertex(&vertices[index_Value0], textureIndex0, normalIndex0, &indices, &vertices);
+            }
+
+            int32 index_Value1 = (std::stof(arr1[0]) - 1);
+            // Vertex* currentVertex = *vertices[index];
+            int32 textureIndex1 = (std::stof(arr1[1]) - 1);
+            int32 normalIndex1 = (std::stof(arr1[2]) - 1);
+
+            if (!isVertSet(vertices[index_Value1]))
+            {
+                vertices[index_Value1].textureIndex = textureIndex1;
+                vertices[index_Value1].normalIndex = normalIndex1;
+                PushBack(&indices, index_Value1);
+            }
+            else
+            {
+                dealWithAlreadyProcessedVertex(&vertices[index_Value1], textureIndex1, normalIndex1, &indices, &vertices);
+            }
+
+            int32 index_Value2 = (std::stof(arr2[0]) - 1);
+            //// Vertex* currentVertex = *vertices[index];
+            int32 textureIndex2 = (std::stof(arr2[1]) - 1);
+            int32 normalIndex2 = (std::stof(arr2[2]) - 1);
+
+            if (!isVertSet(vertices[index_Value2]))
+            {
+                vertices[index_Value2].textureIndex = textureIndex2;
+                vertices[index_Value2].normalIndex = normalIndex2;
+                PushBack(&indices, index_Value2);
+            }
+            else
+            {
+                dealWithAlreadyProcessedVertex(&vertices[index_Value2], textureIndex2, normalIndex2, &indices, &vertices);
+            }
+            
+
 		}
 		
 	}
@@ -433,7 +483,7 @@ OBJMesh LoadOBJv2(const char *modelPath)
 	//removeUnusedVertices(vertices);
 	for (int i = 0; i < vertices.count; i++)
 	{
-		if(!isVertSet(&vertices[i]))
+		if(!isVertSet(vertices[i]))
 	    {
 			vertices[i].textureIndex = 0;
 			vertices[i].normalIndex = 0;
