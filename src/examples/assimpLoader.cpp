@@ -35,7 +35,6 @@ bool hasSameTextureAndNormal(Vertex vert, int32 textureIndexOther, int32 normalI
 	return hasSame;
 }
 
-
 //void dealWithAlreadyProcessedVertex(Vertex previousVertex, int32 newTextureIndex, int32 newNormalIndex, DynamicArray<int32> indices, DynamicArray<Vertex> vertices)
 //{
 //	if (hasSameTextureAndNormal(previousVertex, newTextureIndex, newNormalIndex))
@@ -67,17 +66,17 @@ bool hasSameTextureAndNormal(Vertex vert, int32 textureIndexOther, int32 normalI
 //	}
 //}
 
-void dealWithAlreadyProcessedVertex(Vertex* previousVertex, int32 newTextureIndex, int32 newNormalIndex, DynamicArray<int32> indices, DynamicArray<Vertex> vertices)
+void dealWithAlreadyProcessedVertex(Vertex* previousVertex, int32 newTextureIndex, int32 newNormalIndex, DynamicArray<int32> *indices, DynamicArray<Vertex> vertices)
 {
     if (hasSameTextureAndNormal(*previousVertex, newTextureIndex, newNormalIndex))
     {
-        PushBack(&indices, previousVertex->index);
+        PushBack(indices, previousVertex->index);
     }
     else
     {
-        Vertex* anotherVertex = (Vertex*)previousVertex->duplicateVertex;
+        Vertex* anotherVertex = (Vertex*)&previousVertex->duplicateVertex;
 
-        if (anotherVertex->duplicateVertex != NULL)
+        if (!anotherVertex)
         {
             dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex, indices, vertices);
         }
@@ -93,11 +92,11 @@ void dealWithAlreadyProcessedVertex(Vertex* previousVertex, int32 newTextureInde
             //memset(previousVertex->duplicateVertex, 0, sizeof(Vertex));
             previousVertex->duplicateVertex = &duplicateVertex;
             PushBack(&vertices, duplicateVertex);
-            PushBack(&indices, duplicateVertex.index);
+            PushBack(indices, duplicateVertex.index);
         }
     }
 }
-void ProcessVertex_v2(std::string vertex0, std::string vertex1, std::string vertex2, DynamicArray<Vertex> vertices, DynamicArray<int32> indices)
+void ProcessVertex_v2(std::string vertex0, std::string vertex1, std::string vertex2, DynamicArray<Vertex> vertices, DynamicArray<int32> *indices)
 {
 	int32 index = (std::stof(vertex0) - 1);
 	Vertex *currentVertex = &vertices[index];
@@ -108,7 +107,7 @@ void ProcessVertex_v2(std::string vertex0, std::string vertex1, std::string vert
 	{
 		currentVertex->textureIndex = textureIndex;
 		currentVertex->normalIndex = normalIndex;
-		PushBack(&indices, index);	
+		PushBack(indices, index);	
 	}
 	else
 	{
@@ -145,6 +144,15 @@ real32 convertDataToArrays(DynamicArray<Vertex> vertices, DynamicArray<vec2> tex
 
 OBJMesh LoadOBJv2(const char *modelPath)
 {
+    OBJMesh objMesh = {};
+    objMesh.verts = (real32*)malloc(100000 * 3 * sizeof(real32));
+    memset(objMesh.verts, 0, sizeof(real32) * 10000 * 3);
+    objMesh.indices = (int32*)malloc(100000 * sizeof(int32));
+    memset(objMesh.indices, 0, sizeof(int32) * 100000);
+    objMesh.texcoords = (real32*)malloc(10000 * 2 * sizeof(real32));
+    memset(objMesh.texcoords, 0, sizeof(real32) * 10000 * 2);
+    objMesh.indices = (int32*)malloc(100000);
+    int32* indicesArray = (int32*)malloc(100000);
 	
 	DynamicArray<Vertex> vertices = MakeDynamicArray<Vertex>(&Game->frameMem, 10000);
     DynamicArray<vec2> textures = MakeDynamicArray<vec2>(&Game->frameMem, 10000);
@@ -222,6 +230,7 @@ OBJMesh LoadOBJv2(const char *modelPath)
 				Vertex vert = {};
 				vert.duplicateVertex = (Vertex*)malloc(sizeof(Vertex));
 				memset(vert.duplicateVertex, 0, sizeof(Vertex));
+                vert.hasDuplicate = false;
 				vert.position = vertex;
 				vert.index = vertices.count;
                 PushBack(&vertices, vert);
@@ -413,9 +422,9 @@ OBJMesh LoadOBJv2(const char *modelPath)
                 i++;
             }
 			
-			ProcessVertex_v2(arr0[0], arr0[1], arr0[2], vertices, indices);
-			ProcessVertex_v2(arr1[0], arr1[1], arr1[2], vertices, indices);
-			ProcessVertex_v2(arr2[0], arr2[1], arr2[2], vertices, indices);
+			ProcessVertex_v2(arr0[0], arr0[1], arr0[2], vertices, &indices);
+			ProcessVertex_v2(arr1[0], arr1[1], arr1[2], vertices, &indices);
+			ProcessVertex_v2(arr2[0], arr2[1], arr2[2], vertices, &indices);
 			
 		}
 		
@@ -430,25 +439,33 @@ OBJMesh LoadOBJv2(const char *modelPath)
 			vertices[i].normalIndex = 0;
 		}
 	}
-	OBJMesh objMesh = {};
+	
     objMesh.data = (void*)malloc((sizeof(real32) * vertices.count * 3) + (sizeof(real32) * vertices.count * 2) + (sizeof(real32) * vertices.count * 3));
     objMesh.size = (sizeof(real32) * vertices.count * 3) + (sizeof(real32) * vertices.count * 2) + (sizeof(real32) * vertices.count * 3);
 	//objMesh.verts = (real32*)malloc(vertices.count * 3);
     objMesh.verts = (real32*)objMesh.data;
    // objMesh.texcoords = (real32*)malloc(vertices.count * 2);
-	objMesh.texcoords = (real32*)((uint8*)objMesh.data + (sizeof(real32) * vertices.count * 3));
+	    objMesh.texcoords = (real32*)((uint8*)objMesh.data + (sizeof(real32) * vertices.count * 3));
    // objMesh.normals = (real32*)malloc(vertices.count * 3);
 	objMesh.normals = (real32*)((uint8*)objMesh.data + (sizeof(real32) * vertices.count * 3) + (sizeof(real32) * vertices.count * 2));
-    real32 furthest = convertDataToArrays(vertices, textures, normals, objMesh.verts, objMesh.texcoords, objMesh.normals);
-	objMesh.indices = (int32*)malloc(indices.count);
-    objMesh.indexCount = indices.count;
+   real32 furthest = convertDataToArrays(vertices, textures, normals, objMesh.verts, objMesh.texcoords, objMesh.normals);
+	objMesh.indexCount = indices.count;
     objMesh.vertCount = vertices.count * 3;
-    objMesh.texcoordsCount = vertices.count * 23;
+    objMesh.texcoordsCount = vertices.count * 2;
     objMesh.normalsCount = vertices.count * 3;
-	objMesh.indices = convertIndicesListToArray(indices);
-	objMesh.furthestPoint = furthest;
-    objMesh.indexCount = furthest;
+	//objMesh.indices = convertIndicesListToArray(indices);
+    for (int i = 0; i < indices.count; i++)
+    {
+        indicesArray[i] = indices[i];
+    }
+    objMesh.indices = indicesArray;
+// objMesh.furthestPoint = furthest;
+   // objMesh.indexCount = furthest;
+
+    DeallocateDynamicArray(&vertices);
+    DeallocateDynamicArray(&textures);
+    DeallocateDynamicArray(&normals);
+    DeallocateDynamicArray(&indices);
+
 	return objMesh;
-
-
-}
+ }
