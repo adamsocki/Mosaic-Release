@@ -18,8 +18,15 @@ void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color,
 
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    if (mesh->hasTransparency)
+    {
+        glDisable(GL_CULL_FACE);
+    }
+    else
+    {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    // glEnable(GL_DEPTH_TEST);
@@ -41,6 +48,7 @@ void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color,
     glUniform3fv(shader->uniforms[5].id, 1, lightColor.data);
     glUniform1fv(shader->uniforms[6].id, 1, &shineDamper);
     glUniform1fv(shader->uniforms[7].id, 1, &reflectivity);
+    glUniform1i(shader->uniforms[8].id, 1, &modifiedLighting);
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);

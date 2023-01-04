@@ -48,6 +48,10 @@ struct OBJMesh
 
     real32 furthestPoint;
 
+    bool hasTransparency;
+    bool modifiedLighting;
+
+
     int32 vaoID;
 
     int32 facesCount; // TODO ADD THIS TO PARSER

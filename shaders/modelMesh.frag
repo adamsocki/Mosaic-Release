@@ -11,6 +11,7 @@ uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
 
+
 out vec4 color;
 
 void main(void){
@@ -32,8 +33,13 @@ void main(void){
 	specularFactor = max(specularFactor, 0.0);
 	float damperFactor = pow(specularFactor, shineDamper);
 	vec3 finalSpecular = damperFactor * reflectivity * lightColor;
-   
+	
     vec4 textureContrib = texture(texture0, uv).rgba;
-    
+    if (textureContrib.a < 0.5)
+    {
+    	discard;
+    }
+	
+
     color.rgba = vec4(diffuse, 1.0) * textureContrib + vec4(finalSpecular, 1.0);
 }

@@ -51,8 +51,8 @@ void MyInit() {
    // LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
 
     //TinyObject();
-    stallMesh = LoadOBJModel("data/stall.obj");
-    fernMesh = LoadOBJModel("data/fern.obj");
+    stallMesh = LoadOBJv2("data/stall.obj");
+    fernMesh = LoadOBJv2("data/fern.obj");
     InitOBJMesh(&stallMesh);
     InitOBJMesh(&Game->terrain);
     InitOBJMesh(&fernMesh);
@@ -143,27 +143,15 @@ void MyGameUpdate() {
         Game->cameraPosition.y -= cameraSpeed * Game->deltaTime;
     }
 
-    /*if (InputHeld(Keyboard, Input_Y)) {
-        cameraAngle += cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_H)) {
-        cameraAngle -= cameraSpeed * Game->deltaTime;
-    }*/
-
     
-    // (0, 0) is center of the screen
-    // increasing values of y move up
-    // We have negative coordinates
-    // The width of our screen is 16 (-8 to 8) (left to right)
-    // The height of our screen is 9 (-4.5 to 4.5) (bottom to top)
 
     rotation += (0.2f) * Game->deltaTime;
 
     //  RENDER
-    DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
-  // DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
-  // DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
-   // DrawSprite(V2(0), V2(4, 4), DegToRad(0), &Data->sprite2);
-    //DrawOBJModel(&stallMesh2, V3(0, 0, 0), V3(10, 10, 10),rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
 
+
+    DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+    DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
+    DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
+   
 }

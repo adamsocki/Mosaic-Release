@@ -288,8 +288,9 @@ void GameInit(GameMemory *gameMem) {
             "lightColor",
             "shineDamper",
             "reflectivity",
+            "modifiedLighting",
         };
-        CompileShader(&gameMem->modelShader, 8, uniforms);
+        CompileShader(&gameMem->modelShader, 9, uniforms);
     }
     {
         LoadShader("colorShader/mesh.vert", "colorShader/mesh.frag", &gameMem->colorShader);

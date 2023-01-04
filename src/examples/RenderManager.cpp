@@ -10,7 +10,7 @@ void GetModelsFromEntities(DynamicArray<EntityHandle> entitiyHandleArray)
 }
 
 
-void DrawOBJModels(DynamicArray<TransformMatrixModelData> entityTransform, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
+void DrawOBJModels(Entity entity, DynamicArray<TransformMatrixModelData> entityTransform, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
 {
    // Shader* shader = &Game->modelShader;
     SetShader(shader);
