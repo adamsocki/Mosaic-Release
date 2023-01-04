@@ -10,7 +10,7 @@ void GetModelsFromEntities(DynamicArray<EntityHandle> entitiyHandleArray)
 }
 
 
-void DrawOBJModels(Entity entity, DynamicArray<TransformMatrixModelData> entityTransform, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
+void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
 {
    // Shader* shader = &Game->modelShader;
     SetShader(shader);
@@ -19,7 +19,7 @@ void DrawOBJModels(Entity entity, DynamicArray<TransformMatrixModelData> entityT
     real32 reflectivity = 0;
 
     //glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
     //glCullFace(GL_BACK);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -57,16 +57,21 @@ void DrawOBJModels(Entity entity, DynamicArray<TransformMatrixModelData> entityT
     int normals = glGetAttribLocation(shader->programID, "normals");
     glEnableVertexAttribArray(normals);
     glVertexAttribPointer(normals, 3, GL_FLOAT, GL_FALSE, 0, (void*)((sizeof(real32) * mesh->vertCount) + (sizeof(real32) * mesh->texcoordsCount)));
-    //  stbi_set_flip_vertically_on_load(true);
-
-
-
-    for (int i = 0; i < entityTransform.count; i++)
-    {
     
-        
-        mat4 model = TRS(entityTransform[i].position, AxisAngle(V3(0, 1, 0), entityTransform[i].angle), entityTransform[i].scale);
+    for (int i = 0; i < modelRenderData.count; i++)
+    {
+        mat4 model = TRS(modelRenderData[i].position, AxisAngle(V3(0, 1, 0), modelRenderData[i].angle), modelRenderData[i].scale);
+        if(modelRenderData[i].hasTransparency)
+        {
+            glDisable(GL_CULL_FACE);
+        }
+        else
+        {
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+        }
 
+        glUniform1f(shader->uniforms[8].id, modelRenderData[i].modifiedLighting);
         glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
         glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
     

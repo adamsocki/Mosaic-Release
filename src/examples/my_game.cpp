@@ -73,9 +73,9 @@ void MyGameUpdate() {
 
     DynamicArray<EntityHandle> entitiesToRender = MakeDynamicArray<EntityHandle>(&Game->frameMem, 100);
 
-    DynamicArray<TransformMatrixModelData> testStallEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
-    DynamicArray<TransformMatrixModelData> terrainEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
-    DynamicArray<TransformMatrixModelData> fernEntitiesToRender = MakeDynamicArray<TransformMatrixModelData>(&Game->frameMem, 100);
+    DynamicArray<ModelRenderData> testStallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
+    DynamicArray<ModelRenderData> terrainEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
+    DynamicArray<ModelRenderData> fernEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
 
     // LOGIC
 
@@ -90,25 +90,25 @@ void MyGameUpdate() {
     // set which to render
     for (int i = 0; i < testStallBuffer->count; i++)
     {
-        TransformMatrixModelData entityTransform = {};
+        ModelRenderData modelRenderData = {};
         TestStall* entity = (TestStall*)GetEntity(&Data->em, testStallEntitiesInBuffer[i].handle);
-        entityTransform = entity->transform;
-        PushBack(&testStallEntitiesToRender, entityTransform);
+        modelRenderData = entity->modelRenderData;
+        PushBack(&testStallEntitiesToRender, modelRenderData);
     }
     for (int i = 0; i < 1; i++)
     {
-        TransformMatrixModelData entityTransform = {};
+        ModelRenderData modelRenderData = {};
         Terrain* entity = (Terrain*)GetEntity(&Data->em, terrainEntitiesInBuffer[i].handle);
-        entityTransform = entity->transform;
-        PushBack(&terrainEntitiesToRender, entityTransform);
+        modelRenderData = entity->modelRenderData;
+        PushBack(&terrainEntitiesToRender, modelRenderData);
 
     }
     for (int i = 0; i < 1; i++)
     {
-        TransformMatrixModelData entityTransform = {};
+        ModelRenderData modelRenderData = {};
         Fern* entity = (Fern*)GetEntity(&Data->em, fernEntitiesInBuffer[i].handle);
-        entityTransform = entity->transform;
-        PushBack(&fernEntitiesToRender, entityTransform);
+        modelRenderData = entity->modelRenderData;
+        PushBack(&fernEntitiesToRender, modelRenderData);
 
     }
     HashTable<Models, DynamicArray<EntityHandle> > hash;

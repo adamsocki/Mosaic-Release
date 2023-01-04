@@ -100,12 +100,11 @@ void InitializeEntityBuffers()
 
 void InitializeStartingEntities()
 {
-	
 	EntityHandle terrainHandle = AddEntity(&Data->em, EntityType_Terrain);
 	Terrain* terrainEntity = (Terrain*)GetEntity(&Data->em, terrainHandle);
 	terrainEntity->handle = terrainHandle;
-	terrainEntity->transform.position = V3(-0.0f, -0.0f, 0.0f);
-	terrainEntity->transform.scale = V3(1.0f, 1.0f, 1.0f);
+	terrainEntity->modelRenderData.position = V3(-0.0f, -0.0f, 0.0f);
+	terrainEntity->modelRenderData.scale = V3(1.0f, 1.0f, 1.0f);
 	terrainEntity->model = Data->rm.models.terrainModel;
 
 	// TEST
@@ -114,8 +113,9 @@ void InitializeStartingEntities()
 		EntityHandle testStallHandle = AddEntity(&Data->em, EntityType_Test);
 		TestStall* testStallEntity = (TestStall*)GetEntity(&Data->em, testStallHandle);
 		testStallEntity->handle = testStallHandle;
-		testStallEntity->transform.position = V3(-0.0f, (i * 3.0f) * 10.0f, i* 10.0f);
-		testStallEntity->transform.scale = V3(10.0f, 10.0f, 10.0f);
+		
+		testStallEntity->modelRenderData.position = V3(-0.0f, (i * 3.0f) * 10.0f, i* 10.0f);
+		testStallEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
 		testStallEntity->model = Data->rm.models.testStallModel;
 	}
 
@@ -124,8 +124,8 @@ void InitializeStartingEntities()
 		EntityHandle fernHandle = AddEntity(&Data->em, EntityType_Fern);
 		Fern* fernEntity = (Fern*)GetEntity(&Data->em, fernHandle);
 		fernEntity->handle = fernHandle;
-		fernEntity->transform.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
-		fernEntity->transform.scale = V3(10.0f, 10.0f, 10.0f);
+		fernEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
+		fernEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
 		fernEntity->model = Data->rm.models.testStallModel;
 	}
 }

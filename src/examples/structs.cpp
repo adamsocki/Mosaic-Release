@@ -64,8 +64,11 @@ struct RenderManager
 	Models models;
 };
 
-struct TransformMatrixModelData
+struct ModelRenderData
 {
+	bool hasTransparency;
+	bool modifiedLighting;
+	
 	vec3 position;
 	vec3 scale;
 	real32 angle;
@@ -93,8 +96,6 @@ struct MyData {
 
     Sprite sprite;
     Sprite sprite2;
-	
-  
 };
 
 
@@ -107,7 +108,7 @@ struct Entity
 	EntityHandle handle;
 
 	vec3 position;
-	TransformMatrixModelData transform;
+	ModelRenderData modelRenderData;
 };
 
 
