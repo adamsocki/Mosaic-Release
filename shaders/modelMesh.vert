@@ -28,7 +28,7 @@ void main() {
 		actualNormal = vec3(0.0, 1.0, 0.0);
 	}
 
-	surfaceNormal = (model * vec4(normals, 0.0)).xyz;
+	surfaceNormal = (model * vec4(actualNormal, 0.0)).xyz;
 	toLightVector = lightPosition - worldVert;
 	toCameraVector = (inverse(viewProjection) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldVert;
 }

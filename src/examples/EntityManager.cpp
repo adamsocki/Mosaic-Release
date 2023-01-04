@@ -113,7 +113,7 @@ void InitializeStartingEntities()
 		EntityHandle testStallHandle = AddEntity(&Data->em, EntityType_Test);
 		TestStall* testStallEntity = (TestStall*)GetEntity(&Data->em, testStallHandle);
 		testStallEntity->handle = testStallHandle;
-		
+		//testStallEntity->modelRenderData.modifiedLighting = true;
 		testStallEntity->modelRenderData.position = V3(-0.0f, (i * 3.0f) * 10.0f, i* 10.0f);
 		testStallEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
 		testStallEntity->model = Data->rm.models.testStallModel;

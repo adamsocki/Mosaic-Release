@@ -18,9 +18,9 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
     real32 shineDamper = 1;
     real32 reflectivity = 0;
 
-    //glEnable(GL_DEPTH_TEST);
-    //glDisable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // glEnable(GL_DEPTH_TEST);
