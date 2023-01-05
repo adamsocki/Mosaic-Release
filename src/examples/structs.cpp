@@ -103,6 +103,12 @@ struct GUI_Box
 	vec4 color;
 
 	Sprite sprite;
+	FontTable *font; 
+	vec2 textPosition; 
+	real32 textSize;
+	vec4 textColor;
+	bool textCenter;
+	const char *fmt;
 
 	Rect guiRect = {size};
 };

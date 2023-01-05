@@ -1074,10 +1074,7 @@ void DrawRectScreen(vec2 pos, vec2 scale, vec4 color) {
     glDisableVertexAttribArray(vert);
 }
 
-void DrawGUIScreen(GUI_Box guiElement)
-{
-    DrawRectScreen(guiElement.position, guiElement.size, guiElement.color);
-}
+
 
 void DrawRectScreenNorm(vec2 pos, vec2 scale, vec4 color) {
     vec2 pos_ = V2(pos.x * Game->screenWidth, pos.y * Game->screenHeight);
@@ -1548,8 +1545,9 @@ void DrawGlyphs(GlyphBuffer *buffers) {
     Shader *shader = &Game->textShader;
     SetShader(shader);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glEnable(GL_BLEND);
+   
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     for (int i = 0; i < GlyphBufferCount; i++) {
         GlyphBuffer *buffer = &buffers[i];
@@ -1565,7 +1563,7 @@ void DrawGlyphs(GlyphBuffer *buffers) {
         glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
 
         if (buffer->screen) {
-            mat4 projMat = Orthographic(0, Game->screenWidth, 0, Game->screenHeight, -1, 1);
+            mat4 projMat = Orthographic(0, Game->screenWidth, 0, Game->screenHeight, 0, 1);
             glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, projMat.data);
         }
         else {
@@ -1625,6 +1623,12 @@ void DrawGlyphs(GlyphBuffer *buffers) {
     }
 }
 
+// GUI
+void DrawGUIScreen(GUI_Box guiElement)
+{
+    DrawRectScreen(guiElement.position, guiElement.size, guiElement.color);
+    DrawTextScreenPixel(&Game->serifFont, V2(guiElement.position.x + 5, guiElement.position.y - 5), guiElement.size.y / 2, V4(1,1,1,0.3f), false, guiElement.fmt);
 
+}
 
 // API interface
