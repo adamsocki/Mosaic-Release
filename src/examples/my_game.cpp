@@ -1,16 +1,10 @@
-
-
-
-
-
-#include "structs.cpp"
-
 MyData *Data = NULL;
 #include "LoadSprites.cpp"
 #include "EntityManager.cpp"
 #include "RenderManager.cpp"
 #include "TerrainManager.cpp"
 #include "assimpLoader.cpp"
+#include "GUI_Editor.cpp"
 
 
 Sprite lemonSprite;
@@ -51,14 +45,17 @@ void MyInit() {
    // LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
 
     //TinyObject();
-    stallMesh = LoadOBJv2("data/stall.obj");
+    //stallMesh = LoadOBJv2("data/stall.obj");
     fernMesh = LoadOBJv2("data/fern.obj");
-    InitOBJMesh(&stallMesh);
+    //InitOBJMesh(&stallMesh);
     InitOBJMesh(&Game->terrain);
     InitOBJMesh(&fernMesh);
 
-    stallMesh2 = LoadOBJv2("data/stall.obj");
-    InitOBJMesh(&stallMesh2);
+    Data->meshes.stallMesh = LoadOBJv2("data/stall.obj");
+    InitOBJMesh(&Data->meshes.stallMesh);
+    AllocateQuad(&Data->meshes.quadMesh);
+    
+    InitializeGUI();
 
 }
 
@@ -101,7 +98,6 @@ void MyGameUpdate() {
         Terrain* entity = (Terrain*)GetEntity(&Data->em, terrainEntitiesInBuffer[i].handle);
         modelRenderData = entity->modelRenderData;
         PushBack(&terrainEntitiesToRender, modelRenderData);
-
     }
     for (int i = 0; i < 1; i++)
     {
@@ -153,5 +149,7 @@ void MyGameUpdate() {
     //DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
     DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
     DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
-    DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &stallMesh2, &stallTexture, &Game->modelShader);
+    DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
+
+    RenderGUI();
 }

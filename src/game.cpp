@@ -8,6 +8,7 @@
 
 #include "log.cpp"
 
+#include "examples/structs.cpp"
 #include "render.cpp"
 #include "audio.cpp"
 
@@ -19,6 +20,7 @@
 #include "ui.cpp"
 
 //#include "TinyReader.cpp"
+
 
 #include "game_code.cpp"
 

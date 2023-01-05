@@ -76,16 +76,55 @@ struct ModelRenderData
 };
 
 
+
+
 struct Light
 {
 	vec3 position;
 	vec3 color;
 };
 
+struct EntityMesh
+{
+	Mesh quadMesh;
+	OBJMesh stallMesh;
+	OBJMesh fernMesh;
+
+};
+
+
+
+
+struct GUI_Box
+{
+	vec2 position;
+	vec2 size;
+
+	vec4 color;
+
+	Sprite sprite;
+
+	Rect guiRect = {size};
+};
+
+struct GUI_Box1 : GUI_Box
+{
+	
+};
+
+// GUI
+struct GUI
+{
+	GUI_Box1 terrainPalatteGUI;
+};
 
 struct MyData {
+
+	EntityMesh meshes;
     
     GameSprites sprites;
+
+	GUI guis;
 
     EntityManager em;
 
@@ -160,3 +199,6 @@ struct Vertex
 	bool isSet;
 
 };
+
+
+
