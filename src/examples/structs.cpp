@@ -118,6 +118,12 @@ struct GUI
 	GUI_Box1 terrainPalatteGUI;
 };
 
+struct MouseData
+{
+	Rect rect;
+	vec2 positionFromInput;
+};
+
 struct MyData {
 
 	EntityMesh meshes;
@@ -132,6 +138,7 @@ struct MyData {
 
 	Light sunLight;
 		
+	MouseData mouse;
 
     Sprite sprite;
     Sprite sprite2;

@@ -56,6 +56,7 @@ void MyInit() {
     AllocateQuad(&Data->meshes.quadMesh);
     
     InitializeGUI();
+    InititalizeMouse();
 
 }
 
@@ -83,6 +84,8 @@ void MyGameUpdate() {
     TestStall* testStallEntitiesInBuffer = (TestStall*)testStallBuffer->entities;
     Terrain* terrainEntitiesInBuffer = (Terrain*)terrainBuffer->entities;
     Fern* fernEntitiesInBuffer = (Fern*)fernBuffer->entities;
+
+    UpdateMouseData();
 
     // set which to render
     for (int i = 0; i < testStallBuffer->count; i++)

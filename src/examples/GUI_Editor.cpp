@@ -7,6 +7,27 @@ void InitializeGUI()
     Data->guis.terrainPalatteGUI.color = V4(0.2f, 0.2f, 0.2f, 0.5f);
 }
 
+void InititalizeMouse()
+{
+    Data->mouse.positionFromInput =  Input->mousePosNormSigned;
+    Data->mouse.rect.max = V2(0.125f, 0.125f);
+    Data->mouse.rect.min = -V2(0.125f, 0.125f);
+}
+
+
+void UpdateMouseData()
+{
+    Data->mouse.positionFromInput = Input->mousePosNormSigned;
+}
+
+void MouseOverGUI()
+{
+
+    
+
+}
+
+
 void RenderGUI()
 {
     DrawGUIScreen(Data->guis.terrainPalatteGUI);
