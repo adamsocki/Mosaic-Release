@@ -1,24 +1,41 @@
 
-void InitializeGUI()
+void InitGUI()
 {
-    Data->guis.terrainPalatteGUI = (GUI_Box1*)malloc(sizeof(GUI_Box1) * 4);
-    Data->guis.guiCount = 0;
+    // Data->guis.entityPalatteGUI = {};
+    // Data->guis.entityPalatteGUI = (GUI_Box1*)malloc(sizeof(GUI_Box1) * 40);
+}
 
-    Data->guis.terrainPalatteGUI[0] = {};
-    Data->guis.terrainPalatteGUI[0].position = V2(20,100);
-    Data->guis.terrainPalatteGUI[0].size = V2(100,25);
-    Data->guis.terrainPalatteGUI[0].color = V4(0.2f, 0.4f, 0.2f, 0.45f);
-    Data->guis.terrainPalatteGUI[0].colorSelect = V4(0.2f, 0.4f, 0.2f, 0.85f);
+void BuildGUI(const char *str, int32 elementCapacity, bool isParent)
+{
+    
+    EntityHandle guiHandle = AddEntity(&Data->em, EntityType_GUI);
+	GUI* guiEntity = (GUI*)GetEntity(&Data->em, guiHandle);
+    guiEntity->handle = guiHandle;
+    guiEntity->isParent = true;
+    guiEntity->entityType = EntityType_Terrain;
+    guiEntity->label = str;
+    guiEntity->size2D = V2(100,25);;
+    guiEntity->position2D = V2(20,100);
+    guiEntity->color = V4(0.2f, 0.4f, 0.2f, 0.45f);
+    guiEntity->colorSelect = V4(0.2f, 0.4f, 0.2f, 0.85f);
+    guiEntity->entityTypeID = 0;
 
-    //Data->guis.terrainPalatteGUI.textPosition = V2(Data->guis.terrainPalatteGUI.position.x + 3, Data->guis.terrainPalatteGUI.position.x + 3);
-    Data->guis.terrainPalatteGUI[0].fmt = "Terrain";
-    Data->guis.terrainPalatteGUI[0].mouseOver = false;
-    Data->guis.terrainPalatteGUI[0].elementCount = 3;
-    Data->guis.terrainPalatteGUI[0].elements = (GUI_Box1*)malloc(sizeof(GUI_Box1) * Data->guis.terrainPalatteGUI[0].elementCount);
-    memset(Data->guis.terrainPalatteGUI[0].elements, 0, sizeof(GUI_Box1));
-    Data->guis.guiCount++;
 
-   
+
+
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].position = V2(20,100);
+    
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].size = V2(100,25);
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].color = V4(0.2f, 0.4f, 0.2f, 0.45f);
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].colorSelect = V4(0.2f, 0.4f, 0.2f, 0.85f);
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].fmt = str;
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].mouseOver = false;
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].elementCapacity = elementCapacity;  
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].displayOrder = 0;
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].parentID = parentID;
+    // Data->guis.entityPalatteGUI[Data->guis.guiCount].isSub = isSub;
+
+    // Data->guis.guiCount++;
 }
 
 void InititalizeMouse()
@@ -45,23 +62,38 @@ void UpdateMouseData()
 
 }
 
-void MouseOverGUI()
+
+void ReOrderGUIs(int32 numberToChange, int32 startingWith)
 {
-    for (int i = 0; i < Data->guis.guiCount; i++)
+
+}
+
+
+
+
+void MouseOverGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
+{
+    for (int i = 0; i < guiBuffer.count; i++)
     {
-        bool test1 = PointToSizeTestPixel2D(Data->guis.terrainPalatteGUI[i].size, Data->guis.terrainPalatteGUI[i].position, Data->mouse.positionFromInput);
+        GUI* guiEntity = (GUI*)GetEntity(&Data->em, guiEntitiesInBuffer[i].handle);
+        bool test1 = PointToSizeTestPixel2D(guiEntity->size2D, guiEntity->position2D, Data->mouse.positionFromInput);
         if (test1)
-        {
-            Data->guis.terrainPalatteGUI[i].mouseOver = true;
+        {   
+            guiEntity->mouseOver = true;
         }
         else
         {
-            Data->guis.terrainPalatteGUI[i].mouseOver = false;
+            guiEntity->mouseOver = false;
         }
     
-        if (InputPressed(Mouse, Input_MouseLeft) && Data->guis.terrainPalatteGUI[i].mouseOver)
+        if (InputPressed(Mouse, Input_MouseLeft) && guiEntity->mouseOver)
         {
-            Data->guis.terrainPalatteGUI[i].expanded = !Data->guis.terrainPalatteGUI[i].expanded;
+            guiEntity->entityTypeID++;
+            if (guiEntity->entityTypeID >= EntityType_Count)
+            {
+                guiEntity->entityTypeID = 0;
+            }
+            guiEntity->entityType = Data->em.entityTypes[guiEntity->entityTypeID];
         }
     
     
@@ -76,35 +108,60 @@ void MouseOverGUI()
 }
 
 
-void DrawGUIScreen(GUI_Box guiElement)
+void DrawGUIScreen(GUI guiElement)
 {
-    if (guiElement.mouseOver)
-    {
-        DrawRectScreen(guiElement.position, guiElement.size, guiElement.colorSelect);
-    }
-    else
-    {
-        DrawRectScreen(guiElement.position, guiElement.size, guiElement.color);
-    }
 
-    
-    DrawTextScreenPixel(&Game->serifFont, V2(guiElement.position.x + 5, guiElement.position.y - 5), guiElement.size.y / 2, V4(1,1,1,0.3f), false, guiElement.fmt);
+    // order positionMod
+//    guiElement.position.y += (guiElement.displayOrder + 30);
+
+   
 }
 
 
 
-void RenderGUI()
+
+
+
+void RenderGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
 {
-    for (int i = 0; i < Data->guis.guiCount; i++)
+    for (int i = 0; i < guiBuffer.count; i++)
     {
-        DrawGUIScreen(Data->guis.terrainPalatteGUI[i]);
-        if (Data->guis.terrainPalatteGUI[i].expanded)
-        {  
-            for (int j = 0; j < Data->guis.terrainPalatteGUI[i].elementCount; j++)
+
+        GUI* guiElement = (GUI*)GetEntity(&Data->em, guiEntitiesInBuffer[i].handle);
+        //DrawGUIScreen((GUI*)GetEntity(&Data->em, guiEntitiesInBuffer[i].handle));
+
+        if (guiElement->mouseOver)
+        {
+            DrawRectScreen(guiElement->position2D, guiElement->size2D, guiElement->colorSelect);
+        }
+        else
+        {
+            DrawRectScreen(guiElement->position2D, guiElement->size2D, guiElement->color);
+        }
+
+        switch(guiElement->entityType)
+        {
+            case EntityType_Terrain:
             {
-                GUI_Box1 *box = Data->guis.terrainPalatteGUI[i].elements[sizeof(GUI_Box1) * j];
-                DrawGUIScreen(&box);
+                guiElement->label = "Terrain";
+            } break;
+            case EntityType_Test:
+            {
+                guiElement->label = "Stall";
+            } break;
+            case EntityType_Fern:
+            {
+                guiElement->label = "Fern";
+            } break;
+            default:
+            {
+                guiElement->label = "GUI/NULL";
+                break;
             }
         }
+
+        
+        DrawTextScreenPixel(&Game->serifFont, V2(guiElement->position2D.x + 5, guiElement->position2D.y - 5), guiElement->size2D.y / 2, V4(1,1,1,0.3f), false, guiElement->label);
+        
     }
 }

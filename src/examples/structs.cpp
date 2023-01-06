@@ -3,6 +3,7 @@ enum EntityType
 	EntityType_Terrain,
 	EntityType_Test,
 	EntityType_Fern,
+	EntityType_GUI,
 
 	EntityType_Count,
 };
@@ -58,6 +59,8 @@ struct EntityManager {
 	int32 entityCapacity;
 
 	int32 nextID;
+
+	EntityType entityTypes[EntityType_Count]; 
 };
 
 struct RenderManager
@@ -94,44 +97,59 @@ struct EntityMesh
 };
 
 
-
-
-struct GUI_Box
-{
-	vec2 position;
-	vec2 size;
-
-	vec4 color;
-	vec4 colorSelect;
-
-	Sprite sprite;
-	FontTable *font; 
-	vec2 textPosition; 
-	real32 textSize;
-	vec4 textColor;
-	bool textCenter;
-	const char *fmt;
-
-	bool mouseOver;
-	bool expanded;
-
-	void* elements;
-	int32 elementCount;
-
-	Rect guiRect = {size};
-};
-
-struct GUI_Box1 : GUI_Box
-{
+// struct GUI_BoxInfo
+// {
 	
-};
+// 	const char *fmt;
+// 	bool isSub;
+// };
+
+// struct GUI_Box
+// {
+// 	vec2 position;
+// 	vec2 size;
+
+// 	vec4 color;
+// 	vec4 colorSelect;
+
+// 	Sprite sprite;
+// 	FontTable *font; 
+// 	vec2 textPosition; 
+// 	real32 textSize;
+// 	vec4 textColor;
+// 	bool textCenter;
+// 	const char *fmt;
+
+// 	bool mouseOver;
+// 	bool expanded;
+// 	bool isSub;
+
+// 	int32 displayOrder;
+
+// 	int32 parentID;
+
+// 	void* elements{ NULL };
+// 	int32 elementCount;
+// 	int32 elementCapacity;
+
+// 	Rect guiRect = {size};
+// };
+
+// struct GUI_Box1 : GUI_Box
+// {
+	
+// };
 
 // GUI
-struct GUI
-{
-	GUI_Box1* terrainPalatteGUI;
-	int32 guiCount;
-};
+// struct GUI
+// {
+// 	GUI_Box1* entityPalatteGUI;
+// 	GUI_Box1 subPalatteGUI1;
+	
+	
+
+// 	int32 guiCount;
+// };
 
 struct MouseData
 {
@@ -139,13 +157,16 @@ struct MouseData
 	vec2 positionFromInput;
 };
 
+
+
+
 struct MyData {
 
 	EntityMesh meshes;
     
     GameSprites sprites;
 
-	GUI guis;
+	//GUI guis;
 
     EntityManager em;
 
@@ -191,6 +212,24 @@ struct Fern :Entity
 {
 
 };
+
+struct GUI : Entity
+{
+	const char *label;
+	bool isParent;
+	EntityHandle parentHandle;
+	EntityHandle handleForGUIEntity;
+	vec3 entityPosition;
+	vec2 position2D;
+	vec2 size2D;
+	vec4 color;
+	vec4 colorSelect;
+	EntityType entityType;
+	int32 entityTypeID;
+
+	bool mouseOver;
+};
+
 
 struct VertexDuplicate
 {

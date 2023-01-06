@@ -67,6 +67,17 @@ void InitializeEntityManager()
 	Data->em.entities = (EntityInfo*)malloc(sizeof(EntityInfo) * Data->em.entityCapacity);
 	memset(Data->em.entities, 0, sizeof(EntityInfo) * Data->em.entityCapacity);
 	Data->em.nextID = 0;
+
+
+	Data->em.entityTypes[0] = EntityType_Terrain;
+	Data->em.entityTypes[1] = EntityType_Test;
+	Data->em.entityTypes[2] = EntityType_Fern;
+	Data->em.entityTypes[3] = EntityType_GUI;
+
+	// Data->em.entityNames[0] = EntityType_Terrain;
+	// Data->em.entityNames[1] = EntityType_Test;
+	// Data->em.entityNames[2] = EntityType_Fern;
+	// Data->em.entityNames[3] = EntityType_GUI;
 }
 
 
@@ -92,7 +103,14 @@ void InitializeEntityBuffers()
 	fernBuffer->count = 0;
 	fernBuffer->entities = (Fern*)malloc(fernBuffer->capacity * fernBuffer->sizeInBytes);
 	memset(fernBuffer->entities, 0, sizeof(Fern) * fernBuffer->capacity);
-
+	
+	EntityTypeBuffer* guiBuffer = &Data->em.buffers[EntityType_GUI];
+	guiBuffer->capacity = 8000;
+	guiBuffer->sizeInBytes = sizeof(GUI);
+	guiBuffer->count = 0;
+	guiBuffer->entities = (GUI*)malloc(guiBuffer->capacity * guiBuffer->sizeInBytes);
+	memset(guiBuffer->entities, 0, sizeof(GUI) * guiBuffer->capacity);
+	
 }
 
 
@@ -113,7 +131,6 @@ void InitializeStartingEntities()
 		EntityHandle testStallHandle = AddEntity(&Data->em, EntityType_Test);
 		TestStall* testStallEntity = (TestStall*)GetEntity(&Data->em, testStallHandle);
 		testStallEntity->handle = testStallHandle;
-		//testStallEntity->modelRenderData.modifiedLighting = true;
 		testStallEntity->modelRenderData.position = V3(-0.0f, (i * 3.0f) * 10.0f, i* 10.0f);
 		testStallEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
 		testStallEntity->model = Data->rm.models.testStallModel;

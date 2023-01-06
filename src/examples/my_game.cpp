@@ -54,8 +54,10 @@ void MyInit() {
     InitOBJMesh(&Data->meshes.stallMesh);
     AllocateQuad(&Data->meshes.quadMesh);
     
-    InitializeGUI();
+    BuildGUI("Terrian", 3, true);
+
     InititalizeMouse();
+
 }
 
 
@@ -78,13 +80,15 @@ void MyGameUpdate() {
     EntityTypeBuffer* testStallBuffer = &Data->em.buffers[EntityType_Test];
     EntityTypeBuffer* terrainBuffer = &Data->em.buffers[EntityType_Terrain];
     EntityTypeBuffer* fernBuffer = &Data->em.buffers[EntityType_Fern];
+    EntityTypeBuffer* guiBuffer = &Data->em.buffers[EntityType_GUI];
 
     TestStall* testStallEntitiesInBuffer = (TestStall*)testStallBuffer->entities;
     Terrain* terrainEntitiesInBuffer = (Terrain*)terrainBuffer->entities;
     Fern* fernEntitiesInBuffer = (Fern*)fernBuffer->entities;
+    GUI* guiEntitiesInBuffer = (GUI*)guiBuffer->entities;
 
     UpdateMouseData();
-    MouseOverGUI();
+    MouseOverGUI(*guiBuffer, guiEntitiesInBuffer);
     // set which to render
     for (int i = 0; i < testStallBuffer->count; i++)
     {
@@ -152,5 +156,5 @@ void MyGameUpdate() {
     DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
     DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
 
-    RenderGUI();
+    RenderGUI(*guiBuffer, guiEntitiesInBuffer);
 }
