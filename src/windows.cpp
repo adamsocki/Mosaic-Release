@@ -380,9 +380,11 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmndL
     plat.screenHeight = gameMem->screenHeight;
 
     bool gotConfigFile = ReadConfigFile("config.m_txt");
-
+    
+        Game->screenWidth = 800;
+        Game->screenHeight = 450;
     if (!gotConfigFile) {
-        Game->screenWidth = 1600;
+        Game->screenWidth = 500;
         Game->screenHeight = 900;
 
         Game->audioPlayer.volume = 1.0f;

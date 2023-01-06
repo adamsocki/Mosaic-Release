@@ -6,9 +6,9 @@ MyData *Data = NULL;
 #include "assimpLoader.cpp"
 #include "GUI_Editor.cpp"
 
+#include "MemoryArray.cpp"
 
-Sprite lemonSprite;
-OBJMesh stallMesh = {};
+
 OBJMesh fernMesh = {};
 OBJMesh stallMesh2 = {};
 
@@ -39,10 +39,9 @@ void MyInit() {
     LoadSprite(&Data->sprite2, "data/van_gogh.png");
     LoadSprite(&stallTexture, "data/stallTexture.png");
 
-    LoadSprite(&lemonSprite, "data/bad_lemon.png");
     LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
 
-   // LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
+    // LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
 
     //TinyObject();
     //stallMesh = LoadOBJv2("data/stall.obj");
@@ -57,7 +56,6 @@ void MyInit() {
     
     InitializeGUI();
     InititalizeMouse();
-
 }
 
 
@@ -86,7 +84,7 @@ void MyGameUpdate() {
     Fern* fernEntitiesInBuffer = (Fern*)fernBuffer->entities;
 
     UpdateMouseData();
-
+    MouseOverGUI();
     // set which to render
     for (int i = 0; i < testStallBuffer->count; i++)
     {

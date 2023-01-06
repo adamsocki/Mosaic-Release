@@ -25,6 +25,7 @@ struct GameSprites
 {
     Sprite testSprite;
 	Sprite fernTexture;
+	Sprite cursor_red;
 
 };
 
@@ -101,6 +102,7 @@ struct GUI_Box
 	vec2 size;
 
 	vec4 color;
+	vec4 colorSelect;
 
 	Sprite sprite;
 	FontTable *font; 
@@ -109,6 +111,12 @@ struct GUI_Box
 	vec4 textColor;
 	bool textCenter;
 	const char *fmt;
+
+	bool mouseOver;
+	bool expanded;
+
+	void* elements;
+	int32 elementCount;
 
 	Rect guiRect = {size};
 };
@@ -121,7 +129,8 @@ struct GUI_Box1 : GUI_Box
 // GUI
 struct GUI
 {
-	GUI_Box1 terrainPalatteGUI;
+	GUI_Box1* terrainPalatteGUI;
+	int32 guiCount;
 };
 
 struct MouseData

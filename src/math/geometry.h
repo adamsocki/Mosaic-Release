@@ -770,3 +770,17 @@ bool RectTest(Rect a, Rect b, vec2 aPosition, vec2 bPosition, vec2 *dir) {
     return true;
 }
 
+bool PointToSizeTestPixel2D(vec2 sizeA, vec2 posA, vec2 posB)
+{
+    bool collide = false;
+
+    if (posB.x >= posA.x && posB.x <= (posA.x + sizeA.x))
+    {
+        if (posB.y <= posA.y && posB.y >= posA.y - sizeA.y)
+        {
+           collide = true;
+        }
+    }
+    return collide;
+}
+

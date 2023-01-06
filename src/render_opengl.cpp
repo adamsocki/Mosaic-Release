@@ -893,7 +893,7 @@ void DrawSprite(vec2 position, vec2 scale, real32 angle, Sprite *texture) {
     Mesh *mesh = &Game->quad;
 
     //mat4 model = TRS(V3(position.x - radius * 0.5f, position.y + radius * 0.5f, 0), IdentityQuaternion(), V3(radius));
-    mat4 model = TRS(V3(position.x, position.y, 0), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
+    mat4 model = TRS(V3(position.x, position.y, Game->cameraPosition.z + 1), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
         
     //mat4 model = TRS(V3(position.x, position.y, 0), IdentityQuaternion(), V3(scale.x, scale.y, 1));
 
@@ -975,10 +975,10 @@ void DrawSpriteScreen(vec2 pos, vec2 scale, real32 angle, Sprite* texture) {
 
     Mesh* mesh = &Game->quadTopLeft;
     // mat4 model = TRS(V3(pos.x * Game->screenWidth, (1 - pos.y) * Game->screenHeight, 0), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
-    mat4 model = TRS(V3(pos.x, pos.y, 0), IdentityQuaternion(), V3(scale.x, scale.y, 0.0f));
+    mat4 model = TRS(V3(pos.x, pos.y, 0), IdentityQuaternion(), V3(scale.x, scale.y, 1.0f));
 
     mat4 projMat = Orthographic(0, Game->screenWidth, Game->screenHeight, 0, -1, 1);
-
+ 
     glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
     glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, projMat.data);
 
@@ -1540,7 +1540,6 @@ int32 DrawTextScreenPixel(FontTable *font, vec2 pos, real32 size, vec4 color, bo
     return strlen(str);
 }
 
-
 void DrawGlyphs(GlyphBuffer *buffers) {
     Shader *shader = &Game->textShader;
     SetShader(shader);
@@ -1624,11 +1623,6 @@ void DrawGlyphs(GlyphBuffer *buffers) {
 }
 
 // GUI
-void DrawGUIScreen(GUI_Box guiElement)
-{
-    DrawRectScreen(guiElement.position, guiElement.size, guiElement.color);
-    DrawTextScreenPixel(&Game->serifFont, V2(guiElement.position.x + 5, guiElement.position.y - 5), guiElement.size.y / 2, V4(1,1,1,0.3f), false, guiElement.fmt);
 
-}
 
 // API interface
