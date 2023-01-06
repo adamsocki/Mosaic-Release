@@ -36,7 +36,7 @@ void UpdateMouseData()
     mousePos.x = (mousePos.x + 1.0f) * Game->screenWidth / 2;
     mousePos.y = (-mousePos.y + 1.0f) * Game->screenHeight / 2;
     Data->mouse.positionFromInput = mousePos;
-    DrawSpriteScreen(mousePos, V2(20,20), 0 ,&Data->sprites.cursor_red);
+    DrawSpriteScreen(mousePos, V2(20,20), 0, 0 ,&Data->sprites.cursor_red);
 
 }
 
@@ -130,10 +130,9 @@ void RenderGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
 
         DrawTextScreenPixel(&Game->serifFont, V2(guiElement->position2D.x + 5, guiElement->position2D.y - 5), guiElement->size2D.y / 2, V4(1,1,1,0.3f), false, guiElement->label);
 
-        DrawSpriteScreen(V2(guiElement->position2D.x, guiElement->position2D.y + 30), V2(20, 2o), 0, &Data->sprites.newPlus);
+        DrawSpriteScreen(V2(guiElement->position2D.x, guiElement->position2D.y + 30), V2(20, 20), 0.5f, 0, &Data->sprites.newPlus);
 
-            //DrawSpriteScreen(mousePos, V2(20, 20), 0, &Data->sprites.cursor_red);
-        
+             
         if (guiElement->hasTransform)
         {
             // render GUI_Transform

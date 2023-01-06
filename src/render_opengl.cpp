@@ -966,7 +966,7 @@ void DrawRect(vec2 pos, vec2 scale, vec4 color) {
     DrawRect(pos, scale, 0, color);
 }
 
-void DrawSpriteScreen(vec2 pos, vec2 scale, real32 angle, Sprite* texture) {
+void DrawSpriteScreen(vec2 pos, vec2 scale, real32 transparency, real32 angle, Sprite* texture) {
     Shader* shader = &Game->texturedQuadShader;
     SetShader(shader);
 
@@ -987,6 +987,7 @@ void DrawSpriteScreen(vec2 pos, vec2 scale, real32 angle, Sprite* texture) {
     glUniform1i(shader->uniforms[2].id, 0);
 
     glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
+    glUniform1fv(shader->uniforms[4].id, 1, &transparency);
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);

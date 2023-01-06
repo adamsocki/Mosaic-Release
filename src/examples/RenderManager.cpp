@@ -19,12 +19,12 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
     real32 reflectivity = 0;
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LESS);
 
     // Mesh* mesh = &Game->quad;
     

@@ -118,6 +118,13 @@ void InitializeEntityBuffers()
 	wallBuffer->entities = (Wall*)malloc(wallBuffer->capacity * wallBuffer->sizeInBytes);
 	memset(wallBuffer->entities, 0, sizeof(Wall) * wallBuffer->capacity);
 
+	EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
+	postBuffer->capacity = 8000;
+	postBuffer->sizeInBytes = sizeof(Post);
+	postBuffer->count = 0;
+	postBuffer->entities = (Post*)malloc(postBuffer->capacity * postBuffer->sizeInBytes);
+	memset(postBuffer->entities, 0, sizeof(Post) * postBuffer->capacity);
+
 }
 
 
@@ -151,5 +158,26 @@ void InitializeStartingEntities()
 		fernEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
 		fernEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
 		fernEntity->model = Data->rm.models.testStallModel;
+	}
+
+
+	for (int i = 0; i < 40; i++)
+	{
+		EntityHandle wallHandle = AddEntity(&Data->em, EntityType_Wall);
+		Wall* wallEntity = (Wall*)GetEntity(&Data->em, wallHandle);
+		wallEntity->handle = wallHandle;
+		//fernEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
+		//fernEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
+		wallEntity->model = Data->rm.models.wall1Model;
+	}
+
+	for (int i = 0; i < 40; i++)
+	{
+		EntityHandle postHandle = AddEntity(&Data->em, EntityType_Post);
+		Post* postEntity = (Post*)GetEntity(&Data->em, postHandle);
+		postEntity->handle = postHandle;
+		postEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
+		postEntity->modelRenderData.scale = V3(3.0f, 3.0f, 3.0f);
+		//postEntity->model = Data->rm.models.postModel;
 	}
 }

@@ -4,6 +4,7 @@ enum EntityType
 	EntityType_Test,
 	EntityType_Fern,
 	EntityType_GUI,
+	EntityType_Post,
 	EntityType_Wall,
 
 	EntityType_Count,
@@ -20,6 +21,7 @@ struct Models
 	Model testStallModel;
 
 	Model terrainModel;
+	Model wall1Model;
 };
 
 
@@ -30,6 +32,7 @@ struct GameSprites
 	Sprite cursor_red;
 	Sprite newPlus;
 	Sprite newPlusSel;
+	Sprite wall1Texture;
 };
 
 struct EntityHandle {
@@ -95,6 +98,8 @@ struct EntityMesh
 	Mesh quadMesh;
 	OBJMesh stallMesh;
 	OBJMesh fernMesh;
+	OBJMesh wall1Mesh;
+	OBJMesh postMesh;
 
 };
 
@@ -164,6 +169,10 @@ struct Fern :Entity
 };
 
 struct Wall : Entity
+{
+
+};
+struct Post : Entity
 {
 
 };

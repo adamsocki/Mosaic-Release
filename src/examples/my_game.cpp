@@ -7,6 +7,7 @@ MyData *Data = NULL;
 #include "GUI_Editor.cpp"
 
 #include "MemoryArray.cpp"
+#include "LevelManager.cpp"
 
 
 OBJMesh fernMesh = {};
@@ -36,6 +37,7 @@ void MyInit() {
     LoadSprite(&Data->sprites.newPlus, "data/newPlus.png");
     LoadSprite(&Data->sprites.newPlusSel, "data/newPlusSel.png");
     LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
+    LoadSprite(&Data->sprites.wall1Texture, "data/wall1.png");
 
  
     fernMesh = LoadOBJv2("data/fern.obj");
@@ -44,12 +46,20 @@ void MyInit() {
     InitOBJMesh(&fernMesh);
 
     Data->meshes.stallMesh = LoadOBJv2("data/stall.obj");
+    Data->meshes.wall1Mesh = LoadOBJv2("data/wall1.obj");
+    Data->meshes.postMesh = LoadOBJv2("data/post1.obj");
     InitOBJMesh(&Data->meshes.stallMesh);
+    InitOBJMesh(&Data->meshes.wall1Mesh);
     AllocateQuad(&Data->meshes.quadMesh);
+    InitOBJMesh(&Data->meshes.postMesh);
     
     BuildGUI("Terrian", 3, true, true, true, 2);
 
     InititalizeMouse();
+
+
+    InitializeLevelFromCode();
+
 
 }
 
@@ -67,6 +77,8 @@ void MyGameUpdate() {
     DynamicArray<ModelRenderData> testStallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> terrainEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> fernEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
+    DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
+    DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
 
     // LOGIC
 
@@ -74,11 +86,15 @@ void MyGameUpdate() {
     EntityTypeBuffer* terrainBuffer = &Data->em.buffers[EntityType_Terrain];
     EntityTypeBuffer* fernBuffer = &Data->em.buffers[EntityType_Fern];
     EntityTypeBuffer* guiBuffer = &Data->em.buffers[EntityType_GUI];
+    EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
+    EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
 
     TestStall* testStallEntitiesInBuffer = (TestStall*)testStallBuffer->entities;
     Terrain* terrainEntitiesInBuffer = (Terrain*)terrainBuffer->entities;
     Fern* fernEntitiesInBuffer = (Fern*)fernBuffer->entities;
     GUI* guiEntitiesInBuffer = (GUI*)guiBuffer->entities;
+    Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
+    Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
 
     UpdateMouseData();
     MouseOverGUI(*guiBuffer, guiEntitiesInBuffer);
@@ -103,6 +119,23 @@ void MyGameUpdate() {
         Fern* entity = (Fern*)GetEntity(&Data->em, fernEntitiesInBuffer[i].handle);
         modelRenderData = entity->modelRenderData;
         PushBack(&fernEntitiesToRender, modelRenderData);
+
+    }
+    for (int i = 0; i < 1; i++)
+    {
+        ModelRenderData modelRenderData = {};
+        Wall* entity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[i].handle);
+        modelRenderData = entity->modelRenderData;
+        PushBack(&wallEntitiesToRender, modelRenderData);
+
+    }
+
+    for (int i = 0; i < 40; i++)
+    {
+        ModelRenderData modelRenderData = {};
+        Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);
+        modelRenderData = entity->modelRenderData;
+        PushBack(&postEntitiesToRender, modelRenderData);
 
     }
     HashTable<Models, DynamicArray<EntityHandle> > hash;
@@ -148,6 +181,8 @@ void MyGameUpdate() {
     DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
     DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
     DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
+    DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader);
+    DrawOBJModels(postEntitiesToRender, Data->sunLight, &Data->meshes.postMesh, &Data->sprites.wall1Texture, &Game->modelShader);
 
     RenderGUI(*guiBuffer, guiEntitiesInBuffer);
 }
