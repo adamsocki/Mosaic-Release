@@ -72,7 +72,7 @@ void InitializeEntityManager()
 	Data->em.entityTypes[0] = EntityType_Terrain;
 	Data->em.entityTypes[1] = EntityType_Test;
 	Data->em.entityTypes[2] = EntityType_Fern;
-	Data->em.entityTypes[3] = EntityType_GUI;
+	Data->em.entityTypes[3] = EntityType_Wall;
 
 	// Data->em.entityNames[0] = EntityType_Terrain;
 	// Data->em.entityNames[1] = EntityType_Test;
@@ -111,6 +111,13 @@ void InitializeEntityBuffers()
 	guiBuffer->entities = (GUI*)malloc(guiBuffer->capacity * guiBuffer->sizeInBytes);
 	memset(guiBuffer->entities, 0, sizeof(GUI) * guiBuffer->capacity);
 	
+	EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
+	wallBuffer->capacity = 8000;
+	wallBuffer->sizeInBytes = sizeof(Wall);
+	wallBuffer->count = 0;
+	wallBuffer->entities = (Wall*)malloc(wallBuffer->capacity * wallBuffer->sizeInBytes);
+	memset(wallBuffer->entities, 0, sizeof(Wall) * wallBuffer->capacity);
+
 }
 
 

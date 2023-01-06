@@ -4,6 +4,7 @@ enum EntityType
 	EntityType_Test,
 	EntityType_Fern,
 	EntityType_GUI,
+	EntityType_Wall,
 
 	EntityType_Count,
 };
@@ -27,7 +28,8 @@ struct GameSprites
     Sprite testSprite;
 	Sprite fernTexture;
 	Sprite cursor_red;
-
+	Sprite newPlus;
+	Sprite newPlusSel;
 };
 
 struct EntityHandle {
@@ -97,59 +99,6 @@ struct EntityMesh
 };
 
 
-// struct GUI_BoxInfo
-// {
-	
-// 	const char *fmt;
-// 	bool isSub;
-// };
-
-// struct GUI_Box
-// {
-// 	vec2 position;
-// 	vec2 size;
-
-// 	vec4 color;
-// 	vec4 colorSelect;
-
-// 	Sprite sprite;
-// 	FontTable *font; 
-// 	vec2 textPosition; 
-// 	real32 textSize;
-// 	vec4 textColor;
-// 	bool textCenter;
-// 	const char *fmt;
-
-// 	bool mouseOver;
-// 	bool expanded;
-// 	bool isSub;
-
-// 	int32 displayOrder;
-
-// 	int32 parentID;
-
-// 	void* elements{ NULL };
-// 	int32 elementCount;
-// 	int32 elementCapacity;
-
-// 	Rect guiRect = {size};
-// };
-
-// struct GUI_Box1 : GUI_Box
-// {
-	
-// };
-
-// GUI
-// struct GUI
-// {
-// 	GUI_Box1* entityPalatteGUI;
-// 	GUI_Box1 subPalatteGUI1;
-	
-	
-
-// 	int32 guiCount;
-// };
 
 struct MouseData
 {
@@ -165,8 +114,6 @@ struct MyData {
 	EntityMesh meshes;
     
     GameSprites sprites;
-
-	//GUI guis;
 
     EntityManager em;
 
@@ -191,6 +138,9 @@ struct Entity
 
 	vec3 position;
 	ModelRenderData modelRenderData;
+
+	bool mouseOver;
+
 };
 
 
@@ -213,6 +163,33 @@ struct Fern :Entity
 
 };
 
+struct Wall : Entity
+{
+
+};
+
+struct GUI_Sub1 : Entity
+{
+	
+};
+
+
+
+struct GUI_Transform : GUI_Sub1
+{
+
+};
+
+struct GUI_Scale: GUI_Sub1
+{
+
+};
+
+struct GUI_New : GUI_Sub1
+{
+	
+};
+
 struct GUI : Entity
 {
 	const char *label;
@@ -227,7 +204,12 @@ struct GUI : Entity
 	EntityType entityType;
 	int32 entityTypeID;
 
-	bool mouseOver;
+	//GUI_Transform transformSub1;
+	bool hasTransform;
+	bool hasScale;
+
+	int32 subElements1_Count;
+
 };
 
 

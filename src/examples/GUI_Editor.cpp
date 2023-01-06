@@ -1,15 +1,14 @@
 
 void InitGUI()
 {
-    // Data->guis.entityPalatteGUI = {};
-    // Data->guis.entityPalatteGUI = (GUI_Box1*)malloc(sizeof(GUI_Box1) * 40);
+
 }
 
-void BuildGUI(const char *str, int32 elementCapacity, bool isParent)
+void BuildGUI(const char* str, int32 elementCapacity, bool isParent, bool position, bool size, int32 subCounter1)
 {
-    
+
     EntityHandle guiHandle = AddEntity(&Data->em, EntityType_GUI);
-	GUI* guiEntity = (GUI*)GetEntity(&Data->em, guiHandle);
+    GUI* guiEntity = (GUI*)GetEntity(&Data->em, guiHandle);
     guiEntity->handle = guiHandle;
     guiEntity->isParent = true;
     guiEntity->entityType = EntityType_Terrain;
@@ -19,23 +18,8 @@ void BuildGUI(const char *str, int32 elementCapacity, bool isParent)
     guiEntity->color = V4(0.2f, 0.4f, 0.2f, 0.45f);
     guiEntity->colorSelect = V4(0.2f, 0.4f, 0.2f, 0.85f);
     guiEntity->entityTypeID = 0;
-
-
-
-
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].position = V2(20,100);
+    guiEntity->hasTransform = true;
     
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].size = V2(100,25);
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].color = V4(0.2f, 0.4f, 0.2f, 0.45f);
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].colorSelect = V4(0.2f, 0.4f, 0.2f, 0.85f);
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].fmt = str;
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].mouseOver = false;
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].elementCapacity = elementCapacity;  
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].displayOrder = 0;
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].parentID = parentID;
-    // Data->guis.entityPalatteGUI[Data->guis.guiCount].isSub = isSub;
-
-    // Data->guis.guiCount++;
 }
 
 void InititalizeMouse()
@@ -49,15 +33,9 @@ void InititalizeMouse()
 void UpdateMouseData()
 {
     vec2 mousePos = Input->mousePosNormSigned;
-    //mousePos.x = (mousePos.x) + Game->screenWidth / 2;
     mousePos.x = (mousePos.x + 1.0f) * Game->screenWidth / 2;
     mousePos.y = (-mousePos.y + 1.0f) * Game->screenHeight / 2;
     Data->mouse.positionFromInput = mousePos;
-    //mousePos.y = -(mousePos.y * Game->screenHeight / 2) + Game->screenHeight / 2;
-    //mousePos.z = Game->cameraPosition.x
-////    DrawSprite(mousePos, V2(1), 0 ,&Data->sprite);
-    // DrawTextScreenPixel(&Game->serifFont, V2(300, 300), 20, V4(1), " %.2f", mousePos.y);
-    // DrawTextScreenPixel(&Game->serifFont, V2(300, 330), 20, V4(1), " %.2f", Input->mousePosNormSigned.y);
     DrawSpriteScreen(mousePos, V2(20,20), 0 ,&Data->sprites.cursor_red);
 
 }
@@ -67,8 +45,6 @@ void ReOrderGUIs(int32 numberToChange, int32 startingWith)
 {
 
 }
-
-
 
 
 void MouseOverGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
@@ -96,24 +72,13 @@ void MouseOverGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
             guiEntity->entityType = Data->em.entityTypes[guiEntity->entityTypeID];
         }
     
-    
-    
-    
-    
     }
-
-
-
 
 }
 
 
 void DrawGUIScreen(GUI guiElement)
 {
-
-    // order positionMod
-//    guiElement.position.y += (guiElement.displayOrder + 30);
-
    
 }
 
@@ -128,7 +93,6 @@ void RenderGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
     {
 
         GUI* guiElement = (GUI*)GetEntity(&Data->em, guiEntitiesInBuffer[i].handle);
-        //DrawGUIScreen((GUI*)GetEntity(&Data->em, guiEntitiesInBuffer[i].handle));
 
         if (guiElement->mouseOver)
         {
@@ -153,6 +117,10 @@ void RenderGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
             {
                 guiElement->label = "Fern";
             } break;
+            case EntityType_Wall:
+            {
+                guiElement->label = "Wall";
+            } break;
             default:
             {
                 guiElement->label = "GUI/NULL";
@@ -160,8 +128,20 @@ void RenderGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
             }
         }
 
-        
         DrawTextScreenPixel(&Game->serifFont, V2(guiElement->position2D.x + 5, guiElement->position2D.y - 5), guiElement->size2D.y / 2, V4(1,1,1,0.3f), false, guiElement->label);
+
+        DrawSpriteScreen(V2(guiElement->position2D.x, guiElement->position2D.y + 30), V2(20, 2o), 0, &Data->sprites.newPlus);
+
+            //DrawSpriteScreen(mousePos, V2(20, 20), 0, &Data->sprites.cursor_red);
         
+        if (guiElement->hasTransform)
+        {
+            // render GUI_Transform
+        }
+        if (guiElement->hasScale)
+        {
+            // render GUI_Scale
+        }
+
     }
 }

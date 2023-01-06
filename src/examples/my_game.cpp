@@ -12,7 +12,6 @@ MyData *Data = NULL;
 OBJMesh fernMesh = {};
 OBJMesh stallMesh2 = {};
 
-
 Sprite stallTexture;
 real32 rotation = {};
 
@@ -32,19 +31,13 @@ void MyInit() {
     InitializeStartingEntities();
 
     GenerateTerrain();
-    // All sprites must be png files
-    // You provide the path to the png like "directory/to/my/file/file_name.png"
-    // In this case I have put the pngs inside the "data" directory.
-    LoadSprite(&Data->sprite, "data/galaga_ship.png");
-    LoadSprite(&Data->sprite2, "data/van_gogh.png");
-    LoadSprite(&stallTexture, "data/stallTexture.png");
 
+    LoadSprite(&stallTexture, "data/stallTexture.png");
+    LoadSprite(&Data->sprites.newPlus, "data/newPlus.png");
+    LoadSprite(&Data->sprites.newPlusSel, "data/newPlusSel.png");
     LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
 
-    // LoadSoundClip("data/sfx/flute_breathy_c4.wav", &Data->sound);
-
-    //TinyObject();
-    //stallMesh = LoadOBJv2("data/stall.obj");
+ 
     fernMesh = LoadOBJv2("data/fern.obj");
     //InitOBJMesh(&stallMesh);
     InitOBJMesh(&Game->terrain);
@@ -54,7 +47,7 @@ void MyInit() {
     InitOBJMesh(&Data->meshes.stallMesh);
     AllocateQuad(&Data->meshes.quadMesh);
     
-    BuildGUI("Terrian", 3, true);
+    BuildGUI("Terrian", 3, true, true, true, 2);
 
     InititalizeMouse();
 
