@@ -63,7 +63,7 @@ void InGameCameraUpdate()
     }
 
     Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(cam->pitch));
-   // real32 horizontalDistance = cam->distanceToCFP * (cosf()
+    //real32 horizontalDistance = cam->distanceToCFP * (cosf()
 
 
 
