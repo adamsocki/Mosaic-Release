@@ -3,8 +3,9 @@
 void InGameCameraInit()
 {
     // Game->cameraRotation.x = -DegToRad(8.0f);
-    Game->cameraRotation = AxisAngle(V3(1, 0, 0), 0.0f);
-
+    Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(20.0f));
+    Camera* cam = &Game->camera;
+    cam->distanceToCFP = 50;
 }
 
 
@@ -14,6 +15,11 @@ void calculateCameraPosition()
 }
 
 
+//real32 calculateHorizontalDistance()
+//{
+//    return cam
+//}
+
 
 void InGameCameraUpdate()
 {
@@ -21,19 +27,19 @@ void InGameCameraUpdate()
     real32 cameraSpeed = 28.0f;
     real32 rotationSpeed = 0.4f;
 
-    if (InputHeld(Keyboard, Input_W))
+    if (InputHeld(Keyboard, Input_Z))
     {
         Game->cameraPosition.z += cameraSpeed * Game->deltaTime;
     }
-    if (InputHeld(Keyboard, Input_S))
+    if (InputHeld(Keyboard, Input_X))
     {
         Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
     }
-    if (InputHeld(Keyboard, Input_A))
+    if (InputHeld(Keyboard, Input_C))
     {
         Game->cameraPosition.x += cameraSpeed * Game->deltaTime;
     }
-    if (InputHeld(Keyboard, Input_D))
+    if (InputHeld(Keyboard, Input_V))
     {
         Game->cameraPosition.x -= cameraSpeed * Game->deltaTime;
     }
@@ -47,13 +53,18 @@ void InGameCameraUpdate()
 
 
 
-    if (InputPressed(Keyboard, Input_I))
+    if (InputHeld(Keyboard, Input_I))
     {
-        cam->distanceToCFP -= cameraSpeed * Game->deltaTime;
+        cam->pitch += cameraSpeed * Game->deltaTime;
     }
-    if (InputPressed(Keyboard, Input_O))
+    if (InputHeld(Keyboard, Input_O))
     {
-        cam->distanceToCFP += cameraSpeed * Game->deltaTime;
+        cam->pitch -= cameraSpeed * Game->deltaTime;
     }
+
+    Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(cam->pitch));
+   // real32 horizontalDistance = cam->distanceToCFP * (cosf()
+
+
 
 }
