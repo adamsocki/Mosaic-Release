@@ -6,6 +6,7 @@ enum EntityType
 	EntityType_GUI,
 	EntityType_Post,
 	EntityType_Wall,
+	EntityType_Player,
 
 	EntityType_Count,
 };
@@ -22,6 +23,7 @@ struct Models
 
 	Model terrainModel;
 	Model wall1Model;
+	Model playerModel;
 };
 
 
@@ -80,7 +82,8 @@ struct ModelRenderData
 	
 	vec3 position;
 	vec3 scale;
-	real32 angle;
+	real32 rotY;
+
 	vec4 color;
 };
 
@@ -100,6 +103,7 @@ struct EntityMesh
 	OBJMesh fernMesh;
 	OBJMesh wall1Mesh;
 	OBJMesh postMesh;
+	OBJMesh playerMesh;
 
 };
 
@@ -173,6 +177,14 @@ struct TestStall : Entity
 struct Fern :Entity
 {
 
+};
+
+struct Player :Entity
+{
+	real32 runSpeed;
+	real32 turnSpeed;
+	real32 currentSpeed;
+	real32 currentTurnSpeed;
 };
 
 struct Wall : Entity

@@ -2,6 +2,8 @@
 
 
 // (0) Implementations from ThinMatrix
+	// TODO -> Create Player that can move
+	
 	// TODO -> 3rd person camera controls
 		// 1. camera zoom with middle mouse
 		// 2. how high and low the camera is
@@ -18,5 +20,5 @@
 
 
 // (b) City Builder Game
-	// TODO ->
+	// TODO -> Create procedural generated city
 	

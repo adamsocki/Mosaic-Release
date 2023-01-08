@@ -60,7 +60,7 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
     
     for (int i = 0; i < modelRenderData.count; i++)
     {
-        mat4 model = TRS(modelRenderData[i].position, AxisAngle(V3(0, 1, 0), modelRenderData[i].angle), modelRenderData[i].scale);
+        mat4 model = TRS(modelRenderData[i].position, AxisAngle(V3(0, 1, 0), modelRenderData[i].rotY), modelRenderData[i].scale);
         if(modelRenderData[i].hasTransparency)
         {
             glDisable(GL_CULL_FACE);

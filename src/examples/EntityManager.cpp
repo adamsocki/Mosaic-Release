@@ -125,6 +125,14 @@ void InitializeEntityBuffers()
 	postBuffer->entities = (Post*)malloc(postBuffer->capacity * postBuffer->sizeInBytes);
 	memset(postBuffer->entities, 0, sizeof(Post) * postBuffer->capacity);
 
+
+	EntityTypeBuffer* playerBuffer = &Data->em.buffers[EntityType_Player];
+	playerBuffer->capacity = 1;
+	playerBuffer->sizeInBytes = sizeof(Player);
+	playerBuffer->count = 0;
+	playerBuffer->entities = (Player*)malloc(playerBuffer->capacity * playerBuffer->sizeInBytes);
+	memset(playerBuffer->entities, 0, sizeof(Player) * playerBuffer->capacity);
+
 }
 
 
@@ -132,12 +140,25 @@ void InitializeEntityBuffers()
 
 void InitializeStartingEntities()
 {
+	// TERRAIN
 	EntityHandle terrainHandle = AddEntity(&Data->em, EntityType_Terrain);
 	Terrain* terrainEntity = (Terrain*)GetEntity(&Data->em, terrainHandle);
 	terrainEntity->handle = terrainHandle;
-	terrainEntity->modelRenderData.position = V3(-0.0f, -0.0f, 0.0f);
+	terrainEntity->modelRenderData.position = V3(-8.0f, -0.0f, 0.0f);
 	terrainEntity->modelRenderData.scale = V3(1.0f, 1.0f, 1.0f);
 	terrainEntity->model = Data->rm.models.terrainModel;
+
+	// PLAYER
+	EntityHandle playerHandle = AddEntity(&Data->em, EntityType_Player);
+	Player* playerEntity = (Player*)GetEntity(&Data->em, playerHandle);
+	playerEntity->handle = playerHandle;
+	playerEntity->modelRenderData.position = V3(-0.0f, -0.0f, 0.0f);
+	playerEntity->modelRenderData.scale = V3(3.0f, 3.0f, 3.0f);
+	playerEntity->modelRenderData.modifiedLighting = true;
+	playerEntity->runSpeed = 20.0f;
+	playerEntity->turnSpeed = 160.0f;
+	playerEntity->currentSpeed = 0.0f;
+	playerEntity->model = Data->rm.models.playerModel;
 
 	// TEST
 	for (int i = 0; i < 5; i++)

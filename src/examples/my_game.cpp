@@ -9,6 +9,7 @@ MyData *Data = NULL;
 #include "MemoryArray.cpp"
 #include "LevelManager.cpp"
 #include "CameraManager.cpp"
+#include "PlayerManager.cpp"
 
 
 OBJMesh fernMesh = {};
@@ -51,10 +52,12 @@ void MyInit() {
     Data->meshes.stallMesh = LoadOBJv2("data/stall.obj");
     Data->meshes.wall1Mesh = LoadOBJv2("data/wall1.obj");
     Data->meshes.postMesh = LoadOBJv2("data/post1.obj");
+    Data->meshes.playerMesh = LoadOBJv2("data/player.obj");
     InitOBJMesh(&Data->meshes.stallMesh);
     InitOBJMesh(&Data->meshes.wall1Mesh);
     AllocateQuad(&Data->meshes.quadMesh);
     InitOBJMesh(&Data->meshes.postMesh);
+    InitOBJMesh(&Data->meshes.playerMesh);
     
     BuildGUI("Terrian", 3, true, true, true, 2);
 
@@ -82,6 +85,7 @@ void MyGameUpdate() {
     DynamicArray<ModelRenderData> fernEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
+    DynamicArray<ModelRenderData> playerEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 10);
 
     // LOGIC
 
@@ -91,6 +95,7 @@ void MyGameUpdate() {
     EntityTypeBuffer* guiBuffer = &Data->em.buffers[EntityType_GUI];
     EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
     EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
+    EntityTypeBuffer* playerBuffer = &Data->em.buffers[EntityType_Player];
 
     TestStall* testStallEntitiesInBuffer = (TestStall*)testStallBuffer->entities;
     Terrain* terrainEntitiesInBuffer = (Terrain*)terrainBuffer->entities;
@@ -98,9 +103,26 @@ void MyGameUpdate() {
     GUI* guiEntitiesInBuffer = (GUI*)guiBuffer->entities;
     Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
     Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
+    Player* playerEntitiesInBuffer = (Player*)playerBuffer->entities;
+
+
+    // Generate Certain Entities
+    Player* playerEntity = (Player*)GetEntity(&Data->em, playerEntitiesInBuffer[0].handle);
 
     UpdateMouseData();
     MouseOverGUI(*guiBuffer, guiEntitiesInBuffer);
+
+    PlayerMover(playerEntity);
+
+    // INPUT LOGIC FOR CAMERA MOVEMENT
+    //InGameCameraUpdate();
+
+    
+
+    //rotation += (0.2f) * Game->deltaTime;
+
+    //  RENDER
+
     // set which to render
     for (int i = 0; i < testStallBuffer->count; i++)
     {
@@ -141,26 +163,21 @@ void MyGameUpdate() {
         PushBack(&postEntitiesToRender, modelRenderData);
 
     }
-    HashTable<Models, DynamicArray<EntityHandle> > hash;
+    for (int i = 0; i < 1; i++)
+    {
+        ModelRenderData modelRenderData = {};
+        Player* entity = (Player*)GetEntity(&Data->em, playerEntitiesInBuffer[i].handle);
+        modelRenderData = entity->modelRenderData;
+        PushBack(&playerEntitiesToRender, modelRenderData);
 
-    AllocateHashTable(&hash, 100, &Game->frameMem);
-
-    // INPUT LOGIC FOR CAMERA MOVEMENT
-    InGameCameraUpdate();
-
-    
-
-    rotation += (0.2f) * Game->deltaTime;
-
-    //  RENDER
-
-
+    }
     //DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
     DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
     DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
-    DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
-    DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader);
+   // DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
+   // DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader);
     DrawOBJModels(postEntitiesToRender, Data->sunLight, &Data->meshes.postMesh, &Data->sprites.wall1Texture, &Game->modelShader);
+    DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Data->meshes.playerMesh, &Data->sprites.wall1Texture, &Game->modelShader);
 
     RenderGUI(*guiBuffer, guiEntitiesInBuffer);
 }

@@ -8,6 +8,13 @@ void InGameCameraInit()
 }
 
 
+void calculateCameraPosition()
+{
+
+}
+
+
+
 void InGameCameraUpdate()
 {
     Camera* cam = &Game->camera;
