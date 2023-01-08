@@ -662,8 +662,8 @@ inline mat4 Perspective(real32 vFOV, real32 aspect, real32 nearPlane, real32 far
 
     mat4 result;
 
-    result.columns[0] = V4(2 * nearPlane / (left - right), 0.0f, 0.0f, 0.0f);
-    result.columns[1] = V4(0.0f, 2 * nearPlane / (top - bottom), 0.0f, 0.0f);
+    result.columns[0] = V4(2 * nearPlane / (left - right), 0.0f, 0.0f, 0.0f); // (1, 0, 0)
+    result.columns[1] = V4(0.0f, 2 * nearPlane / (top - bottom), 0.0f, 0.0f); // (0, 1, 0)
     result.columns[2] = -V4((left + right) / (left - right), (top + bottom) / (top - bottom), -(farPlane + nearPlane) / (farPlane - nearPlane), -1.0f);
     result.columns[3] = V4(0.0f, 0.0f, -(2 * nearPlane * farPlane) / (farPlane - nearPlane), 0.0f);
 

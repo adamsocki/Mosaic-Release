@@ -113,6 +113,13 @@ struct MouseData
 
 
 
+struct CameraManager
+{
+
+};
+
+
+
 
 struct MyData {
 

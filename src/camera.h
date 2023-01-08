@@ -4,6 +4,12 @@ enum CameraType : uint8 {
     CameraType_Orthographic,
 };
 
+struct CameraFocusPoint
+{
+
+
+};
+
 struct Camera {
     CameraType type;
     
@@ -16,6 +22,16 @@ struct Camera {
     real32 height;
 
     real32 size;
+
+    vec3 CFP;       // cameraFocusPoint
+    real32 distanceToCFP;
+    real32 angleAroundCFP;
+
+    real32 pitch;
+    real32 yaw;
+    real32 roll;
+
+
 };
 
 void UpdateCamera(Camera *camera, vec3 position, quaternion rotation) {

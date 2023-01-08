@@ -8,6 +8,7 @@ MyData *Data = NULL;
 
 #include "MemoryArray.cpp"
 #include "LevelManager.cpp"
+#include "CameraManager.cpp"
 
 
 OBJMesh fernMesh = {};
@@ -31,7 +32,9 @@ void MyInit() {
 
     InitializeStartingEntities();
 
-    GenerateTerrain();
+    GenerateTerrain(); 
+    InGameCameraInit();
+
 
     LoadSprite(&stallTexture, "data/stallTexture.png");
     LoadSprite(&Data->sprites.newPlus, "data/newPlus.png");
@@ -143,32 +146,7 @@ void MyGameUpdate() {
     AllocateHashTable(&hash, 100, &Game->frameMem);
 
     // INPUT LOGIC FOR CAMERA MOVEMENT
-    Camera* cam = &Game->camera;
-    real32 cameraSpeed = 28.0f;
-    real32 rotationSpeed = 0.4f;
-
-    if (InputHeld(Keyboard, Input_W))
-    {
-        Game->cameraPosition.z += cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_S))
-    {
-        Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_A))
-    {
-        Game->cameraPosition.x += cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_D))
-    {
-        Game->cameraPosition.x -= cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_UpArrow)) {
-        Game->cameraPosition.y += cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_DownArrow)) {
-        Game->cameraPosition.y -= cameraSpeed * Game->deltaTime;
-    }
+    InGameCameraUpdate();
 
     
 
