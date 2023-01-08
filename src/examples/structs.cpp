@@ -72,6 +72,7 @@ struct EntityManager {
 
 struct RenderManager
 {
+	vec4 skyColor;
 	Models models;
 };
 

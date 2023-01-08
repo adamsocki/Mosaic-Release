@@ -2,7 +2,7 @@
 
 in vec4 fs_color;
 out vec4 fragColor;
-in vec3 fs_normal;
+in vec3 fs_normal;z
 
 //out vec4 color_;
 

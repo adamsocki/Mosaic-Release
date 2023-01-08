@@ -292,8 +292,12 @@ void GameInit(GameMemory *gameMem) {
             "shineDamper",
             "reflectivity",
             "modifiedLighting",
+            "view",
+            "projection",
+            "skyColor",
+            
         };
-        CompileShader(&gameMem->modelShader, 9, uniforms);
+        CompileShader(&gameMem->modelShader, 12, uniforms);
     }
     {
         LoadShader("colorShader/mesh.vert", "colorShader/mesh.frag", &gameMem->colorShader);

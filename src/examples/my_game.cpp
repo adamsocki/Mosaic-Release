@@ -65,7 +65,7 @@ void MyInit() {
 
 
     InitializeLevelFromCode();
-
+    Data->rm.skyColor = RGB(0.12f, 0.14f, 0.0f);
 
 }
 
@@ -76,7 +76,7 @@ vec2 scale = V2(1, 1);
 
 void MyGameUpdate() {
     // This sets the background color. 
-    ClearColor(RGB(0.0f, 0.14f, 0.0f));
+    ClearColor(Data->rm.skyColor);
 
     DynamicArray<EntityHandle> entitiesToRender = MakeDynamicArray<EntityHandle>(&Game->frameMem, 100);
 

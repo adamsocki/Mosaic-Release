@@ -39,6 +39,11 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
     glUniform3fv(shader->uniforms[5].id, 1, light.color.data);
     glUniform1fv(shader->uniforms[6].id, 1, &shineDamper);
     glUniform1fv(shader->uniforms[7].id, 1, &reflectivity);
+    glUniformMatrix4fv(shader->uniforms[9].id, 1, GL_FALSE, Game->camera.view.data);
+    glUniformMatrix4fv(shader->uniforms[10].id, 1, GL_FALSE, Game->camera.projection.data);
+    glUniform3fv(shader->uniforms[11].id, 1, Data->rm.skyColor.data);
+
+
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
