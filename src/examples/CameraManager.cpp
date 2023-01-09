@@ -6,8 +6,9 @@ void InGameCameraInit()
     Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(20.0f));
     Camera* cam = &Game->camera;
     cam->yaw = 0;
+    cam->pitch = 0;
     cam->distanceToCFP = 50;
-    cam->angleAroundCFP = 0;
+    cam->angleAroundCFP = 180;
 }
 
 
@@ -57,6 +58,12 @@ void InGameCameraUpdate(Player* player, bool cameraToPlayer)
     }
 
     //Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(cam->pitch));
+    Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(cam->pitch));
+    Game->cameraRotation = AxisAngle(V3(0,1, 0), DegToRad(-cam->yaw));
+   // quaternion a = AxisAngle(V3(0, 1, 0), DegToRad(-cam->yaw));
+   // Game->cameraRotation = a * b ;
+   // UpdateCamera(cam, Game->cameraPosition, Game->cameraRotation);
+   // Game->cameraRotation = IdentityQuaternion();
     real32 horizontalDistance = cam->distanceToCFP * (cosf(DegToRad(cam->pitch)));
     real32 verticalDistance = cam->distanceToCFP * (sinf(DegToRad(cam->pitch)));
 
@@ -69,10 +76,12 @@ void InGameCameraUpdate(Player* player, bool cameraToPlayer)
         Game->cameraPosition.x = player->modelRenderData.position.x - offsetX;
         Game->cameraPosition.y = player->modelRenderData.position.y + verticalDistance;
         Game->cameraPosition.z = player->modelRenderData.position.z - offsetZ;
-        cam->yaw = 180 - (player->modelRenderData.rotY + cam->angleAroundCFP);
+        cam->yaw = 180 - (-player->modelRenderData.rotY + cam->angleAroundCFP);
 
     }
     //Game->cameraRotation = FromEulerAngles(V3(0, DegToRad(cam->yaw), 0));
-    Game->cameraRotation = AxisAngle(V3(0, 1, 0), DegToRad(-cam->yaw));
+   // Game->cameraRotation = AxisAngle(V3(0, 1, 0), DegToRad(-cam->yaw));
+   // Game->cameraRotation = FromEulerAngles(DegToRad(-cam->yaw), 0, 0);
+    //UpdateCamera(cam, Game->cameraPosition, Game->cameraRotation);
 
 }
