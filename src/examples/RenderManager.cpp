@@ -10,6 +10,7 @@ void GetModelsFromEntities(DynamicArray<EntityHandle> entitiyHandleArray)
 }
 
 
+
 void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
 {
    // Shader* shader = &Game->modelShader;

@@ -4,12 +4,14 @@ in vec2 texcoord;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec3 toCameraVector;
+in float visibility;
 
 uniform sampler2D texture0;
 uniform float time;
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
+uniform vec3 skyColor;
 
 out vec4 color;
 
@@ -36,4 +38,6 @@ void main(void){
     vec4 textureContrib = texture(texture0, uv).rgba;
     
     color.rgba = vec4(diffuse, 1.0) * textureContrib + vec4(finalSpecular, 1.0);
+	
+	color.rgba = mix(vec4(skyColor, 1.0), color.rgba, visibility);
 }

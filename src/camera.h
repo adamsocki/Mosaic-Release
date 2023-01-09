@@ -23,7 +23,7 @@ struct Camera {
 
     real32 size;
 
-    vec3 CFP;       // cameraFocusPoint
+    vec3 CFP;               // cameraFocusPoint
     real32 distanceToCFP;
     real32 angleAroundCFP;
 

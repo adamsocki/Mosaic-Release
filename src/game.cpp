@@ -269,7 +269,7 @@ void GameInit(GameMemory *gameMem) {
     {
         LoadShader("shaders/terrainShader.vert", "shaders/terrainShader.frag", &gameMem->terrainShader);
         const char* uniforms[] = {
-            "model",
+             "model",
             "viewProjection",
             "texture0",
             "time",
@@ -277,8 +277,12 @@ void GameInit(GameMemory *gameMem) {
             "lightColor",
             "shineDamper",
             "reflectivity",
+            "modifiedLighting",
+            "view",
+            "projection",
+            "skyColor",
         };
-        CompileShader(&gameMem->terrainShader, 8, uniforms);
+        CompileShader(&gameMem->terrainShader, 12, uniforms);
     }
     {
         LoadShader("shaders/modelMesh.vert", "shaders/modelMesh.frag", &gameMem->modelShader);

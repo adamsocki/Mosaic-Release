@@ -115,7 +115,7 @@ void MyGameUpdate() {
     PlayerMover(playerEntity);
 
     // INPUT LOGIC FOR CAMERA MOVEMENT
-    InGameCameraUpdate();
+    InGameCameraUpdate(playerEntity, true);
 
     
 
