@@ -213,15 +213,15 @@ void GameInit(GameMemory *gameMem) {
 
     Camera *cam = &gameMem->camera;
 
-    cam->size = 1;
+    cam->size = 2;
     cam->type = CameraType_Perspective;
     cam->projection = Perspective(DegToRad(80.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
-    cam->pitch = -20.0f;
-    Game->cameraPosition = V3(0, 0, -10);
+    cam->pitch = 20.0f;
+    Game->cameraPosition = V3(5, 0, -10);
     //quaternion cameraRotation = IdentityQuaternion();
    // cameraRotation = AxisAngle(V3(1, 0, 0), 0.175f);
    // Game->cameraRotation = cameraRotation;
-    Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(cam->pitch));
+    //Game->cameraRotation = AxisAngle(V3(1, 0, 0), DegToRad(cam->pitch));
 
     mat4 camWorld = TRS(Game->cameraPosition, Game->cameraRotation, V3(1));
     cam->view = OrthogonalInverse(camWorld);

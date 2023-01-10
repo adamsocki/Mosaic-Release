@@ -156,6 +156,21 @@ inline quaternion ToQuaternion(mat3 a) {
 
     return result;
 }
+inline quaternion ToQuaternionFromMat4(mat4 a) {
+    quaternion result = {};
+    result.w = sqrtf(Max(0.0f, 1.0f + a.columns[0][0] + a.columns[1][1] + a.columns[2][2])) / 2.0f;
+
+    result.x = sqrtf(Max(0.0f, 1.0f + a.columns[0][0] - a.columns[1][1] - a.columns[2][2])) / 2.0f;
+    result.y = sqrtf(Max(0.0f, 1.0f - a.columns[0][0] + a.columns[1][1] - a.columns[2][2])) / 2.0f;
+    result.z = sqrtf(Max(0.0f, 1.0f - a.columns[0][0] - a.columns[1][1] + a.columns[2][2])) / 2.0f;
+
+    // @NOTE: _copysign(x, y) returns a value with the magnitude of x and the sign of y
+    result.x = _copysign(result.x, a.columns[2][1] - a.columns[1][2]);
+    result.y = _copysign(result.y, a.columns[0][2] - a.columns[2][0]);
+    result.z = _copysign(result.z, a.columns[1][0] - a.columns[0][1]);
+    return result;
+}
+
 
 
 inline vec3 GetX(mat3 a) {
@@ -668,6 +683,105 @@ inline mat4 Perspective(real32 vFOV, real32 aspect, real32 nearPlane, real32 far
     result.columns[3] = V4(0.0f, 0.0f, -(2 * nearPlane * farPlane) / (farPlane - nearPlane), 0.0f);
 
     return result;
+}
+
+inline mat4 TranslateToMat4(vec3 vec, mat4 src)
+{
+    mat4 dest = Identity4();
+
+    dest.m30 += src.m00 * vec.x + src.m10 * vec.y + src.m20 * vec.z;
+    dest.m31 += src.m01 * vec.x + src.m11 * vec.y + src.m21 * vec.z;
+    dest.m32 += src.m02 * vec.x + src.m12 * vec.y + src.m22 * vec.z;
+    dest.m33 += src.m03 * vec.x + src.m13 * vec.y + src.m23 * vec.z;
+
+    return dest;
+}
+
+inline mat4 matrixRotationTest(real32 angle, vec3 axis, mat4 src)
+{
+    mat4 dest = Identity4();
+
+    real32 c = cosf(angle);
+    real32 s = sinf(angle);
+
+    real32 oneminusc = 1.0f - c;
+
+    real32 xy = axis.x * axis.y;
+
+    real32 yz = axis.y * axis.z;
+
+    real32 xz = axis.x * axis.z;
+
+    real32 xs = axis.x * s;
+
+    real32 ys = axis.y * s;
+
+    real32 zs = axis.z * s;
+
+    real32 f00 = axis.x * axis.x * oneminusc + c;
+
+    real32 f01 = xy * oneminusc + zs;
+
+    real32 f02 = xz * oneminusc - ys;
+
+    // n[3] not used
+
+    real32 f10 = xy * oneminusc - zs;
+
+    real32 f11 = axis.y * axis.y * oneminusc + c;
+
+    real32 f12 = yz * oneminusc + xs;
+
+    // n[7] not used
+
+    real32 f20 = xz * oneminusc + ys;
+
+    real32 f21 = yz * oneminusc - xs;
+
+    real32 f22 = axis.z * axis.z * oneminusc + c;
+
+    real32 t00 = src.m00 * f00 + src.m10 * f01 + src.m20 * f02;
+
+    real32 t01 = src.m01 * f00 + src.m11 * f01 + src.m21 * f02;
+
+    real32 t02 = src.m02 * f00 + src.m12 * f01 + src.m22 * f02;
+
+    real32 t03 = src.m03 * f00 + src.m13 * f01 + src.m23 * f02;
+
+    real32 t10 = src.m00 * f10 + src.m10 * f11 + src.m20 * f12;
+
+    real32 t11 = src.m01 * f10 + src.m11 * f11 + src.m21 * f12;
+
+    real32 t12 = src.m02 * f10 + src.m12 * f11 + src.m22 * f12;
+
+    real32 t13 = src.m03 * f10 + src.m13 * f11 + src.m23 * f12;
+
+    dest.m20 = src.m00 * f20 + src.m10 * f21 + src.m20 * f22;
+
+    dest.m21 = src.m01 * f20 + src.m11 * f21 + src.m21 * f22;
+
+    dest.m22 = src.m02 * f20 + src.m12 * f21 + src.m22 * f22;
+
+    dest.m23 = src.m03 * f20 + src.m13 * f21 + src.m23 * f22;
+
+    dest.m00 = t00;
+
+    dest.m01 = t01;
+
+    dest.m02 = t02;
+
+    dest.m03 = t03;
+
+    dest.m10 = t10;
+
+    dest.m11 = t11;
+
+    dest.m12 = t12;
+
+    dest.m13 = t13;
+
+    return dest;
+
 }
 
 inline mat4 PerspectiveInfiniteFarPlane(real32 vFOV, real32 aspect, real32 nearPlane) {

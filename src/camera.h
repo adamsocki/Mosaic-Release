@@ -14,6 +14,7 @@ struct Camera {
     CameraType type;
     
     mat4 view;
+    mat4 rot;
     mat4 projection;
     mat4 viewProjection;
 
@@ -23,7 +24,7 @@ struct Camera {
 
     real32 size;
 
-    vec3 CFP;               // cameraFocusPoint
+    vec3 CFP;                // cameraFocusPoint
     real32 distanceToCFP;
     real32 angleAroundCFP;
 
@@ -34,8 +35,11 @@ struct Camera {
 
 };
 
-void UpdateCamera(Camera *camera, vec3 position, quaternion rotation) {
-    mat4 camWorld = TRS(position, rotation, V3(1));
-    camera->view = OrthogonalInverse(camWorld);
-    camera->viewProjection = camera->projection * camera->view;
+void UpdateCamera(Camera *camera, vec3 position, quaternion rotation ) {
+     //rotation = AxisAngle(V3(1, 0, 0), DegToRad(camera->pitch));
+    
+   mat4 camWorld = TRS(position, rotation, V3(1));
+   camera->view = OrthogonalInverse(camWorld);
+    
+   camera->viewProjection = camera->projection * camera->view;
 }
