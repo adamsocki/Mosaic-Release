@@ -8,7 +8,7 @@ void InGameCameraInit()
     Camera* cam = &Game->camera;
     cam->yaw = -90;
     cam->pitch = 0;
-    cam->distanceToCFP = 50;
+    cam->distanceToCFP = 30;
     cam->angleAroundCFP = 0;
     cam->speed = 40.0f;
     real32 FOV = 70;
@@ -106,26 +106,57 @@ void FirstPersonCameraController()
 }
 
 
-//real32 calculateHorizontalDistance()
-//{
-//    return cam
-//}
-
-
-
-void ThirdPersonCameraController()
+void ThirdPersonCameraController(Player* player)
 {
     Camera* cam = &Game->camera;
     real32 cameraSpeed = 58.0f;
     real32 rotationSpeed = 0.4f;
+
+    cam->pos.x = -player->modelRenderData.position.x; 
+    cam->pos.y = -player->modelRenderData.position.y; 
+    cam->pos.z = -player->modelRenderData.position.z; 
+
+    // TODO: Create orbit controller
+    if (InputHeld(Keyboard, Input_O))
+    {
+        cam->angleAroundCFP += cameraSpeed * Game->deltaTime;
+        
+    }
+    if (InputHeld(Keyboard, Input_P))
+    {
+        cam->angleAroundCFP -= cameraSpeed * Game->deltaTime;
+    }
+    
+    if (InputHeld(Keyboard, Input_U))
+    {
+        cam->pitch -= cameraSpeed * Game->deltaTime;
+    }
+     if (InputHeld(Keyboard, Input_I))
+    {
+        cam->pitch += cameraSpeed * Game->deltaTime;
+    }
+
+
+    cam->yaw = 180 - (cam->angleAroundCFP + player->modelRenderData.rotY);
+
+    real32 offsetX = cam->distanceToCFP * sinf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
+    real32 offsetY = cam->distanceToCFP * sinf(DegToRad(cam->pitch));
+    real32 offsetZ = cam->distanceToCFP * cosf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
+
+    cam->pos.x -= offsetX;
+    cam->pos.y -= offsetY;
+    cam->pos.z -= offsetZ;
+
+    cam->view = lookAtv2(cam->pos, -player->modelRenderData.position, V3(0, 1, 0));
+    
 }
 
 void InGameCameraUpdate(Player* player, bool cameraToPlayer)
 {
 
 
-    FirstPersonCameraController();
+    //FirstPersonCameraController();
 
-    ThirdPersonCameraController();
+    ThirdPersonCameraController(player);
 
 }

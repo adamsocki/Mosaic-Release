@@ -6,5 +6,6 @@
         "iterator": "cpp",
         "xmemory": "cpp",
         "xtree": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
