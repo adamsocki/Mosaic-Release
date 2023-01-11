@@ -15,42 +15,22 @@ void InGameCameraInit()
     real32 NEAR_PLANE = 0.1f;
     real32 FAR_PLANE = 1000;
 
+    cam->cameraSpeed = 58.0f;
+    cam->rotationSpeed = 0.4f;
+    cam->cameraSpeedThirdPerson = 20.0f;
+
+    cam->controllerType = ControllerType_ThridPerson;
+
     cam->pos = V3(0, 0, 10);
     cam->front = V3(0, 0, -1);
     cam->up = V3(0, 1, 0);
 
     Data->mouse = {};
 
-    //cam->projection = Identity4();
-    //float aspectRatio = Game->screenWidth / Game->screenHeight;
-    //float y_scale = (1.0f / tanf(DegToRad( FOV / 2.0f)) * aspectRatio);
-    //float x_scale = y_scale / aspectRatio;
-    //float frustum_length = FAR_PLANE - NEAR_PLANE;
-
-    ////projectionMatrix = new Matrix4f();
-    //cam->projection.m00 = x_scale;
-    //cam->projection.m11 = y_scale;
-    //cam->projection.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-    //cam->projection.m23 = -1;
-    //cam->projection.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
-    //cam->projection.m33 = 0;
-
-
 }
 
-
-void calculateCameraPosition()
+void FirstPersonCameraController(Camera* cam)
 {
-
-}
-
-void FirstPersonCameraController()
-{
-
-    Camera* cam = &Game->camera;
-    real32 cameraSpeed = 58.0f;
-    real32 rotationSpeed = 0.4f;
-
 
     if (InputHeld(Keyboard, Input_I))
     {
@@ -87,7 +67,6 @@ void FirstPersonCameraController()
         cam->yaw -= cam->speed * Game->deltaTime;
     }
 
-
     if (cam->pitch > 89.0f)
     {
         cam->pitch = 89.0f;
@@ -106,38 +85,43 @@ void FirstPersonCameraController()
 }
 
 
-void ThirdPersonCameraController(Player* player)
-{
-    Camera* cam = &Game->camera;
-    real32 cameraSpeed = 58.0f;
-    real32 rotationSpeed = 0.4f;
-
+void ThirdPersonCameraController(Player* player, Camera* cam)
+{    
     cam->pos.x = -player->modelRenderData.position.x; 
     cam->pos.y = -player->modelRenderData.position.y; 
     cam->pos.z = -player->modelRenderData.position.z; 
 
-    // TODO: Create orbit controller
-    if (InputHeld(Keyboard, Input_O))
+
+    if (Input->mouseScroll > 0)
     {
-        cam->angleAroundCFP += cameraSpeed * Game->deltaTime;
-        
-    }
-    if (InputHeld(Keyboard, Input_P))
-    {
-        cam->angleAroundCFP -= cameraSpeed * Game->deltaTime;
+
+        cam->distanceToCFP += 3;
     }
     
-    if (InputHeld(Keyboard, Input_U))
+    if (Input->mouseScroll < 0)
     {
-        cam->pitch -= cameraSpeed * Game->deltaTime;
-    }
-     if (InputHeld(Keyboard, Input_I))
-    {
-        cam->pitch += cameraSpeed * Game->deltaTime;
-    }
 
-
+        cam->distanceToCFP -= 3;
+    }
+    Input->mouseScroll = 0;
+    if (InputHeld(Keyboard, Input_Q))
+    {            
+        vec2 mousePosition_delta = Data->mouse.positionFromInput_delta;
+        
+        cam->angleAroundCFP += mousePosition_delta.x * cam->cameraSpeedThirdPerson * Game->deltaTime;
+        cam->pitch += mousePosition_delta.y * cam->cameraSpeedThirdPerson * Game->deltaTime;
+    }
+    
     cam->yaw = 180 - (cam->angleAroundCFP + player->modelRenderData.rotY);
+    
+    if (cam->pitch > 89.0f)
+    {
+        cam->pitch = 89.0f;
+    }
+    if (cam->pitch < -89.0f)
+    {
+        cam->pitch = -89.0f;
+    }
 
     real32 offsetX = cam->distanceToCFP * sinf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
     real32 offsetY = cam->distanceToCFP * sinf(DegToRad(cam->pitch));
@@ -147,16 +131,28 @@ void ThirdPersonCameraController(Player* player)
     cam->pos.y -= offsetY;
     cam->pos.z -= offsetZ;
 
-    cam->view = lookAtv2(cam->pos, -player->modelRenderData.position, V3(0, 1, 0));
-    
+    cam->view = lookAtv2(cam->pos, -player->modelRenderData.position, V3(0, 1, 0));   
 }
 
 void InGameCameraUpdate(Player* player, bool cameraToPlayer)
 {
-
-
-    //FirstPersonCameraController();
-
-    ThirdPersonCameraController(player);
-
+    Camera* cam = &Game->camera;
+    switch(cam->controllerType)
+    {
+        case ControllerType_FirstPerson:
+        {
+            FirstPersonCameraController(cam);
+            break;
+        }
+        case ControllerType_ThridPerson:
+        {
+            ThirdPersonCameraController(player, cam);
+            break;
+        }
+        default:
+        {
+            ThirdPersonCameraController(player, cam);
+            break;
+        }
+    }
 }

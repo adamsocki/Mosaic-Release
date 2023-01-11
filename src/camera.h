@@ -4,6 +4,12 @@ enum CameraType : uint8 {
     CameraType_Orthographic,
 };
 
+enum CameraControllerType 
+{
+    ControllerType_FirstPerson,
+    ControllerType_ThridPerson,
+};
+
 struct CameraFocusPoint
 {
 
@@ -12,7 +18,8 @@ struct CameraFocusPoint
 
 struct Camera {
     CameraType type;
-    
+    CameraControllerType controllerType;
+
     mat4 view;
     mat4 rot;
     mat4 projection;
@@ -38,9 +45,15 @@ struct Camera {
     
     vec3 direction;
 
+    real32 cameraSpeed;
+    real32 cameraSpeedThirdPerson;
+    real32 rotationSpeed;
+    
     real32 rotationValue;
 
     real32 speed;
+
+
    
 
 

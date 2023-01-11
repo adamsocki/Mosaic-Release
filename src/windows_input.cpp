@@ -315,6 +315,17 @@ void WindowsGetInput(InputManager *input) {
                 PushBack(&input->events, event);
             } break;
 
+            case WM_MOUSEWHEEL: {
+                InputEvent event = {};
+                event.device = Game->mouse;
+                event.index = Input_ScrollDirection;
+                int32 mouseScroll = GET_WHEEL_DELTA_WPARAM(msg.wParam);
+                input->mouseScroll = mouseScroll;
+                event.discreteValue = true;
+
+                PushBack(&input->events, event);
+            } break;
+
             default : {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);

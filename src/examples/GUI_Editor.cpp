@@ -35,7 +35,12 @@ void UpdateMouseData()
     vec2 mousePos = Input->mousePosNormSigned;
     mousePos.x = (mousePos.x + 1.0f) * Game->screenWidth / 2;
     mousePos.y = (-mousePos.y + 1.0f) * Game->screenHeight / 2;
+    
     Data->mouse.positionFromInput = mousePos;
+    
+    Data->mouse.positionFromInput_delta.x = Data->mouse.positionFromInput.x - Data->mouse.positionFromInput_prev.x;
+    Data->mouse.positionFromInput_delta.y = Data->mouse.positionFromInput.y - Data->mouse.positionFromInput_prev.y;
+    Data->mouse.positionFromInput_prev = mousePos;
     DrawSpriteScreen(mousePos, V2(20,20), 0, 0 ,&Data->sprites.cursor_red);
 
 }

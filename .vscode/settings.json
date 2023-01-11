@@ -5,7 +5,9 @@
         "sstream": "cpp",
         "iterator": "cpp",
         "xmemory": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "*.rh": "cpp",
+        "xiosbase": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

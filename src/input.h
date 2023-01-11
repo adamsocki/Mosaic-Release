@@ -175,6 +175,8 @@ struct InputManager {
     vec2 mousePosNorm;
     vec2 mousePosNormSigned;
 
+    int32 mouseScroll;
+
 #if !_WIN32
     sem_t *semaphore;
 #endif

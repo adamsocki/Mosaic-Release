@@ -132,6 +132,8 @@ struct MouseData
 	vec3 posOnWindow_prev;
 
 	vec2 positionFromInput;
+	vec2 positionFromInput_prev;
+	vec2 positionFromInput_delta;
 };
 
 
