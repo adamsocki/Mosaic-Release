@@ -40,6 +40,9 @@ struct Camera {
 
     real32 rotationValue;
 
+    real32 speed;
+   
+
 
 };
 
