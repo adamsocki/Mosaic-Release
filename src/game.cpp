@@ -405,7 +405,7 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     }
 
     Camera *cam = &gameMem->camera;
-    UpdateCamera(&gameMem->camera, gameMem->cameraPosition, gameMem->cameraRotation);
+   // UpdateCamera(&gameMem->camera, gameMem->cameraPosition, gameMem->cameraRotation);
 
     Game->steppingFrame = false;
 

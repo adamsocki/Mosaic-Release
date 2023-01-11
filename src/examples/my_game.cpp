@@ -12,12 +12,25 @@ MyData *Data = NULL;
 #include "PlayerManager.cpp"
 
 
+#include <iostream>
+#include <vector>
+
 OBJMesh fernMesh = {};
 OBJMesh stallMesh2 = {};
 
 Sprite stallTexture;
 real32 rotation = {};
-
+bool load_image(std::vector<unsigned char>& image, const std::string& filename, int& x, int& y)
+{
+    int n;
+    unsigned char* data = stbi_load(filename.c_str(), &x, &y, &n, 4);
+    if (data != nullptr)
+    {
+        image = std::vector<unsigned char>(data, data + x * y * 4);
+    }
+    stbi_image_free(data);
+    return (data != nullptr);
+}
 void MyInit() {
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
@@ -32,8 +45,58 @@ void MyInit() {
     InitializeEntityBuffers();
 
     InitializeStartingEntities();
+	
+	 //APPPP 
+   /* std::string filename = "data/fern.png";
+    
+    int width, height;
+    std::vector<unsigned char> image;
+    bool success = load_image(image, filename, width, height);
+    if (!success)
+    {
+        std::cout << "Error loading image\n";
+        
+    }
 
-    GenerateTerrain(); 
+    std::cout << "Image width = " << width << '\n';
+    std::cout << "Image height = " << height << '\n';
+
+    const size_t RGBA = 4;
+
+    int x = 3;
+    int y = 4;
+    size_t index = RGBA * (y * width + x);
+    std::cout << "RGBA pixel @ (x=3, y=4): "
+        << static_cast<int>(image[index + 0]) << " "
+        << static_cast<int>(image[index + 1]) << " "
+        << static_cast<int>(image[index + 2]) << " "
+        << static_cast<int>(image[index + 3]) << '\n';
+	*/
+	// int width, height, channels={};
+	//stbi_uc* pixels = stbi_load("data/fern.png", &width, &height, &channels, STBI_rgb_alpha);
+ // 
+ // for (int y = 0; y < height; y++) {
+ //   for (int x = 0; x < width; x++) {
+ //     int r = pixels[4 * y * width + 4 * x + 0];
+ //     int g = pixels[4 * y * width + 4 * x + 1];
+ //     int b = pixels[4 * y * width + 4 * x + 2];
+ //     int a = pixels[4 * y * width + 4 * x + 3];
+	//  Print("R,%.2f", r);
+	//  Print("G,%.2f", g);
+	//  Print("B,%.2f", b);
+	//  Print("A,%.2f", a);
+	//  
+ //    // std::cout << "Pixel at (" << x << ", " << y << ") has RGBA values: " << r << ", " << g << ", " << b << ", " << a << std::endl;
+ //   }
+ // }
+
+	//
+ // stbi_image_free(pixels);
+	
+	
+	// APPPPPP
+	
+    GenerateTerrain("data/perlin.png"); 
     InGameCameraInit();
 
 

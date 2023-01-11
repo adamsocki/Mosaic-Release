@@ -801,10 +801,31 @@ inline mat4 PerspectiveInfiniteFarPlane(real32 vFOV, real32 aspect, real32 nearP
     return result;
 }
 
+
+inline mat4 lookAtv2(vec3 camPosition, vec3 lookAtPoint, vec3 upVector)
+{
+    mat4 returnMatrix = {};
+
+    vec3 zaxis = Normalize(camPosition - lookAtPoint);
+    vec3 xaxis = Normalize(Cross(upVector, zaxis));
+    vec3 yaxis = Cross(zaxis, xaxis);
+
+    mat4 translation = Translation4(camPosition);
+    mat4 result = {};
+    result.columns[0] = V4(xaxis.x, yaxis.x, zaxis.x, 0.0f);
+    result.columns[1] = V4(xaxis.y, yaxis.y, zaxis.y, 0.0f);
+    result.columns[2] = V4(xaxis.z, yaxis.z, zaxis.z, 0.0f);
+    result.columns[3] = V4(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    returnMatrix = result * translation;
+
+    return returnMatrix;
+}
+
 inline mat4 LookAt(vec3 camPos, vec3 pt, vec3 Y) {
 
     vec3 forward = Normalize(camPos - pt);
-    vec3 right = Cross(Y, forward);
+    vec3 right = Normalize(Cross(Y, forward));
     vec3 up = Cross(forward, right);
 
     mat4 result = {};

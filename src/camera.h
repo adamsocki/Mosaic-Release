@@ -32,14 +32,24 @@ struct Camera {
     real32 yaw;
     real32 roll;
 
+    vec3 pos;
+    vec3 front;
+    vec3 up;
+    
+    vec3 direction;
+
+    real32 rotationValue;
+
 
 };
 
 void UpdateCamera(Camera *camera, vec3 position, quaternion rotation ) {
      //rotation = AxisAngle(V3(1, 0, 0), DegToRad(camera->pitch));
     
-   mat4 camWorld = TRS(position, rotation, V3(1));
-   camera->view = OrthogonalInverse(camWorld);
-    
-   camera->viewProjection = camera->projection * camera->view;
+    mat4 camWorld = Identity4();
+   camWorld = TRS(position, rotation, V3(0,1,0));
+  // camera->view= TRS(position, rotation, V3(0,1,0));
+   //camera->view = OrthogonalInverse(camWorld);
+  // camera->view = camWorld;
+  // camera->viewProjection = camera->projection * camera->view;
 }

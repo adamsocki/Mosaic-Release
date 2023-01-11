@@ -1,12 +1,12 @@
 
 
 
-void GenerateTerrain()
+void GenerateTerrain(char *pathForHeightMap)
 {
 	OBJMesh* terrainMesh = &Game->terrain;
 
-	int32 VERTEX_COUNT = 10;
-	real32 SIZE = 100;
+	int32 VERTEX_COUNT = 100;
+	real32 SIZE = 3000;
 	int32 count = VERTEX_COUNT * VERTEX_COUNT;
 
 	terrainMesh->vertCount = count * 3;
@@ -32,7 +32,7 @@ void GenerateTerrain()
 	for (int i = 0; i < VERTEX_COUNT; i++) {
 		for (int j = 0; j < VERTEX_COUNT; j++) {
 			terrainMesh->verts[vertexPointer * 3] = (real32)(j / ((real32)VERTEX_COUNT - 1) * SIZE);
-			terrainMesh->verts[vertexPointer * 3 + 1] = 0;
+			terrainMesh->verts[vertexPointer * 3 + 1] = RandfRange(-20,20);
 			terrainMesh->verts[vertexPointer * 3 + 2] = (real32)(i / ((real32)VERTEX_COUNT - 1) * SIZE);
 			terrainMesh->normals[vertexPointer * 3] = 0;
 			terrainMesh->normals[vertexPointer * 3 + 1] = 1;
