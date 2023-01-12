@@ -19,7 +19,7 @@ void InGameCameraInit()
     cam->rotationSpeed = 0.4f;
     cam->cameraSpeedThirdPerson = 20.0f;
 
-    cam->controllerType = ControllerType_ThridPerson;
+    cam->controllerType = ControllerType_ThirdPerson;
 
     cam->pos = V3(0, 0, 10);
     cam->front = V3(0, 0, -1);
@@ -136,6 +136,30 @@ void ThirdPersonCameraController(Player* player, Camera* cam)
 void InGameCameraUpdate(Player* player, bool cameraToPlayer)
 {
     Camera* cam = &Game->camera;
+
+    if (InputHeld(Keyboard, Input_Control) && InputPressed(Keyboard, Input_P) || 
+        InputPressed(Keyboard, Input_Control) && InputHeld(Keyboard, Input_P))
+    {
+        switch (cam->controllerType)
+        {
+            case ControllerType_FirstPerson:
+            {
+                cam->controllerType = ControllerType_ThirdPerson;
+                break;
+            }
+            case ControllerType_ThirdPerson:
+            {
+                cam->controllerType = ControllerType_FirstPerson;
+                break;
+            }
+            default:
+            {
+                ThirdPersonCameraController(player, cam);
+                break;
+            }
+        }
+    }
+
     switch(cam->controllerType)
     {
         case ControllerType_FirstPerson:
@@ -143,7 +167,7 @@ void InGameCameraUpdate(Player* player, bool cameraToPlayer)
             FirstPersonCameraController(cam);
             break;
         }
-        case ControllerType_ThridPerson:
+        case ControllerType_ThirdPerson:
         {
             ThirdPersonCameraController(player, cam);
             break;

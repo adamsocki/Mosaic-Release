@@ -36,7 +36,7 @@ void GenerateTerrain(char *pathForHeightMap)
 	
 
 	int32 VERTEX_COUNT = 100;
-	real32 SIZE = 3000;
+	real32 SIZE = 9000;
 	int32 count = VERTEX_COUNT * VERTEX_COUNT;
 
 	terrainMesh->vertCount = count * 3;

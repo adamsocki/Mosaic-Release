@@ -7,7 +7,7 @@ enum CameraType : uint8 {
 enum CameraControllerType 
 {
     ControllerType_FirstPerson,
-    ControllerType_ThridPerson,
+    ControllerType_ThirdPerson,
 };
 
 struct CameraFocusPoint
