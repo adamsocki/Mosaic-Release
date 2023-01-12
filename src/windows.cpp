@@ -25,6 +25,7 @@
 #elif DX12
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include <gdiplusheaders.h>
 #include <d3dcompiler.h> // must link the d3dcompiler_47.dll in lib/dx12
 //#include <DirectXMath.h>
 //#include "dx12/d3dx12.h"

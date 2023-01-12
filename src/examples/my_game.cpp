@@ -20,17 +20,7 @@ OBJMesh stallMesh2 = {};
 
 Sprite stallTexture;
 real32 rotation = {};
-bool load_image(std::vector<unsigned char>& image, const std::string& filename, int& x, int& y)
-{
-    int n;
-    unsigned char* data = stbi_load(filename.c_str(), &x, &y, &n, 4);
-    if (data != nullptr)
-    {
-        image = std::vector<unsigned char>(data, data + x * y * 4);
-    }
-    stbi_image_free(data);
-    return (data != nullptr);
-}
+
 void MyInit() {
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
@@ -96,11 +86,11 @@ void MyInit() {
 	
 	// APPPPPP
 	
-    GenerateTerrain("data/perlin.png"); 
+    GenerateTerrain("data/cursor_red.png"); 
     InGameCameraInit();
 
 
-    LoadSprite(&stallTexture, "data/stallTexture.png");
+    LoadSprite(&stallTexture, "data/perlin.png");
     LoadSprite(&Data->sprites.newPlus, "data/newPlus.png");
     LoadSprite(&Data->sprites.newPlusSel, "data/newPlusSel.png");
     LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
@@ -240,7 +230,7 @@ void MyGameUpdate() {
    // DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
    // DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader);
     DrawOBJModels(postEntitiesToRender, Data->sunLight, &Data->meshes.postMesh, &Data->sprites.wall1Texture, &Game->modelShader);
-    DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Data->meshes.playerMesh, &Data->sprites.wall1Texture, &Game->modelShader);
+   // DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Data->meshes.playerMesh, &Data->sprites.wall1Texture, &Game->modelShader);
 
     RenderGUI(*guiBuffer, guiEntitiesInBuffer);
 }

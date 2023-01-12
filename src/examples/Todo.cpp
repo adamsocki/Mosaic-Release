@@ -2,18 +2,22 @@
 
 
 // (0) Implementations from ThinMatrix
-	// TODO -> Create Player that can move
-	
-	// TODO -> 3rd person camera controls
-		// 1. camera zoom with middle mouse
-		// 2. how high and low the camera is
-		// 3. rotation of camera. 
+	// XXXX -> Create Player that can move
+	// TODO -> make proper terrain generator
 
+
+	// TODO -> 3rd person camera controls
+		// XXXX camera zoom with middle mouse
+		// XXXX how high and low the camera is
+		// XXXX rotation of camera. 
+		// TODO limit rotation down
 
 // (a) First Person Game like Selfish Dream
 	//TODO -> make level editor
 
 	//TODO -> make walking when moving camera effect
+		// XXXX make 1st person camera controller
+		// 2. make walking effect
 
 	//TODO
 

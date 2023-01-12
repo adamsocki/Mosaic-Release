@@ -1,9 +1,39 @@
+#include <iostream>
+#include <vector>
 
-
+bool load_image(std::vector<unsigned char>& image, const std::string& filename, int& x, int& y)
+{			// source of function is https://cplusplus.com/forum/beginner/267364/
+	int n;
+	unsigned char* data = stbi_load(filename.c_str(), &x, &y, &n, 3);
+	if (data != nullptr)
+	{
+		image = std::vector<unsigned char>(data, data + x * y * 3);
+	}
+	stbi_image_free(data);
+	return (data != nullptr);
+}
 
 void GenerateTerrain(char *pathForHeightMap)
 {
 	OBJMesh* terrainMesh = &Game->terrain;
+
+	int width, height;
+	std::vector<unsigned char> image;
+	bool success = load_image(image, pathForHeightMap, width, height);
+
+	std::cout << "Image width = " << width << '\n';
+	std::cout << "Image height = " << height << '\n';
+
+	const size_t RGBA = 3;
+
+	int x = 2;
+	int y = 2;
+	size_t index = RGBA * (y * width + x);
+
+	Print("%d", image[index + 0]);
+	Print("%d", image[index + 1]);
+	Print("%d", image[index + 2]);
+	
 
 	int32 VERTEX_COUNT = 100;
 	real32 SIZE = 3000;

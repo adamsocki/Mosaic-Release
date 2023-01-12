@@ -94,16 +94,15 @@ void ThirdPersonCameraController(Player* player, Camera* cam)
 
     if (Input->mouseScroll > 0)
     {
-
         cam->distanceToCFP += 3;
+        Input->mouseScroll = 0;
     }
-    
     if (Input->mouseScroll < 0)
     {
-
         cam->distanceToCFP -= 3;
+        Input->mouseScroll = 0;
     }
-    Input->mouseScroll = 0;
+
     if (InputHeld(Keyboard, Input_Q))
     {            
         vec2 mousePosition_delta = Data->mouse.positionFromInput_delta;
