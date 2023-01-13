@@ -10,16 +10,16 @@ void InGameCameraInit()
     cam->pitch = 0;
     cam->distanceToCFP = 30;
     cam->angleAroundCFP = 0;
-    cam->speed = 40.0f;
+    cam->speed = 20.0f;
     real32 FOV = 70;
     real32 NEAR_PLANE = 0.1f;
     real32 FAR_PLANE = 1000;
 
-    cam->cameraSpeed = 58.0f;
+    cam->cameraSpeed = 38.0f;
     cam->rotationSpeed = 0.4f;
     cam->cameraSpeedThirdPerson = 20.0f;
 
-    cam->controllerType = ControllerType_ThirdPerson;
+    cam->controllerType = ControllerType_FirstPerson;
 
     cam->pos = V3(0, 0, 10);
     cam->front = V3(0, 0, -1);
@@ -31,15 +31,41 @@ void InGameCameraInit()
 
 void FirstPersonCameraController(Camera* cam)
 {
-
     if (InputHeld(Keyboard, Input_I))
     {
         cam->pos = cam->pos + (cam->speed * cam->front * Game->deltaTime);
-    }
+        cam->walkingModTime += Game->deltaTime;
+        cam->pos = cam->pos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * Game->deltaTime) * sinf(cam->walkingModTime * 6) / 2.5;
+        cam->pos = cam->pos - (cam->up * cam->speed * Game->deltaTime) * cosf(cam->walkingModTime * 12) / 3;
+
+        cam->isWalkingMod = true;
+    } 
     if (InputHeld(Keyboard, Input_K))
     {
         cam->pos = cam->pos - (cam->speed * cam->front * Game->deltaTime);
+        cam->walkingModTime += Game->deltaTime;
+        //cam->walkingModDisplacement = (Normalize(Cross(cam->front, cam->up)) * cam->speed * Game->deltaTime) * sinf(cam->walkingModTime);
+        cam->pos = cam->pos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * Game->deltaTime) * sinf(cam->walkingModTime * 6) / 2.5;
+        
+        cam->pos = cam->pos - (cam->up * cam->speed * Game->deltaTime) * cosf(cam->walkingModTime * 12) / 3;
+
+
+
+        cam->isWalkingMod = true;
     }
+   /* else
+    {
+        cam->isWalkingMod = false;
+    }*/
+
+    if(InputReleased(Keyboard, Input_I) || InputReleased(Keyboard, Input_K))
+    {
+        cam->walkingModTime = 0;
+        cam->isWalkingMod = false;
+        cam->walkingModDisplacement = {};
+    }
+
+
     if (InputHeld(Keyboard, Input_J))
     {
         cam->pos = cam->pos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * Game->deltaTime);
@@ -75,13 +101,13 @@ void FirstPersonCameraController(Camera* cam)
     {
         cam->pitch = -89.0f;
     }
-
+ 
     cam->front.x = cosf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
     cam->front.y = sinf(DegToRad(cam->pitch));
     cam->front.z = sinf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
     cam->front = Normalize(cam->front);
 
-    cam->view = lookAtv2(cam->pos, (cam->pos + cam->front), V3(0, 1, 0));
+    cam->view = lookAtv2(cam->pos - cam->walkingModDisplacement, (cam->pos - cam->walkingModDisplacement + cam->front), V3(0, 1, 0));
 }
 
 

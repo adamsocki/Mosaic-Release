@@ -53,8 +53,9 @@ struct Camera {
 
     real32 speed;
 
-
-   
+    bool isWalkingMod;
+    vec3 walkingModDisplacement;
+    real32 walkingModTime;
 
 
 };
