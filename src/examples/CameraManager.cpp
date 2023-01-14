@@ -97,24 +97,31 @@ void FirstPersonCameraController(Player* player, Camera* cam)
 
     //cam->view = lookAtv2(cam->pos - cam->walkingModDisplacement, (cam->pos - cam->walkingModDisplacement + cam->front), V3(0, 1, 0));
 
-    cam->pos.x = -player->modelRenderData.position.x;
-    cam->pos.y = -player->modelRenderData.position.y - 10;
-    cam->pos.z = -player->modelRenderData.position.z;
+   // cam->pos.x = -player->modelRenderData.position.x;
+   // cam->pos.y = -player->modelRenderData.position.y - 10;
+    //cam->pos.z = -player->modelRenderData.position.z;
     cam->yaw = -90 - RadToDeg(player->modelRenderData.rotY);
-
+    vec3 camDelta = cam->pos;
+    cam->pos = -player->modelRenderData.position - (Normalize(Cross(cam->front, cam->up)) * cam->speed * 0.01f) * sinf(cam->walkingModTime * 6) * 0.6f; // horiz walk sim
+    cam->pos =  -player->modelRenderData.position - (cam->up * cam->speed * 0.01f) * sinf(cam->walkingModTime * 12) * 1.0f;  // vert walk sim
+    cam->pos.y -= 10;
+    cam->resetWalk = false;
      
     if (player->isWalkingForwardOrBackward)
     {
-        cam->pos = cam->pos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * Game->deltaTime) * sinf(cam->walkingModTime * 6) * 0.6f; // horiz walk sim
-        cam->pos = cam->pos - (cam->up * cam->speed * Game->deltaTime) * sinf(cam->walkingModTime * 12) * 1.5f ;  // vert walk sim
         cam->walkingModTime += Game->deltaTime;
-        cam->resetWalk = false;
+    }
+    else
+    {
+        //cam->walkingModeTime -=
+        //sinf(cam->walkingModTime * 6);
+        //cam->walkingModTime = 0;
     }
 
     if(InputReleased(Keyboard, Input_W) || InputReleased(Keyboard, Input_S))
     {
-        cam->resetWalkTimer = cam->walkingModTime;
-        cam->walkingModTime = 0;
+        //cam->resetWalkTimer = cam->walkingModTime;
+       // cam->walkingModTime = 0;
         //cam->walkingModDisplacement = {};
         if (sinf(cam->resetWalkTimer > 0))
         {
@@ -129,10 +136,18 @@ void FirstPersonCameraController(Player* player, Camera* cam)
     
     if (cam->resetWalk)
     {
-        cam->pos = cam->pos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * Game->deltaTime) * sinf(cam->resetWalkTimer * 6) * 2; // horiz walk sim
-        cam->pos = cam->pos - (cam->up * cam->speed * Game->deltaTime) * sinf(cam->resetWalkTimer * 12) * 2; 
-        cam->resetWalkTimer -= Game->deltaTime;
-        if (cam->posValWalking)
+        // cam->walkingModDisplacement
+        //real32 absDist = Abs(sinf(cam->resetWalkTimer));
+        //cam->pos = cam->pos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * Game->deltaTime) * sinf(absDist) * 2; // horiz walk sim
+        //cam->pos = cam->pos - (cam->up * cam->speed * Game->deltaTime) * sinf(absDist) * 2; 
+        //cam->resetWalkTimer -= Game->deltaTime;
+        //absDist -= Game->deltaTime ;
+        //if (absDist < 0)
+        //{
+        //    cam->resetWalk = false;
+        //    cam->walkingModDisplacement = {};
+        //}
+        /*if (cam->posValWalking)
         {
             if (sinf(cam->resetWalkTimer * 6) < 0)
             {
@@ -147,7 +162,7 @@ void FirstPersonCameraController(Player* player, Camera* cam)
                 cam->resetWalk = false;
                 cam->walkingModDisplacement = {};
             }
-        }
+        }*/
 
 
     }
@@ -178,7 +193,7 @@ void FirstPersonCameraController(Player* player, Camera* cam)
     //cam->pos.y -= offsetY;
     //cam->pos.z -= offsetZ;
 
-    cam->view = lookAtv2(cam->pos - cam->walkingModDisplacement, cam->pos - cam->walkingModDisplacement + cam->front, V3(0, 1, 0));
+    cam->view = lookAtv2(cam->pos, cam->pos + cam->front, V3(0, 1, 0));
 }
 
 
