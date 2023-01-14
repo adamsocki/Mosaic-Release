@@ -11,7 +11,7 @@ void InitializeLevelFromCode()
 
 	Wall* wallEntity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[0].handle);
 
-	wallEntity->modelRenderData.position = V3(0, 0, -50);
+	wallEntity->modelRenderData.position = V3(-10, 0, -50);
 	wallEntity->modelRenderData.scale = V3(5, 20, 100);
 
 

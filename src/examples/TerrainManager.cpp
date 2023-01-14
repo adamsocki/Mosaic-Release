@@ -62,7 +62,7 @@ void GenerateTerrain(char *pathForHeightMap)
 	for (int i = 0; i < VERTEX_COUNT; i++) {
 		for (int j = 0; j < VERTEX_COUNT; j++) {
 			terrainMesh->verts[vertexPointer * 3] = (real32)(j / ((real32)VERTEX_COUNT - 1) * SIZE);
-			terrainMesh->verts[vertexPointer * 3 + 1] = RandfRange(-20,20);
+			terrainMesh->verts[vertexPointer * 3 + 1] = RandfRange(-20, 20);
 			terrainMesh->verts[vertexPointer * 3 + 2] = (real32)(i / ((real32)VERTEX_COUNT - 1) * SIZE);
 			terrainMesh->normals[vertexPointer * 3] = 0;
 			terrainMesh->normals[vertexPointer * 3 + 1] = 1;

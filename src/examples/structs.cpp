@@ -205,6 +205,8 @@ struct Player :Entity
 	real32 turnSpeed;
 	real32 currentSpeed;
 	real32 currentTurnSpeed;
+
+	bool isWalkingForwardOrBackward;
 };
 
 struct Wall : Entity

@@ -7,6 +7,7 @@
 // (0) Implementation for Game Engine (ThinMatrix)
 	// XXXX -> Create Player that can move
 	// TODO -> make proper terrain generator
+	// TODO -> make collision detection
 	// TODO -> Mouse Picker
 	// TODO -> Recreate Text Rendering functions
 
@@ -24,7 +25,9 @@
 
 	//TODO -> make walking when moving camera effect
 		// XXXX make 1st person camera controller
-		// TODO make walking effect
+		// XXXX make walking effect
+		// TODO make walking speed variable
+		// TODO Make walking sound (conditional upon surface and speed)
 
 	//TODO 
 

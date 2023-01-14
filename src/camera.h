@@ -57,6 +57,11 @@ struct Camera {
     vec3 walkingModDisplacement;
     real32 walkingModTime;
 
+    bool resetWalk;
+    real32 resetWalkTimer;
+    real32 resetWalkTimerDeltaTimer;
+    
+    bool posValWalking;
 
 };
 

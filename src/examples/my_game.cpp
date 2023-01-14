@@ -78,7 +78,8 @@ vec2 position = V2(4, 0);
 vec2 scale = V2(1, 1);
 
 void MyGameUpdate() {
-    // This sets the background color. 
+    // This sets the background color.
+    Camera* cam = &Game->camera;
     ClearColor(Data->rm.skyColor);
 
     DynamicArray<EntityHandle> entitiesToRender = MakeDynamicArray<EntityHandle>(&Game->frameMem, 100);
@@ -180,7 +181,12 @@ void MyGameUpdate() {
    // DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
     DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader);
     DrawOBJModels(postEntitiesToRender, Data->sunLight, &Data->meshes.postMesh, &Data->sprites.wall1Texture, &Game->modelShader);
-    DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Data->meshes.playerMesh, &Data->sprites.wall1Texture, &Game->modelShader);
+    
+    
+    if (cam->controllerType == ControllerType_ThirdPerson)
+    {
+        DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Data->meshes.playerMesh, &Data->sprites.wall1Texture, &Game->modelShader);
+    }
 
     RenderGUI(*guiBuffer, guiEntitiesInBuffer);
 }

@@ -9,14 +9,17 @@ void PlayerMover(Player *player)
     if (InputHeld(Keyboard, Input_W))
     {
         player->currentSpeed = player->runSpeed;
+        player->isWalkingForwardOrBackward = true;
     }
     else if (InputHeld(Keyboard, Input_S))
     {
         player->currentSpeed = -player->runSpeed;
+        player->isWalkingForwardOrBackward = true;
     }
     else
     {
         player->currentSpeed = 0;
+        player->isWalkingForwardOrBackward = false;
     }
 
 
