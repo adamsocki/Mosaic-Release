@@ -17,6 +17,7 @@ MyData *Data = NULL;
 
 OBJMesh fernMesh = {};
 OBJMesh stallMesh2 = {};
+QuadMesh qMesh = {};
 
 Sprite stallTexture;
 real32 rotation = {};
@@ -46,9 +47,10 @@ void MyInit() {
     LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
     LoadSprite(&Data->sprites.wall1Texture, "data/wall1.png");
 
- 
     fernMesh = LoadOBJv2("data/fern.obj");
     //InitOBJMesh(&stallMesh);
+    GenerateQuadMesh(&qMesh);
+
     InitOBJMesh(&Game->terrain);
     InitOBJMesh(&fernMesh);
 
@@ -66,12 +68,9 @@ void MyInit() {
 
     InititalizeMouse();
 
-
     InitializeLevelFromCode();
     Data->rm.skyColor = RGB(0.12f, 0.14f, 0.0f);
-
 }
-
 
 vec2 position = V2(4, 0);
 
@@ -92,7 +91,6 @@ void MyGameUpdate() {
     DynamicArray<ModelRenderData> playerEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 10);
 
     // LOGIC
-
     EntityTypeBuffer* testStallBuffer = &Data->em.buffers[EntityType_Test];
     EntityTypeBuffer* terrainBuffer = &Data->em.buffers[EntityType_Terrain];
     EntityTypeBuffer* fernBuffer = &Data->em.buffers[EntityType_Fern];
@@ -109,7 +107,6 @@ void MyGameUpdate() {
     Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
     Player* playerEntitiesInBuffer = (Player*)playerBuffer->entities;
 
-
     // Generate Certain Entities
     Player* playerEntity = (Player*)GetEntity(&Data->em, playerEntitiesInBuffer[0].handle);
 
@@ -120,8 +117,6 @@ void MyGameUpdate() {
 
     // INPUT LOGIC FOR CAMERA MOVEMENT
     InGameCameraUpdate(playerEntity, true);
-
-    
 
     //rotation += (0.2f) * Game->deltaTime;
 

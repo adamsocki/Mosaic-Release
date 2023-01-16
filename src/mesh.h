@@ -17,6 +17,18 @@ struct Mesh {
     int32 indexBufferID;
 };
 
+struct QuadMesh
+{
+    int32 vertCount;
+    real32* verts;
+
+    int32 texcoordsCount;
+    real32* texcoords;
+
+    int32 vaoID;
+    int32 vertBufferID;
+};
+
 
 struct OBJMesh
 {

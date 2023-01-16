@@ -3,6 +3,17 @@
 #include <string>
 
 
+void InitQuadMesh(QuadMesh *mesh)
+{
+    GLuint vertexBuffer;
+    
+    //glGenBuffers(1, &vertexBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, vertexBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, mesh->size, mesh->data, GL_STATIC_DRAW);
+
+    mesh->vertBufferID = vertexBuffer;
+}
+
 void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color, Sprite* texture)
 {
     //glEnable(GL_DEPTH_TEST);
@@ -78,8 +89,6 @@ void DrawOBJModel(OBJMesh *mesh, vec3 pos, vec3 scale, real32 angle, vec4 color,
    // glUseProgram(0);
 }
 
-
-
 void InitOBJMesh(OBJMesh *mesh)
 {
     GLuint vertexBuffer;
@@ -137,7 +146,6 @@ void ProcessVertexPointer(std::string vertexData0, std::string vertexData1, std:
     normalsArray[currentVertexPointer * 3 + 2] = currentNormal.z;
 
 }
-
 
 OBJMesh LoadOBJModel(const char *modelPath)
 {
@@ -591,8 +599,6 @@ OBJMesh LoadOBJModel(const char *modelPath)
 
 }
 
-
-
 inline bool glCheckError_(char *file, uint32 line) {
     GLenum _glError = glGetError();
     if (_glError != GL_NO_ERROR) {
@@ -695,7 +701,6 @@ bool ShaderLinked(GLuint shader, char **infoLog) {
     return isLinked;
 }
 
-
 void CompileShader(Shader *shader, uint32 uniformCount, const char **uniformNames) {
     char *infoLog = NULL;
     
@@ -785,11 +790,9 @@ vec2 NormToPixel(vec2 norm) {
     return V2(norm.x * Game->screenWidth, norm.y * Game->screenHeight);
 }
 
-
 void ClearColor(vec4 color) {
     glClearColor(color.r, color.g, color.b, color.a);
 }
-
 
 void InitMesh(Mesh *mesh) {
     GLuint vertexBuffer;
@@ -931,7 +934,6 @@ void DrawSprite(vec2 position, vec2 scale, real32 angle, Sprite *texture) {
 void DrawSprite(vec2 position, vec2 scale, Sprite *texture) {
     DrawSprite(position, scale, 0.0f, texture);
 }
-
 
 void DrawRect(vec2 pos, vec2 scale, real32 angle, vec4 color) {
     // @PERF: don't do this every draw call
@@ -1077,15 +1079,12 @@ void DrawRectScreen(vec2 pos, vec2 scale, vec4 color) {
     glDisableVertexAttribArray(vert);
 }
 
-
-
 void DrawRectScreenNorm(vec2 pos, vec2 scale, vec4 color) {
     vec2 pos_ = V2(pos.x * Game->screenWidth, pos.y * Game->screenHeight);
     vec2 scale_ = V2(scale.x * Game->screenWidth, scale.y * Game->screenWidth);
 
     DrawRectScreen(pos_, scale_, color);
 }
-
 
 void DrawLine(vec2 a, vec2 b, real32 width, vec4 color) {
     vec2 c = Lerp(a, b, 0.5f);
@@ -1101,7 +1100,6 @@ void DrawLine(vec2 a, vec2 b, real32 width, vec4 color) {
 
     DrawRect(c, V2(length, width), angle, color);
 }
-
 
 void AllocateRectBuffer(int32 capacity, RectBuffer *buffer) {
     buffer->count = 0;
@@ -1199,8 +1197,6 @@ void RenderRectBuffer(RectBuffer *buffer) {
     glVertexAttribDivisor(model + 3, 0);
 }
 
-
-
 void DrawMesh(Mesh *mesh, vec3 pos, quaternion rotation, vec3 scale, vec4 color) {
     Shader *shader = &Game->shader;
     SetShader(shader);
@@ -1227,7 +1223,6 @@ void DrawMesh(Mesh *mesh, vec3 pos, quaternion rotation, vec3 scale, vec4 color)
 
     glDisableVertexAttribArray(vert);
 }
-
 
 // @NOTE: only works for monospace fonts because it assumes everyone has the same dimensions.
 real32 CharacterCountToWidth(FontTable *font, int32 count, real32 size) {

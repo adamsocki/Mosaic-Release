@@ -88,16 +88,4 @@ void GenerateTerrain(char *pathForHeightMap)
 			terrainMesh->indices[pointer++] = bottomRight;
 		}
 	}
-
-	
-	//Mesh mesh;
-
-
-	//EntityHandle terrainHandle = AddEntity(&Data->em, EntityType_Terrain);
-	//Terrain* terrainEntity = (Terrain*)GetEntity(&Data->em, terrainHandle);
-	//terrainEntity->handle = terrainHandle;
-	////terrainEntity->transform.position = V3(-0.0f, -0.0f, 0.0f);
-	////terrainEntity->transform.scale = V3(1.0f, 1.0f, 1.0f);
-	//terrainEntity->model = Data->rm.models.terrainModel; 
-	//return loader.loadToVAO(vertices, textureCoords, normals, indices);*/
 }

@@ -1,15 +1,11 @@
 
 
-
-
 void GetModelsFromEntities(DynamicArray<EntityHandle> entitiyHandleArray)
 {
 	
 	
 
 }
-
-
 
 void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
 {
@@ -23,11 +19,6 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glEnable(GL_DEPTH_TEST);
-
-    // Mesh* mesh = &Game->quad;
     
     glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
 
@@ -43,8 +34,6 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
     glUniformMatrix4fv(shader->uniforms[9].id, 1, GL_FALSE, Game->camera.view.data);
     glUniformMatrix4fv(shader->uniforms[10].id, 1, GL_FALSE, Game->camera.projection.data);
     glUniform3fv(shader->uniforms[11].id, 1, Data->rm.skyColor.data);
-
-
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
@@ -86,5 +75,4 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
     glDisableVertexAttribArray(vert);
     glDisableVertexAttribArray(texcoord);
     glDisableVertexAttribArray(normals);
-
 }

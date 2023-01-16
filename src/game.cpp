@@ -9,6 +9,7 @@
 #include "log.cpp"
 
 #include "examples/structs.cpp"
+#include "examples/GUI.cpp"
 #include "render.cpp"
 #include "audio.cpp"
 

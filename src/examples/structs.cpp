@@ -81,6 +81,12 @@ struct ModelRenderData
 {
 	bool hasTransparency;
 	bool modifiedLighting;
+
+	int32 numberOfTextureRows;
+	int32 textureIndex;
+
+	real32 shineDamper; // TODO ADD THIS
+	real32 reflectivity; // TODO ADD THIS
 	
 	vec3 position;
 	vec3 scale;
