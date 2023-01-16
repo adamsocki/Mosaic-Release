@@ -300,9 +300,10 @@ void GameInit(GameMemory *gameMem) {
             "view",
             "projection",
             "skyColor",
-            
+            "numberOfRows",
+            "offset",
         };
-        CompileShader(&gameMem->modelShader, 12, uniforms);
+        CompileShader(&gameMem->modelShader, 14, uniforms);
     }
     {
         LoadShader("colorShader/mesh.vert", "colorShader/mesh.frag", &gameMem->colorShader);

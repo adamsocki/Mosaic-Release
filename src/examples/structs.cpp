@@ -11,7 +11,6 @@ enum EntityType
 	EntityType_Count,
 };
 
-
 struct Model
 {
 	OBJMesh mesh;
@@ -26,7 +25,6 @@ struct Models
 	Model wall1Model;
 	Model playerModel;
 };
-
 
 struct GameSprites
 {
@@ -59,7 +57,6 @@ struct EntityTypeBuffer {
 
 	void* entities;
 };
-
 
 struct EntityManager {
 	EntityTypeBuffer buffers[EntityType_Count];
@@ -95,9 +92,6 @@ struct ModelRenderData
 	vec4 color;
 };
 
-
-
-
 struct Light
 {
 	vec3 position;
@@ -112,10 +106,7 @@ struct EntityMesh
 	OBJMesh wall1Mesh;
 	OBJMesh postMesh;
 	OBJMesh playerMesh;
-
 };
-
-
 
 struct MouseData
 {
@@ -129,15 +120,9 @@ struct MouseData
 	vec2 positionFromInput_delta;
 };
 
-
-
 struct CameraManager
 {
-
 };
-
-
-
 
 struct MyData {
 
@@ -157,10 +142,6 @@ struct MyData {
     Sprite sprite2;
 };
 
-
-
-
-
 struct Entity
 {
 	Model model;
@@ -170,11 +151,7 @@ struct Entity
 	ModelRenderData modelRenderData;
 
 	bool mouseOver;
-
 };
-
-
-
 
 struct Terrain : Entity
 {
@@ -216,8 +193,6 @@ struct GUI_Sub1 : Entity
 	
 };
 
-
-
 struct GUI_Transform : GUI_Sub1
 {
 
@@ -252,9 +227,7 @@ struct GUI : Entity
 	bool hasScale;
 
 	int32 subElements1_Count;
-
 };
-
 
 struct VertexDuplicate
 {
@@ -266,9 +239,7 @@ struct VertexDuplicate
 	real32 length;
 
 	bool isSet;
-
 };
-
 
 struct Vertex
 {
@@ -283,8 +254,4 @@ struct Vertex
 	void* duplicateVertex{ NULL };
 
 	bool isSet;
-
 };
-
-
-

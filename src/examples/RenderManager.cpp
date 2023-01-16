@@ -1,15 +1,10 @@
 
-
 void GetModelsFromEntities(DynamicArray<EntityHandle> entitiyHandleArray)
 {
-	
-	
-
 }
 
 void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,OBJMesh* mesh, Sprite* texture, Shader* shader)
 {
-   // Shader* shader = &Game->modelShader;
     SetShader(shader);
 
     real32 shineDamper = 1;
@@ -65,11 +60,9 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light ,O
             glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);
         }
-
         glUniform1f(shader->uniforms[8].id, modelRenderData[i].modifiedLighting);
         glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
         glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
-    
     }
 
     glDisableVertexAttribArray(vert);
