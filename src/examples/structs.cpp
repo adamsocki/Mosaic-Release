@@ -14,7 +14,6 @@ enum EntityType
 struct Model
 {
 	OBJMesh mesh;
-
 };
 
 struct Models
@@ -151,6 +150,8 @@ struct Entity
 	ModelRenderData modelRenderData;
 
 	bool mouseOver;
+
+	real32 gravity;
 };
 
 struct Terrain : Entity
@@ -175,6 +176,9 @@ struct Player :Entity
 	real32 turnSpeed;
 	real32 currentSpeed;
 	real32 currentTurnSpeed;
+	real32 jumpPower;
+	real32 upwardSpeed;
+	bool isInAir;
 
 	bool isWalkingForwardOrBackward;
 };

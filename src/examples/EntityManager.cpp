@@ -158,6 +158,10 @@ void InitializeStartingEntities()
 	playerEntity->runSpeed = 20.0f;
 	playerEntity->turnSpeed = 160.0f;
 	playerEntity->currentSpeed = 0.0f;
+	playerEntity->gravity = -50.0f;
+	playerEntity->upwardSpeed = 0.0f;	
+	playerEntity->jumpPower = 30.0f;
+	playerEntity->isInAir = false;
 	playerEntity->model = Data->rm.models.playerModel;
 
 	// TEST
