@@ -5,9 +5,9 @@ void PlayerJump()
 }
 
 
-void PlayerMover(Player *player)
+void PlayerMover(Player *player, Terrain terrain)
 {
-    real32 terrainHeight = 0;
+    real32 terrainHeight = GetHeightOfTerrain(player->modelRenderData.position, terrain);
 
     if (InputHeld(Keyboard, Input_W))
     {

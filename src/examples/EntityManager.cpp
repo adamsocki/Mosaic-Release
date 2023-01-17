@@ -146,6 +146,7 @@ void InitializeStartingEntities()
 	terrainEntity->handle = terrainHandle;
 	terrainEntity->modelRenderData.position = V3(-8.0f, -0.0f, 0.0f);
 	terrainEntity->modelRenderData.scale = V3(1.0f, 1.0f, 1.0f);
+	terrainEntity->mesh = Game->terrain;
 	terrainEntity->model = Data->rm.models.terrainModel;
 
 	// PLAYER

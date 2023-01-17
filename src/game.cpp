@@ -204,8 +204,8 @@ void GameInit(GameMemory *gameMem) {
     Game = gameMem;
     Input = &Game->inputManager;
 
-    AllocateMemoryArena(&Game->permanentArena, Megabytes(256));
-    AllocateMemoryArena(&Game->frameMem, Megabytes(32));
+    AllocateMemoryArena(&Game->permanentArena, Megabytes(16));
+    AllocateMemoryArena(&Game->frameMem, Megabytes(16));
 
     Game->log.head = (DebugLogNode *)malloc(sizeof(DebugLogNode));
     AllocateDebugLogNode(Game->log.head, LOG_BUFFER_CAPACITY);

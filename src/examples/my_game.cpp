@@ -35,9 +35,8 @@ void MyInit() {
     InitializeEntityManager();
     InitializeEntityBuffers();
 
-    InitializeStartingEntities();
 	
-    GenerateTerrain("data/cursor_red.png"); 
+    GenerateTerrain("data/cursor_red.png");
     InGameCameraInit();
 
 
@@ -68,6 +67,7 @@ void MyInit() {
 
     InititalizeMouse();
 
+    InitializeStartingEntities();
     InitializeLevelFromCode();
     Data->rm.skyColor = RGB(0.12f, 0.14f, 0.0f);
 }
@@ -109,11 +109,12 @@ void MyGameUpdate() {
 
     // Generate Certain Entities
     Player* playerEntity = (Player*)GetEntity(&Data->em, playerEntitiesInBuffer[0].handle);
+    Terrain* terrainEntity = (Terrain*)GetEntity(&Data->em, terrainEntitiesInBuffer[0].handle);
 
     UpdateMouseData();
     MouseOverGUI(*guiBuffer, guiEntitiesInBuffer);
 
-    PlayerMover(playerEntity);
+    PlayerMover(playerEntity, *terrainEntity);
 
     // INPUT LOGIC FOR CAMERA MOVEMENT
     InGameCameraUpdate(playerEntity, true);

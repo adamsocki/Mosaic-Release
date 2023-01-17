@@ -151,12 +151,15 @@ struct Entity
 
 	bool mouseOver;
 
+	OBJMesh mesh;
+
 	real32 gravity;
 };
 
 struct Terrain : Entity
 {
-
+	
+	
 };
 
 

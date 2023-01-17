@@ -40,11 +40,9 @@ struct OBJMesh
 
     uint32 vertSize;
 
-
     int32 normalsCount;
     real32* normals;
     real32* normals2;
-
 
     int32 indexCount;
     int32* indices;
@@ -63,8 +61,14 @@ struct OBJMesh
     bool hasTransparency;
     bool modifiedLighting;
 
-
     int32 vaoID;
+
+    real32** terrainHeight;
+    int32 rowCount_Terrain;
+    int32 columnCount_Terrain;
+
+    int32 VERTEX_COUNT;
+    int32 SIZE;
 
     int32 facesCount; // TODO ADD THIS TO PARSER
 };
