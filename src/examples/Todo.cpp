@@ -8,6 +8,8 @@
 	// XXXX -> Create Player that can move
 	// TODO -> make proper terrain generator
 	// TODO -> make collision detection
+			// XXXX to TERRAIN
+			// TODO to game objects
 	// TODO -> Mouse Picker
 	// TODO -> Recreate Text Rendering functions
 

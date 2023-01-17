@@ -39,7 +39,6 @@ void MyInit() {
     GenerateTerrain("data/cursor_red.png");
     InGameCameraInit();
 
-
     LoadSprite(&stallTexture, "data/perlin.png");
     LoadSprite(&Data->sprites.newPlus, "data/newPlus.png");
     LoadSprite(&Data->sprites.newPlusSel, "data/newPlusSel.png");
