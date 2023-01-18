@@ -12,6 +12,8 @@
 			// TODO to game objects
 	// TODO -> Mouse Picker
 	// TODO -> Recreate Text Rendering functions
+	// TODO -> make level editor
+	// TODO -> create texuture atlas for rendering
 
 
 	// TODO -> 3rd person camera controls
@@ -23,18 +25,17 @@
 		// TODO Move camera to be at head of player
 
 // (a) First Person Game like Selfish Dream
-	//TODO -> make level editor
 
-	//TODO -> make walking when moving camera effect
+	// TODO -> make walking when moving camera effect
 		// XXXX make 1st person camera controller
 		// XXXX make walking effect
 		// TODO make walking speed variable
-		// TODO Make walking sound (conditional upon surface and speed)
+		// TODO Make walking sound 
+			// TODO make initial sound
+			// TODO make conditional upon surface and speed
 
-	//TODO 
-
-
-	
+	// TODO 
+ 
 
 
 // (b) City Builder Game

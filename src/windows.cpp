@@ -385,8 +385,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmndL
         Game->screenWidth = 800;
         Game->screenHeight = 450;
     if (!gotConfigFile) {
-        Game->screenWidth = 500;
-        Game->screenHeight = 900;
+       // Game->screenWidth = 500;
+       // Game->screenHeight = 900;
 
         Game->audioPlayer.volume = 1.0f;
         Game->networkInfo.serverIPString = "192.0.0.1"; // @NOTE: this is just the IP address referring to yourself

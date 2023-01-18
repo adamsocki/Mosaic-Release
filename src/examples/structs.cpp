@@ -119,6 +119,16 @@ struct MouseData
 	vec2 positionFromInput_delta;
 };
 
+struct MousePicker
+{
+	MouseData mouseData;
+	
+	vec3 mouseRay;
+	mat4 projectionMatrix;
+	mat4 viewMatrix;
+	Camera* cam;
+};
+
 struct CameraManager
 {
 };
@@ -136,6 +146,7 @@ struct MyData {
 	Light sunLight;
 		
 	MouseData mouse;
+	MousePicker mousePicker;
 
     Sprite sprite;
     Sprite sprite2;

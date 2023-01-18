@@ -822,6 +822,99 @@ inline mat4 lookAtv2(vec3 camPosition, vec3 lookAtPoint, vec3 upVector)
     return returnMatrix;
 }
 
+inline real32 determinant3x3(real32 t00, real32 t01, real32 t02,
+    real32 t10, real32 t11, real32 t12,
+    real32 t20, real32 t21, real32 t22)
+{
+    return   t00 * (t11 * t22 - t12 * t21)
+        + t01 * (t12 * t20 - t10 * t22)
+        + t02 * (t10 * t21 - t11 * t20);
+}
+
+inline mat4 invert(mat4 src) {
+    mat4 dest = {};
+    real32 determinant = src.determinant();
+
+    if (determinant != 0) {
+        /*
+         * m00 m01 m02 m03
+         * m10 m11 m12 m13
+         * m20 m21 m22 m23
+         * m30 m31 m32 m33
+         */
+        if (dest == null)
+            dest = new Matrix4f();
+        real32 determinant_inv = 1f / determinant;
+
+        // first row
+        real32 t00 = determinant3x3(src.m11, src.m12, src.m13, src.m21, src.m22, src.m23, src.m31, src.m32, src.m33);
+        real32 t01 = -determinant3x3(src.m10, src.m12, src.m13, src.m20, src.m22, src.m23, src.m30, src.m32, src.m33);
+        real32 t02 = determinant3x3(src.m10, src.m11, src.m13, src.m20, src.m21, src.m23, src.m30, src.m31, src.m33);
+        real32 t03 = -determinant3x3(src.m10, src.m11, src.m12, src.m20, src.m21, src.m22, src.m30, src.m31, src.m32);
+        // second row
+        real32 t10 = -determinant3x3(src.m01, src.m02, src.m03, src.m21, src.m22, src.m23, src.m31, src.m32, src.m33);
+        real32 t11 = determinant3x3(src.m00, src.m02, src.m03, src.m20, src.m22, src.m23, src.m30, src.m32, src.m33);
+        real32 t12 = -determinant3x3(src.m00, src.m01, src.m03, src.m20, src.m21, src.m23, src.m30, src.m31, src.m33);
+        real32 t13 = determinant3x3(src.m00, src.m01, src.m02, src.m20, src.m21, src.m22, src.m30, src.m31, src.m32);
+        // third row
+        real32 t20 = determinant3x3(src.m01, src.m02, src.m03, src.m11, src.m12, src.m13, src.m31, src.m32, src.m33);
+        real32 t21 = -determinant3x3(src.m00, src.m02, src.m03, src.m10, src.m12, src.m13, src.m30, src.m32, src.m33);
+        real32 t22 = determinant3x3(src.m00, src.m01, src.m03, src.m10, src.m11, src.m13, src.m30, src.m31, src.m33);
+        real32 t23 = -determinant3x3(src.m00, src.m01, src.m02, src.m10, src.m11, src.m12, src.m30, src.m31, src.m32);
+        // fourth row
+        real32 t30 = -determinant3x3(src.m01, src.m02, src.m03, src.m11, src.m12, src.m13, src.m21, src.m22, src.m23);
+        real32 t31 = determinant3x3(src.m00, src.m02, src.m03, src.m10, src.m12, src.m13, src.m20, src.m22, src.m23);
+        real32 t32 = -determinant3x3(src.m00, src.m01, src.m03, src.m10, src.m11, src.m13, src.m20, src.m21, src.m23);
+        real32 t33 = determinant3x3(src.m00, src.m01, src.m02, src.m10, src.m11, src.m12, src.m20, src.m21, src.m22);
+
+        // transpose and divide by the determinant
+        dest.m00 = t00 * determinant_inv;
+        dest.m11 = t11 * determinant_inv;
+        dest.m22 = t22 * determinant_inv;
+        dest.m33 = t33 * determinant_inv;
+        dest.m01 = t10 * determinant_inv;
+        dest.m10 = t01 * determinant_inv;
+        dest.m20 = t02 * determinant_inv;
+        dest.m02 = t20 * determinant_inv;
+        dest.m12 = t21 * determinant_inv;
+        dest.m21 = t12 * determinant_inv;
+        dest.m03 = t30 * determinant_inv;
+        dest.m30 = t03 * determinant_inv;
+        dest.m13 = t31 * determinant_inv;
+        dest.m31 = t13 * determinant_inv;
+        dest.m32 = t23 * determinant_inv;
+        dest.m23 = t32 * determinant_inv;
+        return dest;
+    }
+    else
+        return null;
+}
+
+
+
+inline vec4 transform(mat4 left, vec4 right) {
+
+    vec4 dest = {};
+
+    real32 x = left.m00 * right.x + left.m10 * right.y + left.m20 * right.z + left.m30 * right.w;
+    real32 y = left.m01 * right.x + left.m11 * right.y + left.m21 * right.z + left.m31 * right.w;
+    real32 z = left.m02 * right.x + left.m12 * right.y + left.m22 * right.z + left.m32 * right.w;
+    real32 w = left.m03 * right.x + left.m13 * right.y + left.m23 * right.z + left.m33 * right.w;
+
+    dest.x = x;
+    dest.y = y;
+    dest.z = z;
+    dest.w = w;
+
+    return dest;
+}
+
+
+
+
+
+
+
 inline mat4 LookAt(vec3 camPos, vec3 pt, vec3 Y) {
 
     vec3 forward = Normalize(camPos - pt);

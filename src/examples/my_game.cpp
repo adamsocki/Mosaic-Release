@@ -10,6 +10,7 @@ MyData *Data = NULL;
 #include "LevelManager.cpp"
 #include "CameraManager.cpp"
 #include "PlayerManager.cpp"
+#include "MouseManager.cpp"
 
 
 #include <iostream>
@@ -65,6 +66,7 @@ void MyInit() {
     BuildGUI("Terrian", 3, true, true, true, 2);
 
     InititalizeMouse();
+    InitMousePicker();
 
     InitializeStartingEntities();
     InitializeLevelFromCode();
