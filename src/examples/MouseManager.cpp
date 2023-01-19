@@ -135,7 +135,4 @@ void UpdateMousePicker()
 	Print("MouseRay.y: %2f", Data->mousePicker.mouseRay.y);
 	Print("MouseRay.z: %2f", Data->mousePicker.mouseRay.z);
 	
-	
-
-
 }
