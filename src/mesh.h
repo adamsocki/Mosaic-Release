@@ -70,6 +70,11 @@ struct OBJMesh
     int32 VERTEX_COUNT;
     int32 SIZE;
 
+    vec3 currentTerrainPointOnMouse;
+
+    real32 terrainWidth;
+    
+
     int32 facesCount; // TODO ADD THIS TO PARSER
 };
 

@@ -67,8 +67,8 @@ void GenerateTerrain(char *pathForHeightMap)
 	Print("%d", image[index + 2]);
 	
 
-	terrainMesh->VERTEX_COUNT = 100;
-	terrainMesh->SIZE = 9000;
+	terrainMesh->VERTEX_COUNT = 10;
+	terrainMesh->SIZE = 1000;
 	int32 count = terrainMesh->VERTEX_COUNT * terrainMesh->VERTEX_COUNT;
 
 	terrainMesh->rowCount_Terrain = terrainMesh->VERTEX_COUNT;
@@ -107,6 +107,7 @@ void GenerateTerrain(char *pathForHeightMap)
 	for (int i = 0; i < terrainMesh->VERTEX_COUNT; i++) {
 		for (int j = 0; j < terrainMesh->VERTEX_COUNT; j++) {
 			terrainMesh->verts[vertexPointer * 3] = (real32)(j / ((real32)terrainMesh->VERTEX_COUNT - 1) * terrainMesh->SIZE);
+			real32 value = (real32)(j / ((real32)terrainMesh->VERTEX_COUNT - 1) * terrainMesh->SIZE);
 			real32 height = RandfRange(-20, 20);
 			terrainMesh->verts[vertexPointer * 3 + 1] = height;
 			terrainMesh->terrainHeight[j][i] = height;
@@ -116,6 +117,10 @@ void GenerateTerrain(char *pathForHeightMap)
 			terrainMesh->normals[vertexPointer * 3 + 2] = 0;
 			terrainMesh->texcoords[vertexPointer * 2] = (real32)(j / ((real32)terrainMesh->VERTEX_COUNT - 1));
 			terrainMesh->texcoords[vertexPointer * 2 + 1] = (real32)(i / ((real32)terrainMesh->VERTEX_COUNT - 1));
+			if (terrainMesh->terrainWidth < value)
+			{
+				terrainMesh->terrainWidth = value;
+			}
 			vertexPointer++;
 		}
 	}
