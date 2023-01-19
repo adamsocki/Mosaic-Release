@@ -1261,7 +1261,7 @@ void LayoutGlyphs(FontTable *font, const char *string, int32 count, real32 size,
         while (tempC != ' ') {
             int32 tempCodepoint = tempC - 25;
 
-            tempX += font->glyphs[tempCodepoint].lowerLeft.x * size;
+            tempX += font->glyphs[tempCodepoint].lowerLeft.x * size; //TODO FONT ISSUE
             tempX += font->glyphs[tempCodepoint].xAdvance * size;
 
             tempC = string[++tempI];

@@ -114,7 +114,7 @@ void MyGameUpdate() {
 
     UpdateMouseData();
     MouseOverGUI(*guiBuffer, guiEntitiesInBuffer);
-
+    UpdateMousePicker();
     PlayerMover(playerEntity, *terrainEntity);
 
     // INPUT LOGIC FOR CAMERA MOVEMENT

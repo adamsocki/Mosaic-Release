@@ -831,9 +831,30 @@ inline real32 determinant3x3(real32 t00, real32 t01, real32 t02,
         + t02 * (t10 * t21 - t11 * t20);
 }
 
+inline real32 determinantMat(mat4 matrix)
+{
+    real32 f = matrix.m00 * ((matrix.m11 * matrix.m22 * matrix.m33 + matrix.m12 * matrix.m23 * matrix.m31 + matrix.m13 * matrix.m21 * matrix.m32)
+                            - matrix.m13 * matrix.m22 * matrix.m31
+                            - matrix.m11 * matrix.m23 * matrix.m32
+                            - matrix.m12 * matrix.m21 * matrix.m33);
+    f -= matrix.m01 * ((matrix.m10 * matrix.m22 * matrix.m33 + matrix.m12 * matrix.m23 * matrix.m30 + matrix.m13 * matrix.m20 * matrix.m32)
+                      - matrix.m13 * matrix.m22 * matrix.m30
+                      - matrix.m10 * matrix.m23 * matrix.m32
+                      - matrix.m12 * matrix.m20 * matrix.m33);
+    f += matrix.m02 * ((matrix.m10 * matrix.m21 * matrix.m33 + matrix.m11 * matrix.m23 * matrix.m30 + matrix.m13 * matrix.m20 * matrix.m31)
+                      - matrix.m13 * matrix.m21 * matrix.m30
+                      - matrix.m10 * matrix.m23 * matrix.m31
+                      - matrix.m11 * matrix.m20 * matrix.m33);
+    f -= matrix.m03 * ((matrix.m10 * matrix.m21 * matrix.m32 + matrix.m11 * matrix.m22 * matrix.m30 + matrix.m12 * matrix.m20 * matrix.m31)
+                      - matrix.m12 * matrix.m21 * matrix.m30
+                      - matrix.m10 * matrix.m22 * matrix.m31
+                      - matrix.m11 * matrix.m20 * matrix.m32);
+    return f;
+}
+
 inline mat4 invert(mat4 src) {
     mat4 dest = {};
-    real32 determinant = src.determinant();
+    real32 determinant = determinantMat(src);
 
     if (determinant != 0) {
         /*
@@ -842,9 +863,9 @@ inline mat4 invert(mat4 src) {
          * m20 m21 m22 m23
          * m30 m31 m32 m33
          */
-        if (dest == null)
-            dest = new Matrix4f();
-        real32 determinant_inv = 1f / determinant;
+        // if (dest == NULL)
+        //     dest = new Matrix4f();
+        real32 determinant_inv = 1.0f / determinant;
 
         // first row
         real32 t00 = determinant3x3(src.m11, src.m12, src.m13, src.m21, src.m22, src.m23, src.m31, src.m32, src.m33);
@@ -886,8 +907,8 @@ inline mat4 invert(mat4 src) {
         dest.m23 = t32 * determinant_inv;
         return dest;
     }
-    else
-        return null;
+    // else
+    //     return mat4 val = NULL;
 }
 
 
