@@ -165,3 +165,20 @@ void UpdateMousePicker(Terrain* terrain)
 	Print("MouseRay.z: %2f", Data->mousePicker.mouseRay.z);
 	
 }
+
+
+
+void InitMouse_LE()
+{
+
+}
+
+void LogicMouse_LE()
+{
+
+}
+
+void RenderMouse_LE()
+{
+
+}

@@ -24,9 +24,9 @@ Sprite stallTexture;
 real32 rotation = {};
 
 void MyInit() {
+
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
-
     Data = (MyData *)Game->myData;
 
     Data->sunLight.position = V3(1000.0f, 1000.0f, 1000.0f);

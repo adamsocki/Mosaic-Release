@@ -136,15 +136,10 @@ struct CameraManager
 struct MyData {
 
 	EntityMesh meshes;
-    
     GameSprites sprites;
-
     EntityManager em;
-
 	RenderManager rm;
-
 	Light sunLight;
-		
 	MouseData mouse;
 	MousePicker mousePicker;
 
@@ -272,4 +267,51 @@ struct Vertex
 	void* duplicateVertex{ NULL };
 
 	bool isSet;
+};
+
+
+
+//	LEVEL EDITOR STRUCTS
+
+struct Box
+{
+	vec2 size;
+	vec2 pos;
+	vec4 color;
+};
+
+struct Button : Box
+{
+	const char* text;
+	bool isMouseOver;
+	vec4 colorMouse;
+};
+
+struct Palatte : Box
+{
+	const char* text;
+};
+
+struct LevelPalatte
+{
+	Palatte box;
+	Button saveButton;
+};
+
+struct EntityPalatte
+{
+	Palatte box;
+
+};
+
+
+struct LevelEditor
+{
+	LevelPalatte lp;
+	EntityPalatte ep;
+};
+
+struct MyData_LE : MyData
+{
+	LevelEditor le;
 };
