@@ -80,7 +80,6 @@ void InitializeEntityManager()
 	// Data->em.entityNames[3] = EntityType_GUI;
 }
 
-
 void InitializeEntityBuffers()
 {
 	EntityTypeBuffer* terrainBuffer = &Data->em.buffers[EntityType_Terrain];
@@ -134,9 +133,6 @@ void InitializeEntityBuffers()
 	memset(playerBuffer->entities, 0, sizeof(Player) * playerBuffer->capacity);
 
 }
-
-
-
 
 void InitializeStartingEntities()
 {
@@ -206,4 +202,88 @@ void InitializeStartingEntities()
 		postEntity->modelRenderData.scale = V3(3.0f, 3.0f, 3.0f);
 		//postEntity->model = Data->rm.models.postModel;
 	}
+}
+
+// LEVEL EDITOR 
+void CreateEntityPalatte_LE()
+{
+	// PALLATE BACKGROUND
+	Data->le.ep.box.pos.x = Game->screenWidth * 0.025f;
+	Data->le.ep.box.pos.y = Game->screenHeight * 0.05f;
+	Data->le.ep.box.size.x = Game->screenWidth * 0.25f;
+	Data->le.ep.box.size.y = Game->screenHeight - (Game->screenHeight * 0.05f * 2);
+	Data->le.ep.box.color = V4(0.5f, 0.8f, 0.8f, 0.5f);
+	Data->le.ep.box.isCollapsed = false;
+	Data->le.ep.box.sizeExpanded.x = Game->screenWidth * 0.25f;
+	Data->le.ep.box.sizeExpanded.y = Game->screenHeight - (Game->screenHeight * 0.05f * 2);
+	Data->le.ep.box.sizeCollapsed.x = Data->le.ep.box.size.x;
+	Data->le.ep.box.sizeCollapsed.y = Data->le.ep.box.pos.y - (Data->le.ep.box.size.x * 0.05f) + (Data->le.ep.box.size.x * 0.07f / 3);
+	Data->le.ep.box.text = "Entity Editor"; 
+	Data->le.ep.box.textPos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.box.textPos.y = Data->le.ep.box.pos.y + (Data->le.ep.box.size.y * 0.035f);
+	Data->le.ep.box.textSize = Data->le.ep.box.sizeCollapsed.y / 2;
+	Data->le.ep.box.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+
+	// BUTTONS - ADD BUTONS TO PALLATE BACKGROUND
+		// sizes are conditional on PALLATE BACKGROUND size
+	// COLLAPSE WINDOW BUTTON		
+	Data->le.ep.collapseButton = {};
+	Data->le.ep.collapseButton.size.x = Data->le.ep.box.size.x * 0.05f;
+	Data->le.ep.collapseButton.size.y = Data->le.ep.box.size.x * 0.05f;
+	Data->le.ep.collapseButton.pos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.93f);
+	Data->le.ep.collapseButton.pos.y = Data->le.ep.box.pos.y + (Data->le.ep.box.size.x * 0.07f) - Data->le.ep.collapseButton.size.y;
+	Data->le.ep.collapseButton.posMin.x = Data->le.ep.collapseButton.pos.x;
+	Data->le.ep.collapseButton.posMin.y = Data->le.ep.collapseButton.pos.y;
+	Data->le.ep.collapseButton.posMax.x = Data->le.ep.collapseButton.pos.x + Data->le.ep.collapseButton.size.x;
+	Data->le.ep.collapseButton.posMax.y = Data->le.ep.collapseButton.pos.y + Data->le.ep.collapseButton.size.y;
+	Data->le.ep.collapseButton.colorMouse   = V4(0.85f, 0.95f, 0.95f, 0.6f);
+	Data->le.ep.collapseButton.colorNoMouse = V4(0.6f, 0.7f, 0.7f, 0.6f);
+	Data->le.ep.collapseButton.colorClick   = V4(1.0f, 1.0, 1.0f, 0.6f);
+}
+void LogicEntityPalatte_LE()
+{
+	// MOUSE COLLISSION
+	Data->le.ep.collapseButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.ep.collapseButton.posMin, Data->le.ep.collapseButton.posMax);
+	if (Data->le.ep.collapseButton.isMouseOver)
+	{	// MOUSE OVER DETECTION
+		Data->le.ep.collapseButton.color = Data->le.ep.collapseButton.colorMouse;
+		if (InputHeld(Mouse, Input_MouseLeft))
+		{	// CLICK EVENT DETECTION
+			Data->le.ep.collapseButton.color = Data->le.ep.collapseButton.colorClick;
+		}
+		else
+		{
+			Data->le.ep.collapseButton.color = Data->le.ep.collapseButton.colorMouse;
+		}
+		if (InputPressed(Mouse, Input_MouseLeft))
+		{	// CLICK EVENT DETECTION
+			Data->le.ep.box.isCollapsed = !Data->le.ep.box.isCollapsed;
+			Data->le.ep.collapseButton.isMouseClick = true;
+		}
+	}
+	else
+	{
+		Data->le.ep.collapseButton.color = Data->le.ep.collapseButton.colorNoMouse;
+	}
+
+	if (Data->le.ep.collapseButton.isMouseClick)
+	{	// TODO - CLICK EVENT TRIGGER
+		if (Data->le.ep.box.isCollapsed)
+		{
+			Data->le.ep.box.size = Data->le.ep.box.sizeCollapsed;
+		}
+		else
+		{
+			Data->le.ep.box.size = Data->le.ep.box.sizeExpanded;
+		}
+		Data->le.ep.collapseButton.isMouseClick = false;
+	}
+
+}
+void RenderEntityPalatte_LE()
+{
+	DrawRectScreen(Data->le.ep.box.pos, Data->le.ep.box.size, Data->le.ep.box.color);
+	DrawTextScreenPixel(&Game->serifFont, Data->le.ep.box.textPos, Data->le.ep.box.textSize, Data->le.ep.box.textColor, false, Data->le.ep.box.text);
+	DrawRectScreen(Data->le.ep.collapseButton.pos, Data->le.ep.collapseButton.size, Data->le.ep.collapseButton.color);
+
 }

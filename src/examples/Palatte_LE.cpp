@@ -2,6 +2,7 @@
 void InitPalatte_LE()
 {
 	// TODO - CREATE ENTITY PALATTE
+	CreateEntityPalatte_LE();
 	CreateLevelPalatte_LE();// TODO - CREATE LEVEL PALATTE
 }
 
@@ -11,6 +12,7 @@ void LogicPalatte_LE()
 	// ************************
 	// LOGIC FOR ENTITY PALATTE
 	// ************************
+	LogicEntityPalatte_LE();
 	// TODO - HANDLE MOUSE DETECTION
 	// TODO - HANDLE ENTITY REFERENCE
 	// TODO - HANDLE ENTITY CREATION
@@ -20,6 +22,7 @@ void LogicPalatte_LE()
 	// ***********************
 	// LOGIC FOR LEVEL PALATTE
 	// ***********************
+	LogicLevelPalatte_LE();
 	// TODO - HANDLE LEVEL CHANGE
 	// TODO - HANDLE LEVEL SAVE
 	// TODO - HANDLE MOUSE DETECTION
@@ -32,10 +35,7 @@ void LogicPalatte_LE()
 void RenderPalatte_LE()
 {
 	// TODO - DISPLAY ENTITY PALATTE
-
+	RenderEntityPalatte_LE();
 	// TODO - DISPLAY LEVEL PALATTE
-
-	DrawRectScreen(Data->le.lp.box.pos, Data->le.lp.box.size, Data->le.lp.box.color);
-	DrawRectScreen(Data->le.lp.saveButton.pos, Data->le.lp.saveButton.size, Data->le.lp.saveButton.color);
-
+	RenderLevelPalatte_LE();
 }

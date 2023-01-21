@@ -114,9 +114,9 @@ struct MouseData
 	vec2 posOnWindow;
 	vec3 posOnWindow_prev;
 
-	vec2 positionFromInput;
-	vec2 positionFromInput_prev;
-	vec2 positionFromInput_delta;
+	vec2 positionPixel;
+	vec2 positionPixel_prev;
+	vec2 positionPixel_delta;
 };
 
 struct MousePicker
@@ -277,31 +277,56 @@ struct Box
 {
 	vec2 size;
 	vec2 pos;
-	vec4 color;
+	vec4 color;	
+	
+	bool isOpen;
 };
+
+
 
 struct Button : Box
 {
 	const char* text;
+	vec2 textPos;
+	real32 textSize;
+	vec4 textColor;
+
 	bool isMouseOver;
 	vec4 colorMouse;
+	vec4 colorNoMouse;
+	vec4 colorClick;
+
+	bool isMouseClick;
+	vec2 posMin;
+	vec2 posMax;
 };
 
-struct Palatte : Box
+struct PalatteBackground : Box
 {
-	const char* text;
+	const char* text; 
+	vec2 textPos;
+	real32 textSize;
+	vec4 textColor;
+};
+
+struct PalatteBackgroundEntity : PalatteBackground
+{
+	bool isCollapsed;
+
+	vec2 sizeCollapsed;
+	vec2 sizeExpanded;
 };
 
 struct LevelPalatte
 {
-	Palatte box;
+	PalatteBackground box;
 	Button saveButton;
 };
 
 struct EntityPalatte
 {
-	Palatte box;
-
+	PalatteBackgroundEntity box;
+	Button collapseButton;
 };
 
 

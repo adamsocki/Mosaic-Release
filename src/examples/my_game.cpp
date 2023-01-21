@@ -65,7 +65,7 @@ void MyInit() {
     
     BuildGUI("Terrian", 3, true, true, true, 2);
 
-    InititalizeMouse();
+    InitMouse();
     InitMousePicker();
 
     InitializeStartingEntities();

@@ -1,6 +1,9 @@
-void InititalizeMouse()
+void InitMouse()
 {
-	Data->mouse.positionFromInput = Input->mousePosNormSigned;
+	vec2 mousePos = Input->mousePosNormSigned;
+	mousePos.x = (mousePos.x + 1.0f) * Game->screenWidth / 2;
+	mousePos.y = (-mousePos.y + 1.0f) * Game->screenHeight / 2;
+	Data->mouse.positionPixel = mousePos;
 	Data->mouse.rect.max = V2(0.125f, 0.125f);
 	Data->mouse.rect.min = -V2(0.125f, 0.125f);
 }
@@ -10,14 +13,11 @@ void UpdateMouseData()
 	vec2 mousePos = Input->mousePosNormSigned;
 	mousePos.x = (mousePos.x + 1.0f) * Game->screenWidth / 2;
 	mousePos.y = (-mousePos.y + 1.0f) * Game->screenHeight / 2;
-
-	Data->mouse.positionFromInput = mousePos;
-
-	Data->mouse.positionFromInput_delta.x = Data->mouse.positionFromInput.x - Data->mouse.positionFromInput_prev.x;
-	Data->mouse.positionFromInput_delta.y = Data->mouse.positionFromInput.y - Data->mouse.positionFromInput_prev.y;
-	Data->mouse.positionFromInput_prev = mousePos;
+	Data->mouse.positionPixel = mousePos;
+	Data->mouse.positionPixel_delta.x = Data->mouse.positionPixel.x - Data->mouse.positionPixel_prev.x;
+	Data->mouse.positionPixel_delta.y = Data->mouse.positionPixel.y - Data->mouse.positionPixel_prev.y;
+	Data->mouse.positionPixel_prev = mousePos;
 	DrawSpriteScreen(mousePos, V2(20, 20), 0, 0, &Data->sprites.cursor_red);
-
 }
 
 void InitMousePicker()
@@ -165,7 +165,6 @@ void UpdateMousePicker(Terrain* terrain)
 	Print("MouseRay.z: %2f", Data->mousePicker.mouseRay.z);
 	
 }
-
 
 
 void InitMouse_LE()

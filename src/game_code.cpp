@@ -32,7 +32,7 @@
 #include "examples/my_game.cpp"
 
 #elif LEVEL_EDITOR
-#include "examples/LevelEditor.cpp"
+#include "examples/my_LevelEditor.cpp"
 
 #elif NETWORK_SIMPLE
 #include "examples/network_simple.cpp"
