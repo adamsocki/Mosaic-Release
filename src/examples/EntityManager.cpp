@@ -1,3 +1,4 @@
+
 int32 freeList[10000];
 int32 freeListCount = 0;
 
@@ -240,6 +241,7 @@ void CreateEntityPalatte_LE()
 	Data->le.ep.collapseButton.colorNoMouse = V4(0.6f, 0.7f, 0.7f, 0.6f);
 	Data->le.ep.collapseButton.colorClick   = V4(1.0f, 1.0, 1.0f, 0.6f);
 }
+
 void LogicEntityPalatte_LE()
 {
 	// MOUSE COLLISSION
@@ -278,8 +280,8 @@ void LogicEntityPalatte_LE()
 		}
 		Data->le.ep.collapseButton.isMouseClick = false;
 	}
-
 }
+
 void RenderEntityPalatte_LE()
 {
 	DrawRectScreen(Data->le.ep.box.pos, Data->le.ep.box.size, Data->le.ep.box.color);

@@ -273,6 +273,28 @@ struct Vertex
 
 //	LEVEL EDITOR STRUCTS
 
+enum TokenTypeForLevel
+{
+	TokenType_LeftParen,
+	TokenType_RightParen,
+	TokenType_AmpSymb,
+	TokenType_PoundSymb,
+	TokenType_Comma,
+
+	TokenType_Integer,
+	TokenType_PeriodSymb,
+	TokenType_Identifier,
+	TokenType_DollarSymb,
+	TokenType_Count,
+};
+
+struct TokenVal
+{
+	TokenTypeForLevel type;
+	char* start;
+	int32 length;
+};
+
 struct Box
 {
 	vec2 size;
@@ -321,6 +343,7 @@ struct LevelPalatte
 {
 	PalatteBackground box;
 	Button saveButton;
+	Button loadButton;
 };
 
 struct EntityPalatte
@@ -334,6 +357,8 @@ struct LevelEditor
 {
 	LevelPalatte lp;
 	EntityPalatte ep;
+
+	int32 currentLevel;
 };
 
 struct MyData_LE : MyData

@@ -1,7 +1,4 @@
 
-
-
-
 void InitializeLevelFromCode()
 {
 	// create walls
@@ -44,10 +41,30 @@ void CreateLevelPalatte_LE()
 	Data->le.lp.saveButton.textPos.y = Data->le.lp.saveButton.pos.y + (Data->le.lp.saveButton.size.y * 0.8f);
 	Data->le.lp.saveButton.textSize = Data->le.lp.saveButton.size.y / 2;
 	Data->le.lp.saveButton.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+
+	// LOAD BUTTON
+	Data->le.lp.loadButton = {};
+	Data->le.lp.loadButton.pos.x = Data->le.lp.box.pos.x + (Data->le.lp.box.size.x * 0.5f);
+	Data->le.lp.loadButton.pos.y = Data->le.lp.box.size.y - (Data->le.lp.box.size.y * 0.5f);
+	Data->le.lp.loadButton.size.x = Data->le.lp.box.size.x * 0.2f;
+	Data->le.lp.loadButton.size.y = Data->le.lp.box.size.y * 0.33f;
+	Data->le.lp.loadButton.posMin.x = Data->le.lp.loadButton.pos.x;
+	Data->le.lp.loadButton.posMin.y = Data->le.lp.loadButton.pos.y;
+	Data->le.lp.loadButton.posMax.x = Data->le.lp.loadButton.pos.x + Data->le.lp.loadButton.size.x;
+	Data->le.lp.loadButton.posMax.y = Data->le.lp.loadButton.pos.y + Data->le.lp.loadButton.size.y;
+	Data->le.lp.loadButton.colorMouse = V4(0.1f, 1.0f, 0.1f, 0.6f);
+	Data->le.lp.loadButton.colorNoMouse = V4(1.0f, 1.0f, 0.5f, 0.6f);
+	Data->le.lp.loadButton.colorClick = V4(0.6f, 0.6f, 0.6f, 0.6f);
+	Data->le.lp.loadButton.text = "LOAD";
+	Data->le.lp.loadButton.textPos.x = Data->le.lp.loadButton.pos.x + (Data->le.lp.loadButton.size.x * 0.05f);
+	Data->le.lp.loadButton.textPos.y = Data->le.lp.loadButton.pos.y + (Data->le.lp.loadButton.size.y * 0.8f);
+	Data->le.lp.loadButton.textSize = Data->le.lp.loadButton.size.y / 2;
+	Data->le.lp.loadButton.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
 void LogicLevelPalatte_LE()
 {
+	// SAVE BUTTON
 	// MOUSE COLLISSION
 	Data->le.lp.saveButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.lp.saveButton.posMin, Data->le.lp.saveButton.posMax);
 	if (Data->le.lp.saveButton.isMouseOver)
@@ -76,11 +93,46 @@ void LogicLevelPalatte_LE()
 
 		Data->le.lp.saveButton.isMouseClick = false;
 	}
+
+	// LOAD BUTTON
+	// MOUSE COLLISSION
+	Data->le.lp.loadButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.lp.loadButton.posMin, Data->le.lp.loadButton.posMax);
+	if (Data->le.lp.loadButton.isMouseOver)
+	{	// MOUSE OVER DETECTION
+		Data->le.lp.loadButton.color = Data->le.lp.loadButton.colorMouse;
+		if (InputHeld(Mouse, Input_MouseLeft))
+		{	// CLICK EVENT DETECTION
+			Data->le.lp.loadButton.color = Data->le.lp.loadButton.colorClick;
+		}
+		else
+		{
+			Data->le.lp.loadButton.color = Data->le.lp.loadButton.colorMouse;
+		}
+		if (InputPressed(Mouse, Input_MouseLeft))
+		{	// CLICK EVENT DETECTION
+			Data->le.lp.loadButton.isMouseClick = true;
+		}
+	}
+	else
+	{
+		Data->le.lp.loadButton.color = Data->le.lp.loadButton.colorNoMouse;
+	}
+
+	if (Data->le.lp.loadButton.isMouseClick)
+	{	// TODO - CLICK EVENT TRIGGER
+		LoadLevelParse(Data->le.currentLevel);
+		Data->le.lp.loadButton.isMouseClick = false;
+	}
 }
 
 void RenderLevelPalatte_LE()
 {
 	DrawRectScreen(Data->le.lp.box.pos, Data->le.lp.box.size, Data->le.lp.box.color);
+
 	DrawRectScreen(Data->le.lp.saveButton.pos, Data->le.lp.saveButton.size, Data->le.lp.saveButton.color);
 	DrawTextScreenPixel(&Game->serifFont, Data->le.lp.saveButton.textPos, Data->le.lp.saveButton.textSize, Data->le.lp.saveButton.textColor, false, Data->le.lp.saveButton.text);
+
+	DrawRectScreen(Data->le.lp.loadButton.pos, Data->le.lp.loadButton.size, Data->le.lp.loadButton.color);
+	DrawTextScreenPixel(&Game->serifFont, Data->le.lp.loadButton.textPos, Data->le.lp.loadButton.textSize, Data->le.lp.loadButton.textColor, false, Data->le.lp.loadButton.text);
+
 }

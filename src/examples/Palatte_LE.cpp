@@ -1,11 +1,9 @@
 
 void InitPalatte_LE()
 {
-	// TODO - CREATE ENTITY PALATTE
-	CreateEntityPalatte_LE();
-	CreateLevelPalatte_LE();// TODO - CREATE LEVEL PALATTE
+	CreateEntityPalatte_LE();				// CREATE ENTITY PALATTE
+	CreateLevelPalatte_LE();				// CREATE LEVEL PALATTE
 }
-
 
 void LogicPalatte_LE()
 {
@@ -24,18 +22,13 @@ void LogicPalatte_LE()
 	// ***********************
 	LogicLevelPalatte_LE();
 	// TODO - HANDLE LEVEL CHANGE
+	// TODO - HANDLE LEVEL LOAD
 	// TODO - HANDLE LEVEL SAVE
 	// TODO - HANDLE MOUSE DETECTION
-
 }
-
-
-
 
 void RenderPalatte_LE()
 {
-	// TODO - DISPLAY ENTITY PALATTE
-	RenderEntityPalatte_LE();
-	// TODO - DISPLAY LEVEL PALATTE
-	RenderLevelPalatte_LE();
+	RenderEntityPalatte_LE();				// DISPLAY ENTITY PALATTE
+	RenderLevelPalatte_LE();				// DISPLAY LEVEL PALATTE
 }
