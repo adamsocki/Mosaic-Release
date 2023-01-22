@@ -4,10 +4,15 @@ enum CameraType : uint8 {
     CameraType_Orthographic,
 };
 
-enum CameraControllerType 
+enum CameraControllerType
 {
     ControllerType_FirstPerson,
     ControllerType_ThirdPerson,
+
+    // Level Editor Camera Types,
+
+    ControllerType_TopDown,
+
 };
 
 struct CameraFocusPoint
@@ -62,7 +67,8 @@ struct Camera {
     real32 resetWalkTimerDeltaTimer;
     
     bool posValWalking;
-
+    vec3 target;
+    real32 targetSpeed;
 };
 
 void UpdateCamera(Camera *camera, vec3 position, quaternion rotation ) {

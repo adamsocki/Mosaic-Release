@@ -11,6 +11,12 @@ enum EntityType
 	EntityType_Count,
 };
 
+enum EngineMode
+{
+	GameMode,
+	LevelEditorMode,
+};
+
 struct Model
 {
 	OBJMesh mesh;
@@ -142,6 +148,8 @@ struct MyData {
 	Light sunLight;
 	MouseData mouse;
 	MousePicker mousePicker;
+
+	EngineMode engineMode;
 
     Sprite sprite;
     Sprite sprite2;
@@ -286,6 +294,12 @@ enum TokenTypeForLevel
 	TokenType_Identifier,
 	TokenType_DollarSymb,
 	TokenType_Count,
+};
+
+struct CameraTarget
+{
+	vec3 pos;
+	real32 speed;
 };
 
 struct TokenVal

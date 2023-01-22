@@ -35,7 +35,7 @@ void MouseOverGUI(EntityTypeBuffer guiBuffer, GUI* guiEntitiesInBuffer)
     for (int i = 0; i < guiBuffer.count; i++)
     {
         GUI* guiEntity = (GUI*)GetEntity(&Data->em, guiEntitiesInBuffer[i].handle);
-        bool test1 = PointToSizeTestPixel2D(guiEntity->size2D, guiEntity->position2D, Data->mouse.positionFromInput);
+        bool test1 = PointToSizeTestPixel2D(guiEntity->size2D, guiEntity->position2D, Data->mouse.positionPixel);
         if (test1)
         {   
             guiEntity->mouseOver = true;

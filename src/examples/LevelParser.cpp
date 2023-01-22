@@ -19,16 +19,18 @@ bool isComma(char c)
 void LoadLevelParse(int32 currentLevel)
 {
 	DynamicArray<TokenVal> tokens = MakeDynamicArray<TokenVal>(&Game->frameMem, 10000);
+	DynamicArray<Wall> walls = MakeDynamicArray<Wall>(&Game->frameMem, 10000);
 
 	FileHandle file;
 
 	char* path[] =
 	{
-	   "data/levelEditor/level0.txt",
+	   "data/levelFiles/level0.txt",
 	   "data/levelEditor/level1.txt",
 	   "data/levelEditor/level2.txt"
 	};
 
+	// boiler plate code
 	if (OpenFileForRead(path[currentLevel], &file, &Game->frameMem))
 	{
 		TokenVal t = {};
@@ -143,7 +145,67 @@ void LoadLevelParse(int32 currentLevel)
 
 			if (t.type == TokenType_Identifier)
 			{
+				if (strncmp(t.start, "wall", t.length) == 0)
+				{
+					tokenIndex++;
+					t = tokens[tokenIndex];
 
+					Wall w = {};
+					// CREATE WALL ENTITY
+					while (t.type == TokenType_PoundSymb)
+					{
+						tokenIndex++;
+						t = tokens[tokenIndex];
+
+						// GATHER WALL POSITION
+						if (strncmp(t.start, "pos", t.length) == 0)
+						{
+							tokenIndex++;
+							t = tokens[tokenIndex];
+
+							// LOOP OVER UNTIL DONE WITH POSITIONS
+							while (t.type != TokenType_RightParen)
+							{
+								tokenIndex++;
+								t = tokens[tokenIndex];
+								vec2 position;
+								if (t.type == TokenType_Integer)
+								{
+									if (w.modelRenderData.position.x == NULL)
+									{
+										w.modelRenderData.position.x = strtoll(t.start, NULL, 10);
+									} 
+									else if (w.modelRenderData.position.y == NULL)
+									{
+										w.modelRenderData.position.y = strtoll(t.start, NULL, 10);
+									} 
+									else if (w.modelRenderData.position.z == NULL)
+									{
+										w.modelRenderData.position.z = strtoll(t.start, NULL, 10);
+									}
+
+									tokenIndex++;
+									t = tokens[tokenIndex];
+
+								}
+								if (t.type == TokenType_Comma)
+								{
+									tokenIndex++;
+									t = tokens[tokenIndex];
+								}
+
+								/*if (t.type == TokenType_RightParen)
+								{
+									tokenIndex++;
+									t = tokens[tokenIndex];
+								}*/
+							}
+							tokenIndex++;
+							t = tokens[tokenIndex];
+						}
+						PushBack(&walls, w);
+					}
+				}
 			}
 		}
 		else
@@ -152,7 +214,21 @@ void LoadLevelParse(int32 currentLevel)
 			t = tokens[tokenIndex];
 		}
 	}
+
+	EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
+	Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
+
+	for (int i = 0; i < walls.count; i++)
+	{
+		EntityHandle wallHandle = AddEntity(&Data->em, EntityType_Wall);
+		Wall* wallEntity = (Wall*)GetEntity(&Data->em, wallHandle);
+		wallEntity->handle = wallHandle;
+		wallEntity->modelRenderData.position = walls[i].modelRenderData.position;
+		wallEntity->modelRenderData.scale = walls[i].modelRenderData.scale;
+	}
+
 	DeallocateDynamicArray(&tokens);
+	DeallocateDynamicArray(&walls);
 }
 
 

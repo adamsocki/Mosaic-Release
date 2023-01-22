@@ -72,7 +72,7 @@ void ThirdPersonCameraController(Player* player, Camera* cam)
 
     if (InputHeld(Keyboard, Input_Q))
     {            
-        vec2 mousePosition_delta = Data->mouse.positionFromInput_delta;
+        vec2 mousePosition_delta = Data->mouse.positionPixel_delta;
         
         cam->angleAroundCFP += mousePosition_delta.x * cam->cameraSpeedThirdPerson * Game->deltaTime;
         cam->pitch += mousePosition_delta.y * cam->cameraSpeedThirdPerson * Game->deltaTime;
