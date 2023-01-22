@@ -67,7 +67,9 @@ struct Camera {
     real32 resetWalkTimerDeltaTimer;
     
     bool posValWalking;
-    vec3 target;
+    vec3 targetPos;
+    real32 targetRotY;
+    bool isWalkingForwardOrBackward;
     real32 targetSpeed;
 };
 

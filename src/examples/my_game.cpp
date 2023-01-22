@@ -12,7 +12,6 @@ MyData *Data = NULL;
 #include "PlayerManager.cpp"
 #include "MouseManager.cpp"
 
-
 #include <iostream>
 #include <vector>
 
@@ -63,7 +62,7 @@ void MyInit() {
     InitOBJMesh(&Data->meshes.postMesh);
     InitOBJMesh(&Data->meshes.playerMesh);
     
-    BuildGUI("Terrian", 3, true, true, true, 2);
+    ///BuildGUI("Terrian", 3, true, true, true, 2);
 
     InitMouse();
     InitMousePicker();
@@ -83,14 +82,13 @@ void MyGameUpdate() {
     ClearColor(Data->rm.skyColor);
 
     DynamicArray<EntityHandle> entitiesToRender = MakeDynamicArray<EntityHandle>(&Game->frameMem, 100);
-
     DynamicArray<ModelRenderData> testStallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> terrainEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> fernEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> playerEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 10);
-
+    
     // LOGIC
     EntityTypeBuffer* testStallBuffer = &Data->em.buffers[EntityType_Test];
     EntityTypeBuffer* terrainBuffer = &Data->em.buffers[EntityType_Terrain];
@@ -172,10 +170,10 @@ void MyGameUpdate() {
         PushBack(&playerEntitiesToRender, modelRenderData);
 
     }
-    //DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
+    ///DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
     DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
     DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
-   // DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
+   /// DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
     DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader);
     DrawOBJModels(postEntitiesToRender, Data->sunLight, &Data->meshes.postMesh, &Data->sprites.wall1Texture, &Game->modelShader);
     
@@ -185,5 +183,13 @@ void MyGameUpdate() {
         DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Data->meshes.playerMesh, &Data->sprites.wall1Texture, &Game->modelShader);
     }
 
-    RenderGUI(*guiBuffer, guiEntitiesInBuffer);
+   /// RenderGUI(*guiBuffer, guiEntitiesInBuffer);
+
+    DeallocateDynamicArray(&entitiesToRender);
+    DeallocateDynamicArray(&testStallEntitiesToRender);
+    DeallocateDynamicArray(&terrainEntitiesToRender);
+    DeallocateDynamicArray(&fernEntitiesToRender);
+    DeallocateDynamicArray(&wallEntitiesToRender);
+    DeallocateDynamicArray(&postEntitiesToRender);
+    DeallocateDynamicArray(&playerEntitiesToRender);
 }

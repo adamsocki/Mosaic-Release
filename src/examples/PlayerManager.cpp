@@ -7,6 +7,8 @@ void PlayerJump()
 
 void PlayerMover(Player *player, Terrain terrain)
 {
+    Camera* cam = &Game->camera;
+
     real32 terrainHeight = GetHeightOfTerrain(player->modelRenderData.position, terrain);
 
     if (InputHeld(Keyboard, Input_W))
@@ -51,14 +53,27 @@ void PlayerMover(Player *player, Terrain terrain)
     player->upwardSpeed += player->gravity * Game->deltaTime;
 
     player->modelRenderData.position.y += player->upwardSpeed * Game->deltaTime;
-    if (player->modelRenderData.position.y < terrainHeight)
+
+   
+    player->modelRenderData.rotY += DegToRad(player->currentTurnSpeed * Game->deltaTime);
+    player->modelRenderData.position.x += player->currentSpeed * Game->deltaTime * (sinf(player->modelRenderData.rotY));
+    player->modelRenderData.position.z += player->currentSpeed * Game->deltaTime * (cosf(player->modelRenderData.rotY));
+
+    if (player->modelRenderData.position.y <= terrainHeight)
     {   // collission to terrain ground if at zero height
-        player->upwardSpeed = 0;
+        player->upwardSpeed = 0.01f;
         player->modelRenderData.position.y = terrainHeight;
         player->isInAir = false;
     }
 
-    player->modelRenderData.rotY += DegToRad(player->currentTurnSpeed * Game->deltaTime);
-    player->modelRenderData.position.x += player->currentSpeed * Game->deltaTime * (sinf(player->modelRenderData.rotY));
-    player->modelRenderData.position.z += player->currentSpeed * Game->deltaTime * (cosf(player->modelRenderData.rotY));
+    if (player->modelRenderData.position.y >= terrainHeight && !player->isInAir)
+    {
+        player->upwardSpeed = 0.01f;
+        player->modelRenderData.position.y = terrainHeight;
+    }
+
+
+    cam->targetPos = player->modelRenderData.position;
+    cam->targetRotY = player->modelRenderData.rotY;
+    cam->isWalkingForwardOrBackward = player->isWalkingForwardOrBackward;
 }

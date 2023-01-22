@@ -29,16 +29,16 @@ void InGameCameraInit()
 
 }
 
-void FirstPersonCameraController(Player* player, Camera* cam)
+void FirstPersonCameraController(Camera* cam)
 {
-    cam->yaw = -90 - RadToDeg(player->modelRenderData.rotY);
+    cam->yaw = -90 - RadToDeg(cam->targetRotY);
     vec3 camDelta = cam->pos;
-    cam->pos = -player->modelRenderData.position - (Normalize(Cross(cam->front, cam->up)) * cam->speed * 0.01f) * sinf(cam->walkingModTime * 6) * 0.6f; // horiz walk sim
-    cam->pos =  -player->modelRenderData.position - (cam->up * cam->speed * 0.01f) * sinf(cam->walkingModTime * 12) * 1.0f;  // vert walk sim
+    cam->pos = -cam->targetPos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * 0.01f) * sinf(cam->walkingModTime * 6) * 0.6f; // horiz walk sim
+    cam->pos =  -cam->targetPos - (cam->up * cam->speed * 0.01f) * sinf(cam->walkingModTime * 12) * 1.0f;  // vert walk sim
     cam->pos.y -= 10;
     cam->resetWalk = false;
      
-    if (player->isWalkingForwardOrBackward)
+    if (cam->isWalkingForwardOrBackward)
     {
         cam->walkingModTime += Game->deltaTime;
     }
@@ -52,11 +52,11 @@ void FirstPersonCameraController(Player* player, Camera* cam)
 }
 
 
-void ThirdPersonCameraController(Player* player, Camera* cam)
+void ThirdPersonCameraController(Camera* cam)
 {    
-    cam->pos.x = -player->modelRenderData.position.x; 
-    cam->pos.y = -player->modelRenderData.position.y; 
-    cam->pos.z = -player->modelRenderData.position.z; 
+    cam->pos.x = -cam->targetPos.x; 
+    cam->pos.y = -cam->targetPos.y; 
+    cam->pos.z = -cam->targetPos.z; 
 
 
     if (Input->mouseScroll > 0)
@@ -78,7 +78,7 @@ void ThirdPersonCameraController(Player* player, Camera* cam)
         cam->pitch += mousePosition_delta.y * cam->cameraSpeedThirdPerson * Game->deltaTime;
     }
     
-    cam->yaw = 180 - (cam->angleAroundCFP + player->modelRenderData.rotY);
+    cam->yaw = 180 - (cam->angleAroundCFP + cam->targetRotY);
     
     if (cam->pitch > 89.0f)
     {
@@ -97,7 +97,29 @@ void ThirdPersonCameraController(Player* player, Camera* cam)
     cam->pos.y -= offsetY;
     cam->pos.z -= offsetZ;
 
-    cam->view = lookAtv2(cam->pos, -player->modelRenderData.position, V3(0, 1, 0));   
+    cam->view = lookAtv2(cam->pos, -cam->targetPos, V3(0, 1, 0));
+}
+
+void TopDownCameraController(Camera* cam)
+{
+    cam->pos.x = -cam->targetPos.x;
+    cam->pos.y = -cam->targetPos.y;
+    cam->pos.z = -cam->targetPos.z;
+
+    cam->yaw = 180 - (cam->angleAroundCFP + cam->targetRotY);
+
+    cam->pitch = 90.0f;
+
+    real32 offsetX = cam->distanceToCFP * sinf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
+    real32 offsetY = cam->distanceToCFP * sinf(DegToRad(cam->pitch));
+    real32 offsetZ = cam->distanceToCFP * cosf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
+
+    cam->pos.x -= offsetX;
+    cam->pos.y -= offsetY;
+    cam->pos.z -= offsetZ;
+
+    cam->view = lookAtv2(cam->pos, -cam->targetPos, V3(0, 1, 0));
+
 }
 
 void InGameCameraUpdate(Player* player, bool cameraToPlayer)
@@ -116,12 +138,18 @@ void InGameCameraUpdate(Player* player, bool cameraToPlayer)
             }
             case ControllerType_ThirdPerson:
             {
+                //cam->type = CameraType_Orthographic;
+                cam->controllerType = ControllerType_TopDown;
+                break;
+            }
+            case ControllerType_TopDown:
+            {
                 cam->controllerType = ControllerType_FirstPerson;
                 break;
             }
             default:
             {
-                ThirdPersonCameraController(player, cam);
+                ThirdPersonCameraController(cam);
                 break;
             }
         }
@@ -131,17 +159,21 @@ void InGameCameraUpdate(Player* player, bool cameraToPlayer)
     {
         case ControllerType_FirstPerson:
         {
-            FirstPersonCameraController(player, cam);
+            FirstPersonCameraController(cam);
             break;
         }
         case ControllerType_ThirdPerson:
         {
-            ThirdPersonCameraController(player, cam);
+            ThirdPersonCameraController(cam);
             break;
+        }
+        case ControllerType_TopDown:
+        {
+            TopDownCameraController(cam);
         }
         default:
         {
-            ThirdPersonCameraController(player, cam);
+            ThirdPersonCameraController(cam);
             break;
         }
     }
