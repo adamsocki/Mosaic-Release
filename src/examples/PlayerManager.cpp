@@ -4,7 +4,6 @@ void PlayerJump()
 
 }
 
-
 void PlayerMover(Player *player, Terrain terrain)
 {
     Camera* cam = &Game->camera;
@@ -71,7 +70,6 @@ void PlayerMover(Player *player, Terrain terrain)
         player->upwardSpeed = 0.01f;
         player->modelRenderData.position.y = terrainHeight;
     }
-
 
     cam->targetPos = player->modelRenderData.position;
     cam->targetRotY = player->modelRenderData.rotY;

@@ -1,4 +1,6 @@
+
 MyData *Data = NULL;
+
 #include "LoadSprites.cpp"
 #include "EntityManager.cpp"
 #include "RenderManager.cpp"
@@ -46,7 +48,7 @@ void MyInit() {
     LoadSprite(&Data->sprites.wall1Texture, "data/wall1.png");
 
     fernMesh = LoadOBJv2("data/fern.obj");
-    //InitOBJMesh(&stallMesh);
+    ///InitOBJMesh(&stallMesh);
     GenerateQuadMesh(&qMesh);
 
     InitOBJMesh(&Game->terrain);
@@ -118,7 +120,7 @@ void MyGameUpdate() {
     // INPUT LOGIC FOR CAMERA MOVEMENT
     InGameCameraUpdate(playerEntity, true);
 
-    //rotation += (0.2f) * Game->deltaTime;
+    ///rotation += (0.2f) * Game->deltaTime;
 
     //  RENDER
 
