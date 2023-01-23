@@ -1,4 +1,6 @@
 
+#include "GUI_LE.cpp"
+
 void InitPalatte_LE()
 {
 	CreateEntityPalatte_LE();				// CREATE ENTITY PALATTE

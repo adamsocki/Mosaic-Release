@@ -103,18 +103,11 @@ struct GameMemory {
     Shader colorShader;
     Shader modelShader;
     Shader terrainShader;
-
-
     Shader texturedQuadShader;
-
     Shader instancedQuadShader;
-    
     Shader shader;
-
     Shader singleLight;
-
     Shader coolShader;
-
     Shader textShader;
 
     Mesh tri;
@@ -122,7 +115,14 @@ struct GameMemory {
     Mesh glyphQuad;
     Mesh quadTopLeft;
     Mesh cube;
+    // My Meshes
+    Mesh quadMesh;
     OBJMesh terrain;
+    OBJMesh fernMesh;
+    OBJMesh stallMesh;
+    OBJMesh wall1Mesh;
+    OBJMesh postMesh;
+    OBJMesh playerMesh;
 
     InputManager inputManager;
     InputDevice *keyboard;

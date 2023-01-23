@@ -71,6 +71,10 @@ struct Camera {
     real32 targetRotY;
     bool isWalkingForwardOrBackward;
     real32 targetSpeed;
+    real32 targetTurnSpeed;
+    real32 currentSpeed;
+    real32 currentTurnSpeed;
+    //real32 targetSpeed;
 };
 
 void UpdateCamera(Camera *camera, vec3 position, quaternion rotation ) {

@@ -122,7 +122,7 @@ void TopDownCameraController(Camera* cam)
 
 }
 
-void InGameCameraUpdate(Player* player, bool cameraToPlayer)
+void InGameCameraUpdate()
 {
     Camera* cam = &Game->camera;
 

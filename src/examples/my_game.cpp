@@ -5,7 +5,6 @@ MyData *Data = NULL;
 #include "EntityManager.cpp"
 #include "RenderManager.cpp"
 #include "TerrainManager.cpp"
-#include "assimpLoader.cpp"
 #include "GUI_Editor.cpp"
 
 #include "MemoryArray.cpp"
@@ -17,12 +16,6 @@ MyData *Data = NULL;
 #include <iostream>
 #include <vector>
 
-OBJMesh fernMesh = {};
-OBJMesh stallMesh2 = {};
-QuadMesh qMesh = {};
-
-Sprite stallTexture;
-real32 rotation = {};
 
 void MyInit() {
 
@@ -37,33 +30,16 @@ void MyInit() {
     InitializeEntityManager();
     InitializeEntityBuffers();
 
-	
     GenerateTerrain("data/cursor_red.png");
+    InitOBJMesh(&Game->terrain);
+
     InGameCameraInit();
 
-    LoadSprite(&stallTexture, "data/perlin.png");
-    LoadSprite(&Data->sprites.newPlus, "data/newPlus.png");
-    LoadSprite(&Data->sprites.newPlusSel, "data/newPlusSel.png");
-    LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
-    LoadSprite(&Data->sprites.wall1Texture, "data/wall1.png");
-
-    fernMesh = LoadOBJv2("data/fern.obj");
     ///InitOBJMesh(&stallMesh);
-    GenerateQuadMesh(&qMesh);
+    ///GenerateQuadMesh(&Data->meshes.quadMesh);
 
-    InitOBJMesh(&Game->terrain);
-    InitOBJMesh(&fernMesh);
-
-    Data->meshes.stallMesh = LoadOBJv2("data/stall.obj");
-    Data->meshes.wall1Mesh = LoadOBJv2("data/wall1.obj");
-    Data->meshes.postMesh = LoadOBJv2("data/post1.obj");
-    Data->meshes.playerMesh = LoadOBJv2("data/player.obj");
-    InitOBJMesh(&Data->meshes.stallMesh);
-    InitOBJMesh(&Data->meshes.wall1Mesh);
-    AllocateQuad(&Data->meshes.quadMesh);
-    InitOBJMesh(&Data->meshes.postMesh);
-    InitOBJMesh(&Data->meshes.playerMesh);
     
+ 
     ///BuildGUI("Terrian", 3, true, true, true, 2);
 
     InitMouse();
@@ -79,6 +55,13 @@ vec2 position = V2(4, 0);
 vec2 scale = V2(1, 1);
 
 void MyGameUpdate() {
+
+
+    // SWITCH GAME MODES
+    // SWITCH TO LEVEL EDITOR
+    
+
+
     // This sets the background color.
     Camera* cam = &Game->camera;
     ClearColor(Data->rm.skyColor);
@@ -118,9 +101,8 @@ void MyGameUpdate() {
     PlayerMover(playerEntity, *terrainEntity);
 
     // INPUT LOGIC FOR CAMERA MOVEMENT
-    InGameCameraUpdate(playerEntity, true);
+    InGameCameraUpdate();
 
-    ///rotation += (0.2f) * Game->deltaTime;
 
     //  RENDER
 
@@ -145,7 +127,6 @@ void MyGameUpdate() {
         Fern* entity = (Fern*)GetEntity(&Data->em, fernEntitiesInBuffer[i].handle);
         modelRenderData = entity->modelRenderData;
         PushBack(&fernEntitiesToRender, modelRenderData);
-
     }
     for (int i = 0; i < 1; i++)
     {
@@ -153,7 +134,6 @@ void MyGameUpdate() {
         Wall* entity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[i].handle);
         modelRenderData = entity->modelRenderData;
         PushBack(&wallEntitiesToRender, modelRenderData);
-
     }
 
     for (int i = 0; i < 40; i++)
@@ -162,7 +142,6 @@ void MyGameUpdate() {
         Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);
         modelRenderData = entity->modelRenderData;
         PushBack(&postEntitiesToRender, modelRenderData);
-
     }
     for (int i = 0; i < 1; i++)
     {
@@ -170,21 +149,14 @@ void MyGameUpdate() {
         Player* entity = (Player*)GetEntity(&Data->em, playerEntitiesInBuffer[i].handle);
         modelRenderData = entity->modelRenderData;
         PushBack(&playerEntitiesToRender, modelRenderData);
-
     }
-    ///DrawOBJModel(&stallMesh2, V3(0), V3(10.0f, 10.0f, 10.0f), rotation, RGB(1.0f, 0.3f, 0.3f), &stallTexture);
-    DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &stallTexture, &Game->terrainShader);
-    DrawOBJModels(fernEntitiesToRender, Data->sunLight, &fernMesh, &Data->sprites.fernTexture, &Game->modelShader);
-   /// DrawOBJModels(testStallEntitiesToRender, Data->sunLight, &Data->meshes.stallMesh, &stallTexture, &Game->modelShader);
-    DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader);
-    DrawOBJModels(postEntitiesToRender, Data->sunLight, &Data->meshes.postMesh, &Data->sprites.wall1Texture, &Game->modelShader);
+   
+    DrawOBJModels(terrainEntitiesToRender, Data->sunLight, &Game->terrain, &Data->sprites.stallTexture, &Game->terrainShader, Data->rm.skyColor);
+    DrawOBJModels(fernEntitiesToRender, Data->sunLight, &Game->fernMesh, &Data->sprites.fernTexture, &Game->modelShader, Data->rm.skyColor);
+    DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Game->wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader, Data->rm.skyColor);
+    DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Data->sprites.wall1Texture, &Game->modelShader, Data->rm.skyColor);
+    DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Game->playerMesh, &Data->sprites.wall1Texture, &Game->modelShader, Data->rm.skyColor);
     
-    
-    if (cam->controllerType == ControllerType_ThirdPerson)
-    {
-        DrawOBJModels(playerEntitiesToRender, Data->sunLight, &Data->meshes.playerMesh, &Data->sprites.wall1Texture, &Game->modelShader);
-    }
-
    /// RenderGUI(*guiBuffer, guiEntitiesInBuffer);
 
     DeallocateDynamicArray(&entitiesToRender);

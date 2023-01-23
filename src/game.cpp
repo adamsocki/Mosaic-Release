@@ -11,11 +11,14 @@
 #include "examples/structs.cpp"
 #include "examples/GUI.cpp"
 #include "render.cpp"
+#include "mesh.cpp"
+
+#include "examples/OBJLoader.cpp"
+#include "examples/LoadMeshes.cpp"
 #include "audio.cpp"
 
 #include "network.cpp"
 
-#include "mesh.cpp"
 #include "font.cpp"
 
 #include "ui.cpp"
@@ -246,6 +249,7 @@ void GameInit(GameMemory *gameMem) {
 
     
     // INIT GRAPHICS
+    LoadMeshes();
     AllocateTriangle(&gameMem->tri);
     InitMesh(&gameMem->tri);
 

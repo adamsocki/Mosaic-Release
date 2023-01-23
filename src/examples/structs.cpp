@@ -39,6 +39,7 @@ struct GameSprites
 	Sprite newPlus;
 	Sprite newPlusSel;
 	Sprite wall1Texture;
+	Sprite stallTexture;
 };
 
 struct EntityHandle {
@@ -105,12 +106,14 @@ struct Light
 
 struct EntityMesh
 {
-	Mesh quadMesh;
+	
 	OBJMesh stallMesh;
 	OBJMesh fernMesh;
 	OBJMesh wall1Mesh;
 	OBJMesh postMesh;
 	OBJMesh playerMesh;
+
+
 };
 
 struct MouseData
