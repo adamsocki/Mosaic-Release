@@ -225,6 +225,7 @@ void LoadLevelParse(int32 currentLevel)
 		wallEntity->handle = wallHandle;
 		wallEntity->modelRenderData.position = walls[i].modelRenderData.position;
 		wallEntity->modelRenderData.scale = walls[i].modelRenderData.scale;
+
 	}
 
 	DeallocateDynamicArray(&tokens);

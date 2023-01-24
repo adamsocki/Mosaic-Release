@@ -70,7 +70,7 @@ void MyGameUpdate()
 	// ******
 
 	// RENDER MOUSE
-	RenderMouse_LE();
+	//RenderMouse_LE();
 	// TODO - RENDER LEVEL SCENE
 
 	// TESTING

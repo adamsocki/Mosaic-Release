@@ -120,8 +120,8 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, O
     real32 shineDamper = 1;
     real32 reflectivity = 0;
 
- //  glEnable(GL_DEPTH_TEST);
-   // glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
@@ -1013,6 +1013,8 @@ void DrawRect(vec2 pos, vec2 scale, real32 angle, vec4 color) {
     
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glDisable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
 
     Mesh *mesh = &Game->quad;
     
@@ -1123,9 +1125,12 @@ void DrawRectScreen(vec2 pos, vec2 scale, vec4 color) {
     Shader *shader = &Game->shader;
     SetShader(shader);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   // glDisable(GL_CULL_FACE);
 
+   glDisable(GL_DEPTH_TEST);
+   // glDepthMask(GL_FALSE);
     Mesh *mesh = &Game->quadTopLeft;
     
     mat4 model = TRS(V3(pos.x, pos.y, 0), IdentityQuaternion(), V3(scale.x, -scale.y, 0.0f));
