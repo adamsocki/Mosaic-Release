@@ -115,7 +115,7 @@ void TestRayMouse()
 
 
         entity->modelRenderData.position.x = scaledRayPos.x - cam->pos.x;
-        entity->modelRenderData.position.y = scaledRayPos.y + cam->pos.y;
+        entity->modelRenderData.position.y = scaledRayPos.y - cam->pos.y;
         entity->modelRenderData.position.z = scaledRayPos.z - cam->pos.z;
 
         modelRenderData = entity->modelRenderData;
