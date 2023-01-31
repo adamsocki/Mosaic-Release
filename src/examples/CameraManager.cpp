@@ -35,8 +35,10 @@ void FirstPersonCameraController(Camera* cam)
     vec3 camDelta = cam->pos;
     cam->pos = -cam->targetPos - (Normalize(Cross(cam->front, cam->up)) * cam->speed * 0.01f) * sinf(cam->walkingModTime * 6) * 0.6f; // horiz walk sim
     cam->pos =  -cam->targetPos - (cam->up * cam->speed * 0.01f) * sinf(cam->walkingModTime * 12) * 1.0f;  // vert walk sim
-    cam->pos.y -= 10;
+    cam->pos.y -= 5;
     cam->resetWalk = false;
+    
+    cam->pitch = 0;
      
     if (cam->isWalkingForwardOrBackward)
     {
@@ -98,6 +100,7 @@ void ThirdPersonCameraController(Camera* cam)
     cam->pos.z -= offsetZ;
 
     cam->view = lookAtv2(cam->pos, -cam->targetPos, V3(0, 1, 0));
+     
 }
 
 void TopDownCameraController(Camera* cam)
@@ -119,7 +122,6 @@ void TopDownCameraController(Camera* cam)
     cam->pos.z -= offsetZ;
 
     cam->view = lookAtv2(cam->pos, -cam->targetPos, V3(0, 1, 0));
-
 }
 
 void InGameCameraUpdate()

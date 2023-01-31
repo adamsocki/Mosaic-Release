@@ -145,11 +145,38 @@ void InitMousePicker()
 //	}
 //}
 
-void UpdateMousePicker(Terrain* terrain)
+void UpdateMousePicker()
 {
 	real32 RAY_RANGE = 600;
 	Data->mousePicker.mouseData = Data->mouse;
 	Data->mousePicker.viewMatrix = Game->camera.view;
+
+	// STEP 0 - 2D Viewport Coordinates (Mouse Coordinates on Screen)
+	vec2 mouse = {};
+	mouse.x = Data->mouse.positionPixel.x;
+	mouse.y = Data->mouse.positionPixel.y;
+	// STEP 1 - 3D Normalized Device Coordinates (-1, 1) for x,y,z
+	real32 x = 1.0f - (2.0f * mouse.x) / Game->screenWidth;
+	real32 y = (2.0f * mouse.y) / Game->screenHeight - 1.0f;
+	real32 z = 1.0f;
+	vec3 ray_nds = V3(x, y, z);
+	// STEP 2 - 4D Homogenous Clip Coordinates
+	vec4 ray_clip = V4(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
+	// STEP 3 - 4D Eye (Camera) Coordinates
+	vec4 ray_eye = invert(Game->camera.projection) * ray_clip;
+	ray_eye = V4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+	// STEP 4 - 4D World Coordinates
+	vec4 rayEye_view = invert(Game->camera.view) * ray_eye;
+	vec3 ray_wor = V3(rayEye_view.x, rayEye_view.y, rayEye_view.z);
+	ray_wor = Normalize(ray_wor);
+
+	Data->mousePicker.mouseRay = ray_wor;
+	DrawTextScreenPixel(&Game->serifFont, V2(300, 210), 10, V4(1, 1, 1, 1), false, "raypos.x %2f", ray_wor.x);
+	DrawTextScreenPixel(&Game->serifFont, V2(300, 240), 10, V4(1, 1, 1, 1), false, "raypos.y %2f", ray_wor.y);
+	DrawTextScreenPixel(&Game->serifFont, V2(300, 270), 10, V4(1, 1, 1, 1), false, "raypos.z %2f", ray_wor.z);
+
+	// STEP 1
+
 	/*Data->mousePicker.mouseRay = CalculateMouseRay(Data->mouse);
 	if (intersectionInRange(0, RAY_RANGE, Data->mousePicker.mouseRay, *terrain))
 	{
@@ -163,7 +190,6 @@ void UpdateMousePicker(Terrain* terrain)
 	Print("MouseRay.x: %2f", Data->mousePicker.mouseRay.x);
 	Print("MouseRay.y: %2f", Data->mousePicker.mouseRay.y);
 	Print("MouseRay.z: %2f", Data->mousePicker.mouseRay.z);
-	
 }
 
 

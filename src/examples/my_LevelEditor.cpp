@@ -14,7 +14,7 @@ MyData_LE* Data = NULL;
 
 #include "LevelEditor.cpp"
 
-
+#include "Testing.cpp"
 
 void MyInit()
 {
@@ -64,7 +64,6 @@ void MyGameUpdate()
 	// LogicEditMode();
 	LogicPalatte_LE();										// UPDATE PALATTES LOGIC
 	Mover_LE();
-	InGameCameraUpdate();
 	// ******
 	// RENDER
 	// ******
@@ -74,10 +73,13 @@ void MyGameUpdate()
 	// TODO - RENDER LEVEL SCENE
 
 	// TESTING
+	
+	InGameCameraUpdate();
 
-
+	UpdateMousePicker();
 	
 	TestRender();
+	TestRayMouse();
 	RenderPalatte_LE();										// RENDER PALATTE
 
 	//RenderLevel_LE(wallEntitiesToRender);
