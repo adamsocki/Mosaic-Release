@@ -170,6 +170,8 @@ void UpdateMousePicker()
 	vec3 ray_wor = V3(rayEye_view.x, rayEye_view.y, rayEye_view.z);
 	ray_wor = Normalize(ray_wor);
 
+
+
 	Data->mousePicker.mouseRay = ray_wor;
 
 	DrawTextScreenPixel(&Game->serifFont, V2(300, 210), 10, V4(1, 1, 1, 1), false, "raypos.x %2f", ray_wor.x);
@@ -188,9 +190,9 @@ void UpdateMousePicker()
 		terrain->currentTerrainPointOnMouse = NULL;
 	}*/
 
-	Print("MouseRay.x: %2f", Data->mousePicker.mouseRay.x);
+	/*Print("MouseRay.x: %2f", Data->mousePicker.mouseRay.x);
 	Print("MouseRay.y: %2f", Data->mousePicker.mouseRay.y);
-	Print("MouseRay.z: %2f", Data->mousePicker.mouseRay.z);
+	Print("MouseRay.z: %2f", Data->mousePicker.mouseRay.z);*/
 }
 
 

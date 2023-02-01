@@ -87,7 +87,7 @@ void TestRender()
 
 
 
-        
+
         DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader, Data->rm.skyColor);
     }
     
@@ -101,18 +101,41 @@ void TestRayMouse()
 {
     Camera* cam = &Game->camera;
 
-    real32 distanceForRay = -10.0f;
+    real32 distanceForRay = -500.0f;
 
     EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
     Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
+    vec3 scaledRayPos = V3(Data->mousePicker.mouseRay.x * distanceForRay, Data->mousePicker.mouseRay.y * distanceForRay, Data->mousePicker.mouseRay.z * distanceForRay);
+
+    Plane testFloorPlane = MakePlane(V3(0), V3(0, 1, 0));
+
+    Ray rayMouse = {};
+    rayMouse.origin = -cam->pos;
+    rayMouse.direction = scaledRayPos;
+
+    real32 val = {};
+    bool raycastToPlane =  RaycastPlane(V3(0), V3(0, 1, 0), rayMouse, &val);
+
+    if (raycastToPlane)
+    {
+       // Print("Val: %2f", val);
+    }
+    real32 val2 = {};
+
+
+    bool rayAABBHit = false;
+    rayAABBHit = RaycastAABB(V2(0), V2(1, 1), rayMouse, &val2);
+
+    if (rayAABBHit)
+    {
+        Print("Val2: %2f", val2);
+    }
 
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     for (int i = 0; i < 1; i++)
     {
         ModelRenderData modelRenderData = {};
         Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);
-        vec3 scaledRayPos = V3(Data->mousePicker.mouseRay.x * distanceForRay, Data->mousePicker.mouseRay.y * distanceForRay, Data->mousePicker.mouseRay.z * distanceForRay);
-
 
         entity->modelRenderData.position.x = scaledRayPos.x - cam->pos.x;
         entity->modelRenderData.position.y = scaledRayPos.y - cam->pos.y;

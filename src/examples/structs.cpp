@@ -168,6 +168,8 @@ struct Entity
 
 	bool mouseOver;
 
+	Rect boundingBox;
+
 	OBJMesh mesh;
 
 	real32 gravity;

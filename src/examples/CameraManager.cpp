@@ -60,7 +60,6 @@ void ThirdPersonCameraController(Camera* cam)
     cam->pos.y = -cam->targetPos.y; 
     cam->pos.z = -cam->targetPos.z; 
 
-
     if (Input->mouseScroll > 0)
     {
         cam->distanceToCFP += 3;
