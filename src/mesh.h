@@ -73,6 +73,9 @@ struct OBJMesh
     vec3 currentTerrainPointOnMouse;
 
     real32 terrainWidth;
+
+    vec3 maxAABB;
+    vec3 minAABB;
     
 
     int32 facesCount; // TODO ADD THIS TO PARSER

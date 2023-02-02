@@ -78,8 +78,8 @@ void MyGameUpdate()
 
 	UpdateMousePicker();
 	
-	TestRender();
 	TestRayMouse();
+	TestRender();
 	RenderPalatte_LE();										// RENDER PALATTE
 
 	//RenderLevel_LE(wallEntitiesToRender);

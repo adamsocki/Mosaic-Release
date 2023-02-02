@@ -177,7 +177,8 @@ void UpdateMousePicker()
 	DrawTextScreenPixel(&Game->serifFont, V2(300, 210), 10, V4(1, 1, 1, 1), false, "raypos.x %2f", ray_wor.x);
 	DrawTextScreenPixel(&Game->serifFont, V2(300, 240), 10, V4(1, 1, 1, 1), false, "raypos.y %2f", ray_wor.y);
 	DrawTextScreenPixel(&Game->serifFont, V2(300, 270), 10, V4(1, 1, 1, 1), false, "raypos.z %2f", ray_wor.z);
-
+	
+	
 	// STEP 1
 
 	/*Data->mousePicker.mouseRay = CalculateMouseRay(Data->mouse);

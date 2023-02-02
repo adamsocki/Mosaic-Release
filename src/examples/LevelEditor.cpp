@@ -63,32 +63,73 @@ void TestRender()
     EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
     Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
 
+    vec3 aabb_min = V3(-1.0f, -1.0f, -1.0f);
+    vec3 aabb_max = V3(1.0f, 1.0f, 1.0f);
+
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
      if (Data->le.currentLevel == -1 || Data->le.currentLevel == 0)
      {
          
-        for (int i = 0; i < postBuffer->count; i++)
+        for (int i = 0; i < 2; i++)
         {
             ModelRenderData modelRenderData = {};
             Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);
+            
+            
+            real32 distanceForRay = -500.0f;
+
+            real32 intersection_distance;
+            mat4 ModelMatrix = TRS(entity->modelRenderData.position, Identity4(), entity->modelRenderData.scale.x);
+            vec3 scaledRayPos = V3(Data->mousePicker.mouseRay.x * distanceForRay, Data->mousePicker.mouseRay.y * distanceForRay, Data->mousePicker.mouseRay.z * distanceForRay);
+            
+            vec3 aabb_max = {};
+            aabb_max.x = entity->modelRenderData.position.x + 30;
+            aabb_max.y = entity->modelRenderData.position.y + 30;
+            aabb_max.z = entity->modelRenderData.position.z + 30;
+
+
+            vec3 aabb_min = {};
+            aabb_min.x = entity->modelRenderData.position.x;
+            aabb_min.y = entity->modelRenderData.position.y;
+            aabb_min.z = entity->modelRenderData.position.z;
+
+            vec3 aabbSize = {};
+            aabbSize = aabb_max - aabb_min;
+
+
+            if (TestRayOBBIntersection(-Game->camera.pos, scaledRayPos, aabb_min, aabb_max, Identity4(), &intersection_distance))
+            {
+                DrawMesh(&Game->cube, entity->modelRenderData.position, IdentityQuaternion(), V3(1), V4(0.11f, 1.0f, 1.0f, 1.0f), true);
+                DrawMesh(&Game->cube, aabb_max, IdentityQuaternion(), V3(1), V4(1.0f, 0.11f, 1.0f, 1.0f), true);
+                DrawMesh(&Game->cube, aabb_min, IdentityQuaternion(), V3(1), V4(1.0f, 1.0f,0.11f, 1.0f), true);
+                DrawAABB(aabb_min, IdentityQuaternion(), aabbSize, V4(1), true);
+                entity->modelRenderData.sprite = Data->sprites.wall1Texture;
+            } 
+            else
+            {
+                entity->modelRenderData.sprite = Data->sprites.fernTexture;
+            }
+
             modelRenderData = entity->modelRenderData;
+
             PushBack(&postEntitiesToRender, modelRenderData);
         }
         for (int i = 0; i < wallBuffer->count; i++)
         {
             ModelRenderData modelRenderData = {};
             Wall* entity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[i].handle);
+            entity->modelRenderData.sprite = Data->sprites.wall1Texture;
             modelRenderData = entity->modelRenderData;
             PushBack(&wallEntitiesToRender, modelRenderData);
 
         }
-        DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Data->sprites.wall1Texture, &Game->modelShader, Data->rm.skyColor);
+        DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Game->modelShader, Data->rm.skyColor);
 
 
 
 
-        DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Data->sprites.wall1Texture, &Game->modelShader, Data->rm.skyColor);
+        DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Game->modelShader, Data->rm.skyColor);
     }
     
     DeallocateDynamicArray(&postEntitiesToRender);
@@ -130,6 +171,20 @@ void TestRayMouse()
     {
         Print("Val2: %2f", val2);
     }
+    real32 intersection_distance;
+
+    
+    if (TestRayOBBIntersection(-Game->camera.pos, scaledRayPos, V3(0,0,0), V3(10,10,10), Identity4(), &intersection_distance))
+    {
+        DrawTextScreenPixel(&Game->serifFont, V2(500, 100), 9, V4(1, 1, 1, 1), false, "modelPos.x %2f", intersection_distance);
+        DrawTextScreenPixel(&Game->serifFont, V2(500, 130), 9, V4(1, 1, 1, 1), false, "modelPos.y %2f", intersection_distance);
+        DrawTextScreenPixel(&Game->serifFont, V2(500, 160), 9, V4(1, 1, 1, 1), false, "modelPos.z %2f", intersection_distance);
+    }
+    else
+    {
+        //entity->modelRenderData.sprite = Data->sprites.fernTexture;
+    }
+
 
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     for (int i = 0; i < 1; i++)
@@ -140,13 +195,20 @@ void TestRayMouse()
         entity->modelRenderData.position.x = scaledRayPos.x - cam->pos.x;
         entity->modelRenderData.position.y = scaledRayPos.y - cam->pos.y;
         entity->modelRenderData.position.z = scaledRayPos.z - cam->pos.z;
+        entity->modelRenderData.sprite = Data->sprites.wall1Texture;
 
         modelRenderData = entity->modelRenderData;
+
+
         PushBack(&postEntitiesToRender, modelRenderData);
+
+
+
+
  
-        DrawTextScreenPixel(&Game->serifFont, V2(500, 100), 9, V4(1, 1, 1, 1), false, "modelPos.x %2f", entity->modelRenderData.position.x);
+       /* DrawTextScreenPixel(&Game->serifFont, V2(500, 100), 9, V4(1, 1, 1, 1), false, "modelPos.x %2f", entity->modelRenderData.position.x);
         DrawTextScreenPixel(&Game->serifFont, V2(500, 130), 9, V4(1, 1, 1, 1), false, "modelPos.y %2f", entity->modelRenderData.position.y);
-        DrawTextScreenPixel(&Game->serifFont, V2(500, 160), 9, V4(1, 1, 1, 1), false, "modelPos.z %2f", entity->modelRenderData.position.z);
+        DrawTextScreenPixel(&Game->serifFont, V2(500, 160), 9, V4(1, 1, 1, 1), false, "modelPos.z %2f", entity->modelRenderData.position.z);*/
 
         DrawTextScreenPixel(&Game->serifFont, V2(300, 100), 10, V4(1, 1, 1, 1), false, "camPos.x %2f",cam->pos.x);
         DrawTextScreenPixel(&Game->serifFont, V2(300, 130), 10, V4(1, 1, 1, 1), false, "camPos.y %2f",cam->pos.y);
@@ -156,12 +218,12 @@ void TestRayMouse()
         DrawTextScreenPixel(&Game->serifFont, V2(300, 360), 8, V4(1, 1, 1, 1), false, "targetPos.z %2f", cam->targetPos.z);
 
         //DrawTextScreenPixel(&Game->serifFont, V2(400, 190), 10, V4(1, 1, 1, 1), false, guiElement->label);
-
+                        
 
     }
 
     
-    DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Data->sprites.wall1Texture, &Game->modelShader, Data->rm.skyColor);
+    DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Game->modelShader, Data->rm.skyColor);
     DeallocateDynamicArray(&postEntitiesToRender);
 
 }   

@@ -3,6 +3,9 @@
 
 void LoadMeshes()
 {
+    AllocateAABB(&Game->AABBMesh);
+    InitMesh(&Game->AABBMesh);
+
 
 	Game->fernMesh   = LoadOBJv2("data/fern.obj");
     Game->stallMesh  = LoadOBJv2("data/stall.obj");

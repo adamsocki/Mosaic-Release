@@ -109,6 +109,7 @@ struct GameMemory {
     Shader singleLight;
     Shader coolShader;
     Shader textShader;
+    Shader cubeShader;
 
     Mesh tri;
     Mesh quad;
@@ -117,6 +118,7 @@ struct GameMemory {
     Mesh cube;
     // My Meshes
     Mesh quadMesh;
+    Mesh AABBMesh;
     OBJMesh terrain;
     OBJMesh fernMesh;
     OBJMesh stallMesh;

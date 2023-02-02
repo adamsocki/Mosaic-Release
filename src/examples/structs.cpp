@@ -88,6 +88,8 @@ struct ModelRenderData
 	int32 numberOfTextureRows;
 	int32 textureIndex;
 
+	Sprite sprite;
+
 	real32 shineDamper; // TODO ADD THIS
 	real32 reflectivity; // TODO ADD THIS
 	

@@ -250,9 +250,10 @@ void GameInit(GameMemory *gameMem) {
     
     // INIT GRAPHICS
     LoadMeshes();
-    AllocateTriangle(&gameMem->tri);
-    InitMesh(&gameMem->tri);
 
+    AllocateTriangle(&gameMem->tri);
+    InitMesh(&gameMem->tri); 
+    
     AllocateQuad(&gameMem->quad);
     InitMesh(&gameMem->quad);
 
@@ -325,7 +326,16 @@ void GameInit(GameMemory *gameMem) {
         };
         CompileShader(&gameMem->shader, 3, uniforms);
     }
-
+    {
+        LoadShader("shaders/cubeMesh.vert", "shaders/cubeMesh.frag", &gameMem->cubeShader);
+        const char* uniforms[] = {
+            "model",
+            "view",
+            "projection",
+            "color",
+        };
+        CompileShader(&gameMem->cubeShader, 4, uniforms);
+    }
     {
         LoadShader("shaders/cool_mesh.vert", "shaders/cool_mesh.frag", &gameMem->coolShader);
         const char *uniforms[] = {

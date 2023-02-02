@@ -113,7 +113,7 @@ void InitOBJMesh(OBJMesh *mesh)
     mesh->indexBufferID = indexBuffer;
 }
 
-void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, OBJMesh* mesh, Sprite* texture, Shader* shader, vec4 skyColor)
+void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, OBJMesh* mesh, Shader* shader, vec4 skyColor)
 {
     SetShader(shader);
 
@@ -127,8 +127,7 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, O
 
     glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    
     glUniform1i(shader->uniforms[2].id, 0);
 
     glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
@@ -161,6 +160,9 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, O
     for (int i = 0; i < modelRenderData.count; i++)
     {
         mat4 model = TRS(modelRenderData[i].position, AxisAngle(V3(0, 1, 0), modelRenderData[i].rotY), modelRenderData[i].scale);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, modelRenderData[i].sprite.textureID);
+
         if (modelRenderData[i].hasTransparency)
         {
             glDisable(GL_CULL_FACE);
@@ -616,6 +618,9 @@ OBJMesh LoadOBJModel(const char *modelPath)
     //objMesh.normals = normalsArrayPointer;
    
     objMesh.indexCount = indices.count;
+
+    objMesh.minAABB = {};
+    objMesh.maxAABB = {};
     //objMesh.indices = indicesArrayPointer;
 
     objMesh.texcoordsCount = textures.count * 2;
@@ -636,6 +641,38 @@ OBJMesh LoadOBJModel(const char *modelPath)
         vertCounter++;
         objMesh.verts[vertCounter] = vertices[i].z;
         vertCounter++;
+
+        if (objMesh.minAABB.x > vertices[i].x)
+        {
+            objMesh.minAABB.x = vertices[i].x;
+        }
+        
+        if (objMesh.minAABB.y > vertices[i].y)
+        {
+            objMesh.minAABB.y = vertices[i].y;
+        }
+
+        if (objMesh.minAABB.z > vertices[i].z)
+        {
+            objMesh.minAABB.z = vertices[i].z;
+        }
+
+        if (objMesh.maxAABB.x < vertices[i].x)
+        {
+            objMesh.maxAABB.x = vertices[i].x;
+        }
+
+        if (objMesh.maxAABB.y < vertices[i].y)
+        {
+            objMesh.maxAABB.y = vertices[i].y;
+        }
+
+        if (objMesh.maxAABB.z < vertices[i].z)
+        {
+            objMesh.maxAABB.z = vertices[i].z;
+        }
+
+
     }
     objMesh.vertSize = (sizeof(real32) * objMesh.vertCount);
 
@@ -1273,19 +1310,61 @@ void RenderRectBuffer(RectBuffer *buffer) {
     glVertexAttribDivisor(model + 3, 0);
 }
 
-void DrawMesh(Mesh *mesh, vec3 pos, quaternion rotation, vec3 scale, vec4 color) {
-    Shader *shader = &Game->shader;
+void DrawAABB(vec3 pos, quaternion rotation, vec3 scale, vec4 color, bool isWireframe)
+{
+    Mesh* mesh = &Game->AABBMesh;
+
+    Shader* shader = &Game->cubeShader;
     SetShader(shader);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (isWireframe)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
+    mat4 model = TRS(pos, rotation, scale);
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.view.data);
+    glUniformMatrix4fv(shader->uniforms[2].id, 1, GL_FALSE, Game->camera.projection.data);
+
+    glUniform4fv(shader->uniforms[3].id, 1, color.data);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    glDisableVertexAttribArray(vert);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+}
+
+void DrawMesh(Mesh *mesh, vec3 pos, quaternion rotation, vec3 scale, vec4 color, bool isWireframe) {
+    Shader *shader = &Game->cubeShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (isWireframe)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
     
     mat4 model = TRS(pos, rotation, scale);
 
     glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
-    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.view.data);
+    glUniformMatrix4fv(shader->uniforms[2].id, 1, GL_FALSE, Game->camera.projection.data);
 
-    glUniform4fv(shader->uniforms[2].id, 1, color.data);
+    glUniform4fv(shader->uniforms[3].id, 1, color.data);
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
@@ -1298,6 +1377,7 @@ void DrawMesh(Mesh *mesh, vec3 pos, quaternion rotation, vec3 scale, vec4 color)
     glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid *)0);
 
     glDisableVertexAttribArray(vert);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 // @NOTE: only works for monospace fonts because it assumes everyone has the same dimensions.

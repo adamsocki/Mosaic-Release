@@ -856,10 +856,10 @@ bool TestRayOBBIntersection(
             }
             else 
             { // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
-                if (-e + aabb_min.x > 0.0f || -e + aabb_max.x < 0.0f)
+              /*  if (-e + aabb_min.x > 0.0f || -e + aabb_max.x < 0.0f)
                 {
                     return false;
-                }
+                }*/
             }
 
         }
@@ -899,10 +899,10 @@ bool TestRayOBBIntersection(
         }
         else 
         {
-            if (-e + aabb_min.y > 0.0f || -e + aabb_max.y < 0.0f)
+            /*if (-e + aabb_min.y > 0.0f || -e + aabb_max.y < 0.0f)
             {
                 return false;
-            }
+            }*/
         }
     }
 
@@ -939,10 +939,10 @@ bool TestRayOBBIntersection(
         }
         else 
         {
-            if (-e + aabb_min.z > 0.0f || -e + aabb_max.z < 0.0f)
+           /* if (-e + aabb_min.z > 0.0f || -e + aabb_max.z < 0.0f)
             {
                 return false;
-            }
+            }*/
         }
     }
 
