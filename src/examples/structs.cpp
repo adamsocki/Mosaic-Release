@@ -98,6 +98,13 @@ struct ModelRenderData
 	real32 rotY;
 
 	vec4 color;
+
+	bool isMouseOver;
+	bool isSelected;
+
+	vec4 aabbColor;
+	vec3 aabb_min;
+	vec3 aabbSize;
 };
 
 struct Light
@@ -108,14 +115,11 @@ struct Light
 
 struct EntityMesh
 {
-	
 	OBJMesh stallMesh;
 	OBJMesh fernMesh;
 	OBJMesh wall1Mesh;
 	OBJMesh postMesh;
 	OBJMesh playerMesh;
-
-
 };
 
 struct MouseData
@@ -160,6 +164,15 @@ struct MyData {
     Sprite sprite2;
 };
 
+enum EditorMode
+{
+	fixed_Mode,
+
+	xPos_Mode,
+	yPos_Mode,
+	zPos_Mode,
+};
+
 struct Entity
 {
 	Model model;
@@ -168,7 +181,10 @@ struct Entity
 	vec3 position;
 	ModelRenderData modelRenderData;
 
-	bool mouseOver;
+	bool isMouseOver;
+	bool isSelected;
+	EditorMode editorMode;
+
 
 	Rect boundingBox;
 
@@ -179,8 +195,7 @@ struct Entity
 
 struct Terrain : Entity
 {
-	
-	
+		
 };
 
 

@@ -76,6 +76,7 @@ struct OBJMesh
 
     vec3 maxAABB;
     vec3 minAABB;
+    vec3 meshOffsetForAABB;
     
 
     int32 facesCount; // TODO ADD THIS TO PARSER

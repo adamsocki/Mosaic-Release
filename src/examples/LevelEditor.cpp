@@ -63,8 +63,8 @@ void TestRender()
     EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
     Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
 
-    vec3 aabb_min = V3(-1.0f, -1.0f, -1.0f);
-    vec3 aabb_max = V3(1.0f, 1.0f, 1.0f);
+   // vec3 aabb_min = V3(-1.0f, -1.0f, -1.0f);
+   // vec3 aabb_max = V3(1.0f, 1.0f, 1.0f);
 
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
@@ -74,8 +74,7 @@ void TestRender()
         for (int i = 0; i < 2; i++)
         {
             ModelRenderData modelRenderData = {};
-            Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);
-            
+            Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);         
             
             real32 distanceForRay = -500.0f;
 
@@ -84,33 +83,100 @@ void TestRender()
             vec3 scaledRayPos = V3(Data->mousePicker.mouseRay.x * distanceForRay, Data->mousePicker.mouseRay.y * distanceForRay, Data->mousePicker.mouseRay.z * distanceForRay);
             
             vec3 aabb_max = {};
-            aabb_max.x = entity->modelRenderData.position.x + 30;
-            aabb_max.y = entity->modelRenderData.position.y + 30;
-            aabb_max.z = entity->modelRenderData.position.z + 30;
-
+            aabb_max.x = entity->modelRenderData.position.x + (entity->mesh.maxAABB.x * entity->modelRenderData.scale.x);
+            aabb_max.y = entity->modelRenderData.position.y + (entity->mesh.maxAABB.y * entity->modelRenderData.scale.y);
+            aabb_max.z = entity->modelRenderData.position.z + (entity->mesh.maxAABB.z * entity->modelRenderData.scale.z);
 
             vec3 aabb_min = {};
-            aabb_min.x = entity->modelRenderData.position.x;
-            aabb_min.y = entity->modelRenderData.position.y;
-            aabb_min.z = entity->modelRenderData.position.z;
+            aabb_min.x = entity->modelRenderData.position.x + (entity->mesh.minAABB.x * entity->modelRenderData.scale.x);
+            aabb_min.y = entity->modelRenderData.position.y + (entity->mesh.minAABB.y * entity->modelRenderData.scale.y);
+            aabb_min.z = entity->modelRenderData.position.z + (entity->mesh.minAABB.z * entity->modelRenderData.scale.z);
 
             vec3 aabbSize = {};
             aabbSize = aabb_max - aabb_min;
+            entity->modelRenderData.aabb_min = aabb_min;
+            entity->modelRenderData.aabbSize = aabbSize;
 
-
+            // TODO if more than one selected, only interact with the closest;
             if (TestRayOBBIntersection(-Game->camera.pos, scaledRayPos, aabb_min, aabb_max, Identity4(), &intersection_distance))
             {
-                DrawMesh(&Game->cube, entity->modelRenderData.position, IdentityQuaternion(), V3(1), V4(0.11f, 1.0f, 1.0f, 1.0f), true);
-                DrawMesh(&Game->cube, aabb_max, IdentityQuaternion(), V3(1), V4(1.0f, 0.11f, 1.0f, 1.0f), true);
-                DrawMesh(&Game->cube, aabb_min, IdentityQuaternion(), V3(1), V4(1.0f, 1.0f,0.11f, 1.0f), true);
-                DrawAABB(aabb_min, IdentityQuaternion(), aabbSize, V4(1), true);
+                real32 distanceToEntity = Distance(-Game->camera.pos, entity->modelRenderData.position);
+                DrawAABB(entity->modelRenderData.position, IdentityQuaternion(), V3(0.25f, 0.25f, 0.25f), V3(0.5f, 0.5f, 0.25f, 1.0), true)
+                entity->editorMode = fixed_Mode;
+                entity->modelRenderData.isMouseOver = true;
+                //bool xMode = false;
+
+                if (InputHeld(Mouse, Input_MouseLeft))
+                {
+                    entity->modelRenderData.isSelected = true;
+                    entity->modelRenderData.aabbColor = V4(0.0f, 1.0f, 0.0f, 1.0f);
+                    // TODO: Calculate distance from mouseRay.origin to object Position
+                    // entity->modelRenderData.position = 
+                }
+                else
+                {
+                    entity->modelRenderData.aabbColor = V4(1);
+                    entity->modelRenderData.isSelected = false;
+                }
+
+
+                if (entity->modelRenderData.isSelected)
+                {
+                    if (InputHeld(Keyboard, Input_X))
+                    {
+                        entity->editorMode = xPos_Mode;
+                    }
+                    if (InputHeld(Keyboard, Input_Y))
+                    {
+                        entity->editorMode = yPos_Mode;
+                    }
+                    if (InputHeld(Keyboard, Input_Z))
+                    {
+                        entity->editorMode = zPos_Mode;
+                    }
+                }
+
+
+                switch (entity->editorMode)
+                {
+                    case fixed_Mode:
+                    {
+                        break;
+                    }
+                    case xPos_Mode:
+                    {
+                        entity->modelRenderData.position.x = -Data->mouse.positionPixel_delta.x;
+                        DrawLine(V3(-10000.0f, entity->modelRenderData.position.y, entity->modelRenderData.position.z), V3(20000.0f, 0.05f, 0.05f), V4(1.0f, 0.0f, 0.0f, 1.0f));
+                        break;
+                    }
+                    case yPos_Mode:
+                    {
+                        DrawLine(V3(entity->modelRenderData.position.x, -10000.0f, entity->modelRenderData.position.z), V3(0.05f, 20000.0f, 0.05f), V4(0.0f, 1.0f, 0.0f, 1.0f));
+                        break;
+                    }
+                    case zPos_Mode:
+                    {
+                        DrawLine(V3(entity->modelRenderData.position.x, entity->modelRenderData.position.y, -10000.0f), V3(0.05f, 0.05f, 20000.0f), V4(0.0f, 0.0f, 1.0f, 1.0f));
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+
+                
+
+                DrawAABB(aabb_min, IdentityQuaternion(), aabbSize, entity->modelRenderData.aabbColor, true);
                 entity->modelRenderData.sprite = Data->sprites.wall1Texture;
             } 
             else
             {
+                entity->modelRenderData.isMouseOver = true;
                 entity->modelRenderData.sprite = Data->sprites.fernTexture;
             }
 
+             
             modelRenderData = entity->modelRenderData;
 
             PushBack(&postEntitiesToRender, modelRenderData);
@@ -124,17 +190,12 @@ void TestRender()
             PushBack(&wallEntitiesToRender, modelRenderData);
 
         }
-        DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Game->modelShader, Data->rm.skyColor);
-
-
-
-
+        DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Game->modelShader, Data->rm.skyColor, true);
         DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Game->modelShader, Data->rm.skyColor);
     }
     
     DeallocateDynamicArray(&postEntitiesToRender);
     DeallocateDynamicArray(&wallEntitiesToRender);
-
 }
 
 

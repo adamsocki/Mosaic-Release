@@ -201,8 +201,13 @@ void InitializeStartingEntities()
 		postEntity->handle = postHandle;
 		postEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
 		postEntity->modelRenderData.scale = V3(3.0f, 3.0f, 3.0f);
-		postEntity->mouseOver = false;
+		postEntity->isMouseOver = false;
 		postEntity->mesh = Game->postMesh;
+		postEntity->modelRenderData.isSelected = false;
+		postEntity->modelRenderData.isMouseOver = false;
+		postEntity->editorMode = fixed_Mode;
+
+
 		//postEntity->boundingBox.min = ;
 		//postEntity->model = Data->rm.models.postModel;
 	}

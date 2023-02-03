@@ -18,7 +18,6 @@ MyData_LE* Data = NULL;
 
 void MyInit()
 {
-	
 	Game->myData = malloc(sizeof(MyData_LE));				// INIT GAME DATA	
 	memset(Game->myData, 0, sizeof(MyData_LE));
 	Data = (MyData_LE*)Game->myData;

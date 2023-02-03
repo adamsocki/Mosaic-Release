@@ -113,7 +113,51 @@ void InitOBJMesh(OBJMesh *mesh)
     mesh->indexBufferID = indexBuffer;
 }
 
-void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, OBJMesh* mesh, Shader* shader, vec4 skyColor)
+// SOCKI Func
+void DrawAABB(vec3 pos, quaternion rotation, vec3 scale, vec4 color, bool isWireframe)
+{
+    Mesh* mesh = &Game->AABBMesh;
+
+    Shader* shader = &Game->cubeShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (isWireframe)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
+    mat4 model = TRS(pos, rotation, scale);
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.view.data);
+    glUniformMatrix4fv(shader->uniforms[2].id, 1, GL_FALSE, Game->camera.projection.data);
+
+    glUniform4fv(shader->uniforms[3].id, 1, color.data);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    glDisableVertexAttribArray(vert);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+// SOCKI Func
+void DrawLine(vec3 pos, vec3 size, vec4 color)
+{
+    DrawAABB(pos, IdentityQuaternion(), size, color, false);
+}
+
+// SOCKI Func
+void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, OBJMesh* mesh, Shader* shader, vec4 skyColor, bool entityEditor)
 {
     SetShader(shader);
 
@@ -127,7 +171,6 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, O
 
     glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
 
-    
     glUniform1i(shader->uniforms[2].id, 0);
 
     glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
@@ -175,11 +218,22 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, O
         glUniform1f(shader->uniforms[8].id, modelRenderData[i].modifiedLighting);
         glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
         glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+        /*if (modelRenderData[i].isMouseOver && entityEditor)
+        {
+            DrawAABB(modelRenderData[i].aabb_min, IdentityQuaternion(), modelRenderData[i].aabbSize, modelRenderData[i].aabbColor, true);
+        }*/
+        
     }
     glDisable(GL_CULL_FACE);
     glDisableVertexAttribArray(vert);
     glDisableVertexAttribArray(texcoord);
     glDisableVertexAttribArray(normals);
+}
+
+void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, OBJMesh* mesh, Shader* shader, vec4 skyColor)
+{
+    DrawOBJModels(modelRenderData, light, mesh, shader, skyColor, false);
 }
 
 void ProcessVertex(std::string vertexData0, std::string vertexData1, std::string vertexData2, 
@@ -218,494 +272,461 @@ void ProcessVertexPointer(std::string vertexData0, std::string vertexData1, std:
 
 }
 
-OBJMesh LoadOBJModel(const char *modelPath)
-{
-    OBJMesh objMesh = {};
-
-    objMesh.verts = (real32*)malloc(100000 * 3 * sizeof(real32));
-    memset(objMesh.verts, 0, sizeof(real32) * 10000 * 3);
-    //    indicesArray = MakeDynamicArray<int32>(&Game->frameMem, indices.count);
-        //indicesArrayPointer = (int32*)malloc(indices.count * sizeof(int32));
-    objMesh.indices = (int32*)malloc(100000 * sizeof(int32));
-    memset(objMesh.indices, 0, sizeof(int32) * 100000);
-    objMesh.texcoords = (real32*)malloc(10000* 2 * sizeof(real32));
-    memset(objMesh.texcoords, 0, sizeof(real32) * 10000 * 2);
-    objMesh.texcoords2 = (real32*)malloc(10000 * 2 * sizeof(real32));
-
-    memset(objMesh.texcoords2, 0, sizeof(real32) * 10000 * 2);
-    objMesh.normals = (real32*)malloc(10000 * 3 * sizeof(real32));
-    memset(objMesh.normals, 0, sizeof(real32) * 10000 * 3);
-
-    objMesh.normals2 = (real32*)malloc(10000 * 3 * sizeof(real32));
-    memset(objMesh.normals2, 0, sizeof(real32) * 10000 * 3);
-
-    DynamicArray<vec3> vertices = MakeDynamicArray<vec3>(&Game->frameMem, 10000);
-    DynamicArray<vec2> textures = MakeDynamicArray<vec2>(&Game->frameMem, 10000);
-    DynamicArray<vec3> normals  = MakeDynamicArray<vec3>(&Game->frameMem, 10000);
-    DynamicArray<int32> indices = MakeDynamicArray<int32>(&Game->frameMem, 10000);
-
-
-    
-    real32* verticesArrayPointer;
-    real32* texturesArrayPointer;
-    real32* normalsArrayPointer;
-    int32* indicesArrayPointer;
-
-    int32 currentIndex = 0;
-
-    bool firstF = false;
-    
-    //DynamicArray<real32> verticesArray;
-    //DynamicArray<real32> texturesArray;
-    //DynamicArray<real32> normalsArray;
-   // DynamicArray<int32> indicesArray;
-
-    std::ifstream myFile;
-    myFile.open(modelPath);
-
-    std::string myLine;
-
-    if (myFile.is_open())
-    {
-        while (myFile.is_open())
-        {
-            std::getline(myFile, myLine);
-            //arr[1] = myLine[1];
-            char delim = ' '; 
-            int i = 0;
-            int j = 0;
-       //     break;
-            if (myLine.substr(0, 2) == "v ")
-            {
-                vec3 vertex = {};
-                std::string arr = {};
-                while (myLine[i] != '\0')
-                {
-                    if (myLine[i] != delim) {
-                        arr.push_back(myLine[i]);
-                    }
-                    else 
-                    {
-                        switch(j)
-                        {
-                            case 0:
-                            {
-                                arr.clear();
-                                break;
-                            }
-                            case 1:
-                            {
-                                vertex.x = std::stof(arr);
-                                arr.clear();
-                                break;
-                            }
-                            case 2:
-                            {
-                                vertex.y = std::stof(arr);
-                                arr.clear();
-                                break;
-                            }
-                            case 3:
-                            {
-                                vertex.z = std::stof(arr);
-                                arr.clear();
-                                break;
-                            }
-                            default:
-                            {
-                                arr.clear();
-                                break;
-                            }
-                        }
-                        j++;
-                    }
-                    if (myLine[i + 1] == '\0')
-                    {
-                        vertex.z = std::stof(arr);
-                        arr.clear();
-                    }
-                    i++;
-                }
-                PushBack(&vertices, vertex);
-            }
-            else if (myLine.substr(0, 3) == "vt ")
-            {
-                vec2 texture = {};
-                //char* s = {};
-                std::string arr = {};
-
-
-                while (myLine[i] != '\0')
-                {
-                    if (myLine[i] != delim) {
-                        arr.push_back(myLine[i]);
-                        //arr.append(myLine[i]);
-                    }
-                    else
-                    {
-                        switch (j)
-                        {
-                        case 0:
-                        {
-                            arr.clear();
-                            break;
-                        }
-                        case 1:
-                        {
-                            texture.x = std::stof(arr);
-                            arr.clear();
-                            break;
-                        }
-                        case 2:
-                        {
-                            texture.y = std::stof(arr);
-                            arr.clear();
-                            break;
-                        }
-                        default:
-                        {
-                            arr.clear();
-                            break;
-                        }
-                        }
-                        j++;
-                    }
-                    if (myLine[i + 1] == '\0')
-                    {
-                        texture.y = std::stof(arr);
-                        arr.clear();
-                    }
-                    i++;
-                }
-                PushBack(&textures, texture);
-                //myLine[i] = {};
-            }
-            else if (myLine.substr(0, 3) == "vn ")
-            {
-                vec3 normal = {};
-                //char* s = {};
-                std::string arr = {};
-
-
-                while (myLine[i] != '\0')
-                {
-                    if (myLine[i] != delim) {
-                        arr.push_back(myLine[i]);
-                        //arr.append(myLine[i]);
-                    }
-                    else
-                    {
-                        switch (j)
-                        {
-                        case 0:
-                        {
-                            arr.clear();
-                            break;
-                        }
-                        case 1:
-                        {
-                            //vertex.x = strtod(arr, NULL);
-                            normal.x = std::stof(arr);
-                            arr.clear();
-
-                            break;
-                        }
-                        case 2:
-                        {
-                            //vertex.y = strtod(arr, NULL);
-                            normal.y = std::stof(arr);
-                            arr.clear();
-
-                            break;
-                        }
-                        case 3:
-                        {
-                            //vertex.z = strtod(arr, NULL);
-                            normal.z = std::stof(arr);
-                            arr.clear();
-
-                            break;
-                        }
-                        default:
-                        {
-                            arr.clear();
-                            break;
-                        }
-                        }
-                        j++;
-                        // arr[100] = {};
-                    }
-                    if (myLine[i + 1] == '\0')
-                    {
-                        normal.z = std::stof(arr);
-                        arr.clear();
-                    }
-                    i++;
-                }
-                PushBack(&normals, normal);
-                //myLine[i];
-            }
-            else if (myLine.substr(0, 2) == "f ")
-            {
-               // texturesArray = MakeDynamicArray<real32>(&Game->frameMem, textures.count * 2);
-               // normalsArray  = MakeDynamicArray<real32>(&Game->frameMem, normals.count * 3);
-               // texturesArrayPointer = (real32*)malloc(textures.count * 2 * sizeof(real32));
-               // normalsArrayPointer = (real32*)malloc(normals.count * 3 * sizeof(real32));
-              /* objMesh.texcoords = (real32*)malloc(textures.count * 2 * sizeof(real32));
-               memset(objMesh.texcoords, 0, sizeof(real32)* textures.count * 2);
-               objMesh.normals = (real32*)malloc(textures.count * 3 * sizeof(real32));
-               memset(objMesh.normals, 0, sizeof(real32) * normals.count * 3);*/
-
-
-                break;
-            } 
-        }
-        while (!myFile.eof())
-        {
-            vec3 index = {};
-            if (firstF == true)
-            {
-                std::getline(myFile, myLine);
-            }
-            firstF = true;
-            char delimFace = '/';
-            if (myLine.substr(0, 2) != "f ")
-            {
-                std::getline(myFile, myLine);
-                continue;
-            }
-            int i = 0;
-            int j = 0;
-            int k = 0;
-            char delim = ' ';
-
-            std::string arr0[3] = {};
-            std::string arr1[3] = {};
-            std::string arr2[3] = {};
-
-            while (myLine[i] != '\0')
-            {
-                if (myLine[i] == 'f')
-                {
-                    i++;
-                    goto advance;
-                }
-                if (myLine[i] == '/')
-                {
-                    k++;
-                    goto advance;
-                }
-                if (myLine[i] != ' ')
-                {
-                    switch (j)
-                    {
-                        case 0:
-                        {
-                            arr0[k].push_back(myLine[i]);
-                            break;
-                        }
-                        case 1:
-                        {
-                            arr1[k].push_back(myLine[i]);
-                            break;
-                        }
-                        case 2:
-                        {
-                            arr2[k].push_back(myLine[i]);
-                            break;
-                        }
-                        default:
-                        {break; }
-                    }
-                }
-                else
-                {
-                    j++;
-                    k = 0;
-                }
-
-                if (myLine[i + 1] == '\0')
-                {
-                    //arr2[k].push_back(myLine[i]);
-                }
-            advance:
-                i++;
-            }
-
-            //ProcessVertex(arr0[0], arr0[1], arr0[2], indices, textures, normals, texturesArray, normalsArray);
-            //ProcessVertex(arr2[0], arr2[1], arr2[2], indices, textures, normals, texturesArray, normalsArray);
-            //ProcessVertex(arr1[0], arr1[1], arr1[2], indices, textures, normals, texturesArray, normalsArray);
-            int32 currentVertexPointer = (std::stof(arr0[0]) - 1);
-             PushBack(&indices, currentVertexPointer);
-             objMesh.indices[currentIndex] = currentVertexPointer;
-             currentIndex++;
-
-             vec2 currentTexture = textures[std::stof(arr0[1]) - 1];
-             objMesh.texcoords2[currentVertexPointer * 2] = currentTexture.x;
-             objMesh.texcoords2[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;
-
-             vec3 currentNormal = normals[std::stof(arr0[2]) - 1];
-             objMesh.normals2[currentVertexPointer * 3] = currentNormal.x;
-             objMesh.normals2[currentVertexPointer * 3 + 1] = currentNormal.y;
-             objMesh.normals2[currentVertexPointer * 3 + 2] = currentNormal.z;
-
-
-             //1
-             int32 currentVertexPointer1 = (std::stof(arr1[0]) - 1);
-             PushBack(&indices, currentVertexPointer1);
-             objMesh.indices[currentIndex] = currentVertexPointer1;
-             currentIndex++;
-
-             vec2 currentTexture1 = textures[std::stof(arr1[1]) - 1];
-             objMesh.texcoords2[currentVertexPointer1 * 2] = currentTexture1.x;
-             objMesh.texcoords2[currentVertexPointer1 * 2 + 1] = 1 - currentTexture1.y;
-
-             vec3 currentNormal1 = normals[std::stof(arr1[2]) - 1];
-             objMesh.normals2[currentVertexPointer1 * 3] = currentNormal1.x;
-             objMesh.normals2[currentVertexPointer1 * 3 + 1] = currentNormal1.y;
-             objMesh.normals2[currentVertexPointer1 * 3 + 2] = currentNormal1.z;
-
-             //2
-             int32 currentVertexPointer2 = (std::stof(arr2[0]) - 1);
-             PushBack(&indices, currentVertexPointer2);
-             objMesh.indices[currentIndex] = currentVertexPointer2;
-             currentIndex++;
-
-             vec2 currentTexture2 = textures[std::stof(arr2[1]) - 1];
-             objMesh.texcoords2[currentVertexPointer2 * 2] = currentTexture2.x;
-             objMesh.texcoords2[currentVertexPointer2 * 2 + 1] = 1 - currentTexture2.y;
-
-             vec3 currentNormal2 = normals[std::stof(arr2[2]) - 1];
-             objMesh.normals2[currentVertexPointer2 * 3] = currentNormal2.x;
-             objMesh.normals2[currentVertexPointer2 * 3 + 1] = currentNormal2.y;
-             objMesh.normals2[currentVertexPointer2 * 3 + 2] = currentNormal2.z;
-           // ProcessVertexPointer(arr0[0], arr0[1], arr0[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
-            //ProcessVertexPointer(arr2[0], arr2[1], arr2[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
-            //ProcessVertexPointer(arr1[0], arr1[1], arr1[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
-
-        }
-    }
-
-   // verticesArray = MakeDynamicArray<real32>(&Game->frameMem, vertices.count * 3);
-    verticesArrayPointer = (real32*)malloc(vertices.count * 3 * sizeof(real32));
-//    objMesh.verts = (real32*)malloc(vertices.count * 3 * sizeof(real32));
-//    memset(objMesh.verts, 0, sizeof(real32) * vertices.count * 3);
-////    indicesArray = MakeDynamicArray<int32>(&Game->frameMem, indices.count);
-//    //indicesArrayPointer = (int32*)malloc(indices.count * sizeof(int32));
-//    objMesh.indices = (int32*)malloc(indices.count * sizeof(int32));
-//    memset(objMesh.indices, 0, sizeof(int32)* indices.count);
-
-
-
-    int32 vertexPointer = 0;
-    
-    for (int i = 0; i < vertices.count; i++)
-    {
-        verticesArrayPointer[vertexPointer++] = vertices[i].x;
-        verticesArrayPointer[vertexPointer++] = vertices[i].y;
-        verticesArrayPointer[vertexPointer++] = vertices[i].z;
-    }
-    
-
-
-    /*for (int i = 0; i < indices.count; i++)
-    {
-        objMesh.indices[i] = indices[i];
-    }*/
-
-    objMesh.vertCount = vertices.count * 3;
-   // objMesh.verts = verticesArrayPointer;
-    //objMesh.normals = normalsArrayPointer;
-   
-    objMesh.indexCount = indices.count;
-
-    objMesh.minAABB = {};
-    objMesh.maxAABB = {};
-    //objMesh.indices = indicesArrayPointer;
-
-    objMesh.texcoordsCount = textures.count * 2;
-    objMesh.normalsCount = normals.count * 3;
-    //objMesh.texcoords = texturesArrayPointer;
-
-    objMesh.data = (void*)malloc((sizeof(real32)* objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount) + (sizeof(real32) * objMesh.normalsCount));
-    objMesh.size = (sizeof(real32) * objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount) + (sizeof(real32) * objMesh.normalsCount);
-
-    objMesh.verts = (real32*)objMesh.data;
-
-    int32 vertCounter = 0;
-    for (int i = 0; i < vertices.count; i++)
-    {
-        objMesh.verts[vertCounter] = vertices[i].x;
-        vertCounter++;
-        objMesh.verts[vertCounter] = vertices[i].y;
-        vertCounter++;
-        objMesh.verts[vertCounter] = vertices[i].z;
-        vertCounter++;
-
-        if (objMesh.minAABB.x > vertices[i].x)
-        {
-            objMesh.minAABB.x = vertices[i].x;
-        }
-        
-        if (objMesh.minAABB.y > vertices[i].y)
-        {
-            objMesh.minAABB.y = vertices[i].y;
-        }
-
-        if (objMesh.minAABB.z > vertices[i].z)
-        {
-            objMesh.minAABB.z = vertices[i].z;
-        }
-
-        if (objMesh.maxAABB.x < vertices[i].x)
-        {
-            objMesh.maxAABB.x = vertices[i].x;
-        }
-
-        if (objMesh.maxAABB.y < vertices[i].y)
-        {
-            objMesh.maxAABB.y = vertices[i].y;
-        }
-
-        if (objMesh.maxAABB.z < vertices[i].z)
-        {
-            objMesh.maxAABB.z = vertices[i].z;
-        }
-
-
-    }
-    objMesh.vertSize = (sizeof(real32) * objMesh.vertCount);
-
-    int32 texCounter = 0;
-    objMesh.texcoords = (real32*)((uint8*)objMesh.data + (sizeof(real32) * objMesh.vertCount));
-    for (int i = 0; i < textures.count * 2; i++)
-    {
-        /*objMesh.texcoords[texCounter] = textures[i].x;
-        texCounter++;
-        objMesh.texcoords[texCounter] = textures[i].y;
-        texCounter++;*/
-        objMesh.texcoords[i] = objMesh.texcoords2[i];
-    }
-    // objMesh.texcoords = objMesh.texcoords2;
-    objMesh.texcoordsSize = (sizeof(real32) * objMesh.texcoordsCount);
-
-    int32 normalCounter = 0;
-    objMesh.normals = (real32*)((uint8*)objMesh.data + (sizeof(real32) * objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount));
-    for (int i = 0; i < normals.count * 3; i++)
-    {
-        objMesh.normals[i] = objMesh.normals2[i];
-    }
-    
-
-    DeallocateDynamicArray(&vertices);
-    DeallocateDynamicArray(&textures);
-    DeallocateDynamicArray(&normals);
-    DeallocateDynamicArray(&indices);
-    
-        
-   return objMesh;
-
-}
+//OBJMesh LoadOBJModel(const char *modelPath)
+//{
+//    OBJMesh objMesh = {};
+//
+//    objMesh.verts = (real32*)malloc(100000 * 3 * sizeof(real32));
+//    memset(objMesh.verts, 0, sizeof(real32) * 10000 * 3);
+//    //    indicesArray = MakeDynamicArray<int32>(&Game->frameMem, indices.count);
+//        //indicesArrayPointer = (int32*)malloc(indices.count * sizeof(int32));
+//    objMesh.indices = (int32*)malloc(100000 * sizeof(int32));
+//    memset(objMesh.indices, 0, sizeof(int32) * 100000);
+//    objMesh.texcoords = (real32*)malloc(10000* 2 * sizeof(real32));
+//    memset(objMesh.texcoords, 0, sizeof(real32) * 10000 * 2);
+//    objMesh.texcoords2 = (real32*)malloc(10000 * 2 * sizeof(real32));
+//
+//    memset(objMesh.texcoords2, 0, sizeof(real32) * 10000 * 2);
+//    objMesh.normals = (real32*)malloc(10000 * 3 * sizeof(real32));
+//    memset(objMesh.normals, 0, sizeof(real32) * 10000 * 3);
+//
+//    objMesh.normals2 = (real32*)malloc(10000 * 3 * sizeof(real32));
+//    memset(objMesh.normals2, 0, sizeof(real32) * 10000 * 3);
+//
+//    DynamicArray<vec3> vertices = MakeDynamicArray<vec3>(&Game->frameMem, 10000);
+//    DynamicArray<vec2> textures = MakeDynamicArray<vec2>(&Game->frameMem, 10000);
+//    DynamicArray<vec3> normals  = MakeDynamicArray<vec3>(&Game->frameMem, 10000);
+//    DynamicArray<int32> indices = MakeDynamicArray<int32>(&Game->frameMem, 10000);
+//
+//
+//    
+//    real32* verticesArrayPointer;
+//    real32* texturesArrayPointer;
+//    real32* normalsArrayPointer;
+//    int32* indicesArrayPointer;
+//
+//    int32 currentIndex = 0;
+//
+//    bool firstF = false;
+//    
+//    //DynamicArray<real32> verticesArray;
+//    //DynamicArray<real32> texturesArray;
+//    //DynamicArray<real32> normalsArray;
+//   // DynamicArray<int32> indicesArray;
+//
+//    std::ifstream myFile;
+//    myFile.open(modelPath);
+//
+//    std::string myLine;
+//
+//    if (myFile.is_open())
+//    {
+//        while (myFile.is_open())
+//        {
+//            std::getline(myFile, myLine);
+//            //arr[1] = myLine[1];
+//            char delim = ' '; 
+//            int i = 0;
+//            int j = 0;
+//       //     break;
+//            if (myLine.substr(0, 2) == "v ")
+//            {
+//                vec3 vertex = {};
+//                std::string arr = {};
+//                while (myLine[i] != '\0')
+//                {
+//                    if (myLine[i] != delim) {
+//                        arr.push_back(myLine[i]);
+//                    }
+//                    else 
+//                    {
+//                        switch(j)
+//                        {
+//                            case 0:
+//                            {
+//                                arr.clear();
+//                                break;
+//                            }
+//                            case 1:
+//                            {
+//                                vertex.x = std::stof(arr);
+//                                arr.clear();
+//                                break;
+//                            }
+//                            case 2:
+//                            {
+//                                vertex.y = std::stof(arr);
+//                                arr.clear();
+//                                break;
+//                            }
+//                            case 3:
+//                            {
+//                                vertex.z = std::stof(arr);
+//                                arr.clear();
+//                                break;
+//                            }
+//                            default:
+//                            {
+//                                arr.clear();
+//                                break;
+//                            }
+//                        }
+//                        j++;
+//                    }
+//                    if (myLine[i + 1] == '\0')
+//                    {
+//                        vertex.z = std::stof(arr);
+//                        arr.clear();
+//                    }
+//                    i++;
+//                }
+//                PushBack(&vertices, vertex);
+//            }
+//            else if (myLine.substr(0, 3) == "vt ")
+//            {
+//                vec2 texture = {};
+//                //char* s = {};
+//                std::string arr = {};
+//
+//
+//                while (myLine[i] != '\0')
+//                {
+//                    if (myLine[i] != delim) {
+//                        arr.push_back(myLine[i]);
+//                        //arr.append(myLine[i]);
+//                    }
+//                    else
+//                    {
+//                        switch (j)
+//                        {
+//                        case 0:
+//                        {
+//                            arr.clear();
+//                            break;
+//                        }
+//                        case 1:
+//                        {
+//                            texture.x = std::stof(arr);
+//                            arr.clear();
+//                            break;
+//                        }
+//                        case 2:
+//                        {
+//                            texture.y = std::stof(arr);
+//                            arr.clear();
+//                            break;
+//                        }
+//                        default:
+//                        {
+//                            arr.clear();
+//                            break;
+//                        }
+//                        }
+//                        j++;
+//                    }
+//                    if (myLine[i + 1] == '\0')
+//                    {
+//                        texture.y = std::stof(arr);
+//                        arr.clear();
+//                    }
+//                    i++;
+//                }
+//                PushBack(&textures, texture);
+//                //myLine[i] = {};
+//            }
+//            else if (myLine.substr(0, 3) == "vn ")
+//            {
+//                vec3 normal = {};
+//                //char* s = {};
+//                std::string arr = {};
+//
+//
+//                while (myLine[i] != '\0')
+//                {
+//                    if (myLine[i] != delim) {
+//                        arr.push_back(myLine[i]);
+//                        //arr.append(myLine[i]);
+//                    }
+//                    else
+//                    {
+//                        switch (j)
+//                        {
+//                        case 0:
+//                        {
+//                            arr.clear();
+//                            break;
+//                        }
+//                        case 1:
+//                        {
+//                            //vertex.x = strtod(arr, NULL);
+//                            normal.x = std::stof(arr);
+//                            arr.clear();
+//
+//                            break;
+//                        }
+//                        case 2:
+//                        {
+//                            //vertex.y = strtod(arr, NULL);
+//                            normal.y = std::stof(arr);
+//                            arr.clear();
+//
+//                            break;
+//                        }
+//                        case 3:
+//                        {
+//                            //vertex.z = strtod(arr, NULL);
+//                            normal.z = std::stof(arr);
+//                            arr.clear();
+//
+//                            break;
+//                        }
+//                        default:
+//                        {
+//                            arr.clear();
+//                            break;
+//                        }
+//                        }
+//                        j++;
+//                        // arr[100] = {};
+//                    }
+//                    if (myLine[i + 1] == '\0')
+//                    {
+//                        normal.z = std::stof(arr);
+//                        arr.clear();
+//                    }
+//                    i++;
+//                }
+//                PushBack(&normals, normal);
+//                //myLine[i];
+//            }
+//            else if (myLine.substr(0, 2) == "f ")
+//            {
+//               // texturesArray = MakeDynamicArray<real32>(&Game->frameMem, textures.count * 2);
+//               // normalsArray  = MakeDynamicArray<real32>(&Game->frameMem, normals.count * 3);
+//               // texturesArrayPointer = (real32*)malloc(textures.count * 2 * sizeof(real32));
+//               // normalsArrayPointer = (real32*)malloc(normals.count * 3 * sizeof(real32));
+//              /* objMesh.texcoords = (real32*)malloc(textures.count * 2 * sizeof(real32));
+//               memset(objMesh.texcoords, 0, sizeof(real32)* textures.count * 2);
+//               objMesh.normals = (real32*)malloc(textures.count * 3 * sizeof(real32));
+//               memset(objMesh.normals, 0, sizeof(real32) * normals.count * 3);*/
+//
+//
+//                break;
+//            } 
+//        }
+//        while (!myFile.eof())
+//        {
+//            vec3 index = {};
+//            if (firstF == true)
+//            {
+//                std::getline(myFile, myLine);
+//            }
+//            firstF = true;
+//            char delimFace = '/';
+//            if (myLine.substr(0, 2) != "f ")
+//            {
+//                std::getline(myFile, myLine);
+//                continue;
+//            }
+//            int i = 0;
+//            int j = 0;
+//            int k = 0;
+//            char delim = ' ';
+//
+//            std::string arr0[3] = {};
+//            std::string arr1[3] = {};
+//            std::string arr2[3] = {};
+//
+//            while (myLine[i] != '\0')
+//            {
+//                if (myLine[i] == 'f')
+//                {
+//                    i++;
+//                    goto advance;
+//                }
+//                if (myLine[i] == '/')
+//                {
+//                    k++;
+//                    goto advance;
+//                }
+//                if (myLine[i] != ' ')
+//                {
+//                    switch (j)
+//                    {
+//                        case 0:
+//                        {
+//                            arr0[k].push_back(myLine[i]);
+//                            break;
+//                        }
+//                        case 1:
+//                        {
+//                            arr1[k].push_back(myLine[i]);
+//                            break;
+//                        }
+//                        case 2:
+//                        {
+//                            arr2[k].push_back(myLine[i]);
+//                            break;
+//                        }
+//                        default:
+//                        {break; }
+//                    }
+//                }
+//                else
+//                {
+//                    j++;
+//                    k = 0;
+//                }
+//
+//                if (myLine[i + 1] == '\0')
+//                {
+//                    //arr2[k].push_back(myLine[i]);
+//                }
+//            advance:
+//                i++;
+//            }
+//
+//            //ProcessVertex(arr0[0], arr0[1], arr0[2], indices, textures, normals, texturesArray, normalsArray);
+//            //ProcessVertex(arr2[0], arr2[1], arr2[2], indices, textures, normals, texturesArray, normalsArray);
+//            //ProcessVertex(arr1[0], arr1[1], arr1[2], indices, textures, normals, texturesArray, normalsArray);
+//            int32 currentVertexPointer = (std::stof(arr0[0]) - 1);
+//             PushBack(&indices, currentVertexPointer);
+//             objMesh.indices[currentIndex] = currentVertexPointer;
+//             currentIndex++;
+//
+//             vec2 currentTexture = textures[std::stof(arr0[1]) - 1];
+//             objMesh.texcoords2[currentVertexPointer * 2] = currentTexture.x;
+//             objMesh.texcoords2[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;
+//
+//             vec3 currentNormal = normals[std::stof(arr0[2]) - 1];
+//             objMesh.normals2[currentVertexPointer * 3] = currentNormal.x;
+//             objMesh.normals2[currentVertexPointer * 3 + 1] = currentNormal.y;
+//             objMesh.normals2[currentVertexPointer * 3 + 2] = currentNormal.z;
+//
+//
+//             //1
+//             int32 currentVertexPointer1 = (std::stof(arr1[0]) - 1);
+//             PushBack(&indices, currentVertexPointer1);
+//             objMesh.indices[currentIndex] = currentVertexPointer1;
+//             currentIndex++;
+//
+//             vec2 currentTexture1 = textures[std::stof(arr1[1]) - 1];
+//             objMesh.texcoords2[currentVertexPointer1 * 2] = currentTexture1.x;
+//             objMesh.texcoords2[currentVertexPointer1 * 2 + 1] = 1 - currentTexture1.y;
+//
+//             vec3 currentNormal1 = normals[std::stof(arr1[2]) - 1];
+//             objMesh.normals2[currentVertexPointer1 * 3] = currentNormal1.x;
+//             objMesh.normals2[currentVertexPointer1 * 3 + 1] = currentNormal1.y;
+//             objMesh.normals2[currentVertexPointer1 * 3 + 2] = currentNormal1.z;
+//
+//             //2
+//             int32 currentVertexPointer2 = (std::stof(arr2[0]) - 1);
+//             PushBack(&indices, currentVertexPointer2);
+//             objMesh.indices[currentIndex] = currentVertexPointer2;
+//             currentIndex++;
+//
+//             vec2 currentTexture2 = textures[std::stof(arr2[1]) - 1];
+//             objMesh.texcoords2[currentVertexPointer2 * 2] = currentTexture2.x;
+//             objMesh.texcoords2[currentVertexPointer2 * 2 + 1] = 1 - currentTexture2.y;
+//
+//             vec3 currentNormal2 = normals[std::stof(arr2[2]) - 1];
+//             objMesh.normals2[currentVertexPointer2 * 3] = currentNormal2.x;
+//             objMesh.normals2[currentVertexPointer2 * 3 + 1] = currentNormal2.y;
+//             objMesh.normals2[currentVertexPointer2 * 3 + 2] = currentNormal2.z;
+//           // ProcessVertexPointer(arr0[0], arr0[1], arr0[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
+//            //ProcessVertexPointer(arr2[0], arr2[1], arr2[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
+//            //ProcessVertexPointer(arr1[0], arr1[1], arr1[2], indices, textures, normals, texturesArrayPointer, normalsArrayPointer);
+//
+//        }
+//    }
+//
+//   // verticesArray = MakeDynamicArray<real32>(&Game->frameMem, vertices.count * 3);
+//    verticesArrayPointer = (real32*)malloc(vertices.count * 3 * sizeof(real32));
+////    objMesh.verts = (real32*)malloc(vertices.count * 3 * sizeof(real32));
+////    memset(objMesh.verts, 0, sizeof(real32) * vertices.count * 3);
+//////    indicesArray = MakeDynamicArray<int32>(&Game->frameMem, indices.count);
+////    //indicesArrayPointer = (int32*)malloc(indices.count * sizeof(int32));
+////    objMesh.indices = (int32*)malloc(indices.count * sizeof(int32));
+////    memset(objMesh.indices, 0, sizeof(int32)* indices.count);
+//
+//
+//
+//    int32 vertexPointer = 0;
+//    
+//    for (int i = 0; i < vertices.count; i++)
+//    {
+//        verticesArrayPointer[vertexPointer++] = vertices[i].x;
+//        verticesArrayPointer[vertexPointer++] = vertices[i].y;
+//        verticesArrayPointer[vertexPointer++] = vertices[i].z;
+//    }
+//    
+//
+//
+//    /*for (int i = 0; i < indices.count; i++)
+//    {
+//        objMesh.indices[i] = indices[i];
+//    }*/
+//
+//    objMesh.vertCount = vertices.count * 3;
+//   // objMesh.verts = verticesArrayPointer;
+//    //objMesh.normals = normalsArrayPointer;
+//   
+//    objMesh.indexCount = indices.count;
+//
+//
+//    //objMesh.indices = indicesArrayPointer;
+//
+//    objMesh.texcoordsCount = textures.count * 2;
+//    objMesh.normalsCount = normals.count * 3;
+//    //objMesh.texcoords = texturesArrayPointer;
+//
+//    objMesh.data = (void*)malloc((sizeof(real32)* objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount) + (sizeof(real32) * objMesh.normalsCount));
+//    objMesh.size = (sizeof(real32) * objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount) + (sizeof(real32) * objMesh.normalsCount);
+//
+//    objMesh.verts = (real32*)objMesh.data;
+//
+//    int32 vertCounter = 0;
+//    for (int i = 0; i < vertices.count; i++)
+//    {
+//        objMesh.verts[vertCounter] = vertices[i].x;
+//        vertCounter++;
+//        objMesh.verts[vertCounter] = vertices[i].y;
+//        vertCounter++;
+//        objMesh.verts[vertCounter] = vertices[i].z;
+//        vertCounter++;
+//    }
+//    objMesh.vertSize = (sizeof(real32) * objMesh.vertCount);
+//
+//    int32 texCounter = 0;
+//    objMesh.texcoords = (real32*)((uint8*)objMesh.data + (sizeof(real32) * objMesh.vertCount));
+//    for (int i = 0; i < textures.count * 2; i++)
+//    {
+//        /*objMesh.texcoords[texCounter] = textures[i].x;
+//        texCounter++;
+//        objMesh.texcoords[texCounter] = textures[i].y;
+//        texCounter++;*/
+//        objMesh.texcoords[i] = objMesh.texcoords2[i];
+//    }
+//    // objMesh.texcoords = objMesh.texcoords2;
+//    objMesh.texcoordsSize = (sizeof(real32) * objMesh.texcoordsCount);
+//
+//    int32 normalCounter = 0;
+//    objMesh.normals = (real32*)((uint8*)objMesh.data + (sizeof(real32) * objMesh.vertCount) + (sizeof(real32) * objMesh.texcoordsCount));
+//    for (int i = 0; i < normals.count * 3; i++)
+//    {
+//        objMesh.normals[i] = objMesh.normals2[i];
+//    }
+//    
+//
+//    DeallocateDynamicArray(&vertices);
+//    DeallocateDynamicArray(&textures);
+//    DeallocateDynamicArray(&normals);
+//    DeallocateDynamicArray(&indices);
+//    
+//        
+//   return objMesh;
+//
+//}
 
 inline bool glCheckError_(char *file, uint32 line) {
     GLenum _glError = glGetError();
@@ -1308,43 +1329,6 @@ void RenderRectBuffer(RectBuffer *buffer) {
     glVertexAttribDivisor(model + 1, 0);
     glVertexAttribDivisor(model + 2, 0);
     glVertexAttribDivisor(model + 3, 0);
-}
-
-void DrawAABB(vec3 pos, quaternion rotation, vec3 scale, vec4 color, bool isWireframe)
-{
-    Mesh* mesh = &Game->AABBMesh;
-
-    Shader* shader = &Game->cubeShader;
-    SetShader(shader);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    if (isWireframe)
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
-
-    mat4 model = TRS(pos, rotation, scale);
-
-    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
-    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.view.data);
-    glUniformMatrix4fv(shader->uniforms[2].id, 1, GL_FALSE, Game->camera.projection.data);
-
-    glUniform4fv(shader->uniforms[3].id, 1, color.data);
-
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
-
-    // 1st attribute buffer : vertices
-    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
-    glEnableVertexAttribArray(vert);
-    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
-
-    glDisableVertexAttribArray(vert);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 }
 
 void DrawMesh(Mesh *mesh, vec3 pos, quaternion rotation, vec3 scale, vec4 color, bool isWireframe) {

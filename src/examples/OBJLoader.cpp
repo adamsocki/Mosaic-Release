@@ -474,8 +474,6 @@ OBJMesh LoadOBJv2(const char* modelPath)
             {
                 dealWithAlreadyProcessedVertex(&vertices[index_Value2], textureIndex2, normalIndex2, &indices, &vertices);
             }
-
-
         }
 
     }
@@ -489,6 +487,8 @@ OBJMesh LoadOBJv2(const char* modelPath)
             vertices[i].normalIndex = 0;
         }
     }
+
+
 
     objMesh.data = (void*)malloc((sizeof(real32) * vertices.count * 3) + (sizeof(real32) * vertices.count * 2) + (sizeof(real32) * vertices.count * 3));
     objMesh.size = (sizeof(real32) * vertices.count * 3) + (sizeof(real32) * vertices.count * 2) + (sizeof(real32) * vertices.count * 3);
@@ -508,6 +508,56 @@ OBJMesh LoadOBJv2(const char* modelPath)
     {
         indicesArray[i] = indices[i];
     }
+
+    // set highest vertex point
+    objMesh.minAABB = {};
+    objMesh.maxAABB = {};
+    for (int i = 0; i < vertices.count; i++)
+    {
+        if (objMesh.minAABB.x > vertices[i].position.x)
+        {
+            objMesh.minAABB.x = vertices[i].position.x;
+        }
+
+        if (objMesh.minAABB.y > vertices[i].position.y)
+        {
+            objMesh.minAABB.y = vertices[i].position.y;
+        }
+
+        if (objMesh.minAABB.z > vertices[i].position.z)
+        {
+            objMesh.minAABB.z = vertices[i].position.z;
+        }
+
+        if (objMesh.maxAABB.x < vertices[i].position.x)
+        {
+            objMesh.maxAABB.x = vertices[i].position.x;
+        }
+
+        if (objMesh.maxAABB.y < vertices[i].position.y)
+        {
+            objMesh.maxAABB.y = vertices[i].position.y;
+        }
+
+        if (objMesh.maxAABB.z < vertices[i].position.z)
+        {
+            objMesh.maxAABB.z = vertices[i].position.z;
+        }
+    }
+
+    real32 max_x = Abs(objMesh.maxAABB.x);
+    real32 max_y = Abs(objMesh.maxAABB.y);
+    real32 max_z = Abs(objMesh.maxAABB.z);
+    real32 min_x = Abs(objMesh.minAABB.x);
+    real32 min_y = Abs(objMesh.minAABB.y);
+    real32 min_z = Abs(objMesh.minAABB.z);
+
+    objMesh.meshOffsetForAABB = {};
+    objMesh.meshOffsetForAABB.x = (max_x + min_x) ;
+    objMesh.meshOffsetForAABB.y = (max_y + min_y) ;
+    objMesh.meshOffsetForAABB.z = (max_z + min_z) ;
+
+
     objMesh.indices = indicesArray;
     // objMesh.furthestPoint = furthest;
        // objMesh.indexCount = furthest;
