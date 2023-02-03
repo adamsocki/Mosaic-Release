@@ -138,6 +138,10 @@ struct MousePicker
 {
 	MouseData mouseData;
 	
+	vec3 selectedEntityPos;
+	vec3 selectedEntityPos_prev;
+	vec2 selectedEntityPos_delta;
+
 	vec3 mouseRay;
 	mat4 projectionMatrix;
 	mat4 viewMatrix;
