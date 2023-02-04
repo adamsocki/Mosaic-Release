@@ -24,6 +24,7 @@ void LoadLevelParse(int32 currentLevel)
 {
 	DynamicArray<TokenVal> tokens = MakeDynamicArray<TokenVal>(&Game->frameMem, 10000);
 	DynamicArray<Wall> walls = MakeDynamicArray<Wall>(&Game->frameMem, 10000);
+	DynamicArray<Door> doors = MakeDynamicArray<Door>(&Game->frameMem, 10000);
 
 	FileHandle file;
 
@@ -196,22 +197,7 @@ void LoadLevelParse(int32 currentLevel)
 										zPosAdded = true;
 										w.modelRenderData.position.z = strtoll(t.start, NULL, 10);
 									}
-
-									//tokenIndex++;
-									//t = tokens[tokenIndex];
-
 								}
-								if (t.type == TokenType_Comma)
-								{
-									//tokenIndex++;
-									//t = tokens[tokenIndex];
-								}
-
-								/*if (t.type == TokenType_RightParen)
-								{
-									tokenIndex++;
-									t = tokens[tokenIndex];
-								}*/
 							}
 							tokenIndex++;
 							t = tokens[tokenIndex];
@@ -251,7 +237,121 @@ void LoadLevelParse(int32 currentLevel)
 							tokenIndex++;
 							t = tokens[tokenIndex];
 						}
+						tokenIndex++;
+						t = tokens[tokenIndex];
+						if (strncmp(t.start, "roomNum", t.length) == 0)
+						{
+							tokenIndex++;
+							t = tokens[tokenIndex];
+
+							w.modelRenderData.roomNum = strtoll(t.start, NULL, 10);
+
+							tokenIndex++;
+							t = tokens[tokenIndex];
+						}
 						PushBack(&walls, w);
+					}
+				}
+				if (strncmp(t.start, "door", t.length) == 0)
+				{
+					tokenIndex++;
+					t = tokens[tokenIndex];
+
+					Door d = {};
+					// CREATE DOOR ENTITY
+					while (t.type == TokenType_PoundSymb)
+					{
+						tokenIndex++;
+						t = tokens[tokenIndex];
+						bool xPosAdded = false;
+						bool yPosAdded = false;
+						bool zPosAdded = false;
+						bool xScaleAdded = false;
+						bool yScaleAdded = false;
+						bool zScaleAdded = false;
+
+						// GATHER DOOR POSITION
+						if (strncmp(t.start, "pos", t.length) == 0)
+						{
+							tokenIndex++;
+							t = tokens[tokenIndex];
+
+							// LOOP OVER UNTIL DONE WITH POSITIONS
+							while (t.type != TokenType_RightParen)
+							{
+								tokenIndex++;
+								t = tokens[tokenIndex];
+								vec2 position;
+								if (t.type == TokenType_Integer)
+								{
+									if (!xPosAdded)
+									{
+										xPosAdded = true;
+										d.modelRenderData.position.x = strtoll(t.start, NULL, 10);
+									}
+									else if (!yPosAdded)
+									{
+										yPosAdded = true;
+										d.modelRenderData.position.y = strtoll(t.start, NULL, 10);
+									}
+									else if (!zPosAdded)
+									{
+										zPosAdded = true;
+										d.modelRenderData.position.z = strtoll(t.start, NULL, 10);
+									}
+								}
+							}
+							tokenIndex++;
+							t = tokens[tokenIndex];
+						}
+						tokenIndex++;
+						t = tokens[tokenIndex];
+						if (strncmp(t.start, "size", t.length) == 0)
+						{
+							tokenIndex++;
+							t = tokens[tokenIndex];
+
+							// LOOP OVER UNTIL DONE WITH POSITIONS
+							while (t.type != TokenType_RightParen)
+							{
+								tokenIndex++;
+								t = tokens[tokenIndex];
+								vec2 position;
+								if (t.type == TokenType_Integer)
+								{
+									if (!xScaleAdded)
+									{
+										xScaleAdded = true;
+										d.modelRenderData.scale.x = strtoll(t.start, NULL, 10);
+									}
+									else if (!yScaleAdded)
+									{
+										yScaleAdded = true;
+										d.modelRenderData.scale.y = strtoll(t.start, NULL, 10);
+									}
+									else if (!zScaleAdded)
+									{
+										zScaleAdded = true;
+										d.modelRenderData.scale.z = strtoll(t.start, NULL, 10);
+									}
+								}
+							}
+							tokenIndex++;
+							t = tokens[tokenIndex];
+						}
+						tokenIndex++;
+						t = tokens[tokenIndex];
+						if (strncmp(t.start, "roomNum", t.length) == 0)
+						{
+							tokenIndex++;
+							t = tokens[tokenIndex];
+
+							d.modelRenderData.roomNum = strtoll(t.start, NULL, 10);
+
+							tokenIndex++;
+							t = tokens[tokenIndex];
+						}
+						PushBack(&doors, d);
 					}
 				}
 			}
@@ -278,6 +378,7 @@ void LoadLevelParse(int32 currentLevel)
 
 	DeallocateDynamicArray(&tokens);
 	DeallocateDynamicArray(&walls);
+	DeallocateDynamicArray(&doors);
 }
 
 

@@ -105,6 +105,8 @@ struct ModelRenderData
 	vec4 aabbColor;
 	vec3 aabb_min;
 	vec3 aabbSize;
+
+	real32 roomNum;
 };
 
 struct Light
@@ -233,6 +235,10 @@ struct Wall : Entity
 
 };
 struct Post : Entity
+{
+
+};
+struct Door : Entity
 {
 
 };
