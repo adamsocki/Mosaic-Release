@@ -367,6 +367,15 @@ struct Box
 	bool isOpen;
 };
 
+struct Label : Box
+{
+	const char* text;
+	vec2 textPos;
+	real32 textSize;
+	vec4 textColor;
+
+
+};
 
 
 struct Button : Box
@@ -418,8 +427,10 @@ struct EntityPalatte
 	Button createEntityButton;
 	Button deleteEntityButton;
 
-	EntityType activeEntity;
-
+	int32 activeEntity;
+	Label activeEntityLabel;
+	//char* activeEntityList[];
+	
 
 	bool isCollapsed;
 };

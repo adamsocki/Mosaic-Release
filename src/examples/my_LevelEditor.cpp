@@ -1,4 +1,16 @@
 MyData_LE* Data = NULL;
+char* entityList[] =
+{
+	"Terrain",
+	"Test",
+	"Fern",
+	"GUI",
+	"Post",
+	"Wall",
+	"Player"
+};
+
+
 
 #include "EntityManager.cpp"
 #include "CameraManager.cpp"
@@ -16,6 +28,8 @@ MyData_LE* Data = NULL;
 
 #include "Testing.cpp"
 
+
+
 void MyInit()
 {
 	Game->myData = malloc(sizeof(MyData_LE));				// INIT GAME DATA	
@@ -26,6 +40,8 @@ void MyInit()
 
 	Data->sunLight.position = V3(1000.0f, 1000.0f, 1000.0f);
 	Data->sunLight.color = V3(1.0f, 1.0f, 1.0f);
+	
+
 	LoadSprites();
 	// TODO - INIT LEVEL EDITOR DATA
 	InitializeEntityManager();								// INIT ENTITIES
