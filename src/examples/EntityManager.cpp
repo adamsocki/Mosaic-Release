@@ -184,13 +184,13 @@ void InitializeStartingEntities()
 	}
 
 
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		EntityHandle wallHandle = AddEntity(&Data->em, EntityType_Wall);
 		Wall* wallEntity = (Wall*)GetEntity(&Data->em, wallHandle);
 		wallEntity->handle = wallHandle;
-		//fernEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
-		//fernEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
+		wallEntity->modelRenderData.position = V3(-10, 0, -50);
+		wallEntity->modelRenderData.scale = V3(5, 20, 100);
 		wallEntity->model = Data->rm.models.wall1Model;
 	}
 

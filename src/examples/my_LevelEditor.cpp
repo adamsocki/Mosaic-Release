@@ -44,7 +44,7 @@ void MyInit()
 
 	Data->meshes.wall1Mesh = LoadOBJv2("data/wall1.obj");
 	InitOBJMesh(&Data->meshes.wall1Mesh);
-	InitializeLevelFromCode();
+	
 	Data->rm.skyColor = RGB(0.12f, 0.14f, 0.0f);
 
 }
@@ -63,6 +63,8 @@ void MyGameUpdate()
 	// LogicEditMode();
 	LogicPalatte_LE();										// UPDATE PALATTES LOGIC
 	Mover_LE();
+
+
 	// ******
 	// RENDER
 	// ******

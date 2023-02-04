@@ -9,8 +9,6 @@ void CameraInit_LE()
 
 }
 
-
-
 void Mover_LE()
 {
 	Camera* cam = &Game->camera;
@@ -53,8 +51,6 @@ void Mover_LE()
     ///cam->targetRotY = player->modelRenderData.rotY;
     ///cam->isWalkingForwardOrBackward = player->isWalkingForwardOrBackward;
 }
-
-
 
 void TestRender()
 {
@@ -217,7 +213,6 @@ void TestRender()
     DeallocateDynamicArray(&wallEntitiesToRender);
 }
 
-
 void TestRayMouse()
 {
     Camera* cam = &Game->camera;
@@ -307,3 +302,16 @@ void TestRayMouse()
     DeallocateDynamicArray(&postEntitiesToRender);
 
 }   
+
+
+
+
+void LoadLevel_LE()
+{
+
+}
+
+void SaveLevel_LE()
+{
+
+}

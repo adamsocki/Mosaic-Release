@@ -15,6 +15,10 @@ bool isComma(char c)
 {
 	return c == ',';
 }
+bool isNeg(char c)
+{
+	return c == '-';
+}
 
 void LoadLevelParse(int32 currentLevel)
 {
@@ -95,7 +99,7 @@ void LoadLevelParse(int32 currentLevel)
 				t.length = 1;
 			}
 
-			while (isDigit(c))
+			while (isDigit(c) || isNeg(c))
 			{
 				if (t.start == NULL)
 				{
@@ -156,6 +160,12 @@ void LoadLevelParse(int32 currentLevel)
 					{
 						tokenIndex++;
 						t = tokens[tokenIndex];
+						bool xPosAdded = false;
+						bool yPosAdded = false;
+						bool zPosAdded = false;
+						bool xScaleAdded = false;
+						bool yScaleAdded = false;
+						bool zScaleAdded = false;
 
 						// GATHER WALL POSITION
 						if (strncmp(t.start, "pos", t.length) == 0)
@@ -171,27 +181,30 @@ void LoadLevelParse(int32 currentLevel)
 								vec2 position;
 								if (t.type == TokenType_Integer)
 								{
-									if (w.modelRenderData.position.x == NULL)
+									if (!xPosAdded)
 									{
+										xPosAdded = true;
 										w.modelRenderData.position.x = strtoll(t.start, NULL, 10);
 									} 
-									else if (w.modelRenderData.position.y == NULL)
+									else if (!yPosAdded)
 									{
+										yPosAdded = true;
 										w.modelRenderData.position.y = strtoll(t.start, NULL, 10);
 									} 
-									else if (w.modelRenderData.position.z == NULL)
+									else if (!zPosAdded)
 									{
+										zPosAdded = true;
 										w.modelRenderData.position.z = strtoll(t.start, NULL, 10);
 									}
 
-									tokenIndex++;
-									t = tokens[tokenIndex];
+									//tokenIndex++;
+									//t = tokens[tokenIndex];
 
 								}
 								if (t.type == TokenType_Comma)
 								{
-									tokenIndex++;
-									t = tokens[tokenIndex];
+									//tokenIndex++;
+									//t = tokens[tokenIndex];
 								}
 
 								/*if (t.type == TokenType_RightParen)
@@ -199,6 +212,41 @@ void LoadLevelParse(int32 currentLevel)
 									tokenIndex++;
 									t = tokens[tokenIndex];
 								}*/
+							}
+							tokenIndex++;
+							t = tokens[tokenIndex];
+						}
+						tokenIndex++;
+						t = tokens[tokenIndex];
+						if (strncmp(t.start, "size", t.length) == 0)
+						{
+							tokenIndex++;
+							t = tokens[tokenIndex];
+
+							// LOOP OVER UNTIL DONE WITH POSITIONS
+							while (t.type != TokenType_RightParen)
+							{
+								tokenIndex++;
+								t = tokens[tokenIndex];
+								vec2 position;
+								if (t.type == TokenType_Integer)
+								{
+									if (!xScaleAdded)
+									{
+										xScaleAdded = true;
+										w.modelRenderData.scale.x = strtoll(t.start, NULL, 10);
+									}
+									else if (!yScaleAdded)
+									{
+										yScaleAdded = true;
+										w.modelRenderData.scale.y = strtoll(t.start, NULL, 10);
+									}
+									else if (!zScaleAdded)
+									{
+										zScaleAdded = true;
+										w.modelRenderData.scale.z = strtoll(t.start, NULL, 10);
+									}
+								}
 							}
 							tokenIndex++;
 							t = tokens[tokenIndex];

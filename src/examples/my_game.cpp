@@ -60,8 +60,6 @@ void MyGameUpdate() {
     // SWITCH GAME MODES
     // SWITCH TO LEVEL EDITOR
     
-
-
     // This sets the background color.
     Camera* cam = &Game->camera;
     ClearColor(Data->rm.skyColor);
