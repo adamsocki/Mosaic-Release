@@ -127,6 +127,13 @@ void LoadLevelParse(int32 currentLevel)
 				t.length = 1;
 			}
 
+			if (c == '@')
+			{
+				t.start = (char*)&file.data[file.offset - 1];
+				t.type = TokenType_End;
+				t.length = 1;
+			}
+
 		AddToken:
 			PushBack(&tokens, t);
 
@@ -204,7 +211,7 @@ void LoadLevelParse(int32 currentLevel)
 						}
 						tokenIndex++;
 						t = tokens[tokenIndex];
-						if (strncmp(t.start, "size", t.length) == 0)
+						if (strncmp(t.start, "scale", t.length) == 0)
 						{
 							tokenIndex++;
 							t = tokens[tokenIndex];
@@ -306,7 +313,7 @@ void LoadLevelParse(int32 currentLevel)
 						}
 						tokenIndex++;
 						t = tokens[tokenIndex];
-						if (strncmp(t.start, "size", t.length) == 0)
+						if (strncmp(t.start, "scale", t.length) == 0)
 						{
 							tokenIndex++;
 							t = tokens[tokenIndex];
@@ -381,6 +388,24 @@ void LoadLevelParse(int32 currentLevel)
 	DeallocateDynamicArray(&doors);
 }
 
+int getSize(char* s) {
+	char* t; // first copy the pointer to not change the original
+	int size = 0;
+
+	for (t = s; *t != '\0'; t++) {
+		size++;
+	}
+
+	return size;
+}
+
+void WriteValues(char* val, FileHandle* file)
+{
+	for (int i = 0; i < getSize(val); i++) {
+
+		WriteByte(file, (u8)val[i]);
+	}
+}
 
 void SaveAndWriteLevel()
 {
@@ -389,9 +414,9 @@ void SaveAndWriteLevel()
 
 	char* path[] =
 	{
-	   "data/levelEditor/level0.txt",
-	   "data/levelEditor/level1.txt",
-	   "data/levelEditor/level2.txt",
+	   "data/levelFiles/level0.txt",
+	   "data/levelFiles/level1.txt",
+	   "data/levelFiles/level2.txt",
 	};
 	if (OpenFileForWrite(path[Data->le.currentLevel], &file, &Game->frameMem, sizeof(Entity) * 10000))
 	{
@@ -400,13 +425,16 @@ void SaveAndWriteLevel()
 
 		EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
 		Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
+
 		
 		char leftParen[2] = "(";
 		char rightParen[2] = ")";
 		char comma[2] = ",";
 		char newLine[3] = "\n";
+		char end[3] = "@";
 		char posToken[10] = "#pos\n";
-		char sizeToken[12] = "#size\n";
+		char scaleToken[12] = "#scale\n";
+		char roomNumToken[12] = "#roomNum\n";
 		
 
 		for (int i = 0; i < terrainBuffer->count; i++)
@@ -415,7 +443,54 @@ void SaveAndWriteLevel()
 
 		for (int i = 0; i < wallBuffer->count; i++)
 		{
+			Wall* wallEntity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[i].handle);
+			char typeName[10] = "$wall\n";
+			char pos_x[5];
+			char pos_y[5];
+			char pos_z[5];
+			char scale_x[5];
+			char scale_y[5];
+			char scale_z[5];
+			char roomNum[5];
+
+
+			sprintf(pos_x, "%.0f", wallEntity->modelRenderData.position.x);
+			sprintf(pos_y, "%.0f", wallEntity->modelRenderData.position.y);
+			sprintf(pos_z, "%.0f", wallEntity->modelRenderData.position.z);
+			sprintf(scale_x, "%.0f", wallEntity->modelRenderData.scale.x);
+			sprintf(scale_y, "%.0f", wallEntity->modelRenderData.scale.y);
+			sprintf(scale_z, "%.0f", wallEntity->modelRenderData.scale.z);
+			sprintf(roomNum, "%d", wallEntity->modelRenderData.roomNum);
+
+			WriteValues(typeName, &file);
+			WriteValues(posToken, &file);
+			WriteValues(leftParen, &file);
+			WriteValues(pos_x, &file);
+			WriteValues(comma, &file);
+			WriteValues(pos_y, &file);
+			WriteValues(comma, &file);
+			WriteValues(pos_x, &file);
+			WriteValues(rightParen, &file);
+			WriteValues(newLine, &file);
+
+			WriteValues(scaleToken, &file);
+			WriteValues(leftParen, &file);
+			WriteValues(scale_x, &file);
+			WriteValues(comma, &file);
+			WriteValues(scale_y, &file);
+			WriteValues(comma, &file);
+			WriteValues(scale_z, &file);
+			WriteValues(rightParen, &file);
+			WriteValues(newLine, &file);
+
+			WriteValues(roomNumToken, &file);
+			WriteValues(roomNum , &file);
+			WriteValues(newLine, &file);
+
+			WriteValues(newLine, &file);
+			WriteValues(newLine, &file);
 		}
+		WriteValues(end, &file);
 	}
 
 	CloseFile(&file);

@@ -110,7 +110,7 @@ struct ModelRenderData
 	vec3 aabb_min;
 	vec3 aabbSize;
 
-	real32 roomNum;
+	int32 roomNum;
 };
 
 struct Light
@@ -336,6 +336,7 @@ enum TokenTypeForLevel
 	TokenType_AmpSymb,
 	TokenType_PoundSymb,
 	TokenType_Comma,
+	TokenType_End,
 
 	TokenType_Integer,
 	TokenType_PeriodSymb,

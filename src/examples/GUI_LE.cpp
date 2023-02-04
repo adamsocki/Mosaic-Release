@@ -169,7 +169,7 @@ void LogicLevelPalatte_LE()
 	
 	if (Data->le.lp.saveButton.isMouseClick)
 	{	// TODO - CLICK EVENT TRIGGER
-
+		SaveAndWriteLevel();
 		Data->le.lp.saveButton.isMouseClick = false;
 	}
 
@@ -203,6 +203,7 @@ void LogicLevelPalatte_LE()
 		LoadLevelParse(Data->le.currentLevel);
 		Data->le.lp.loadButton.isMouseClick = false;
 	}
+
 }
 
 void RenderLevelPalatte_LE()
