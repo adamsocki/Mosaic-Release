@@ -205,7 +205,7 @@ void InitializeStartingEntities()
 		postEntity->mesh = Game->postMesh;
 		postEntity->modelRenderData.isSelected = false;
 		postEntity->modelRenderData.isMouseOver = false;
-		postEntity->editorMode = fixed_Mode;
+		postEntity->editorMode = fixed_EditorMode;
 
 
 		//postEntity->boundingBox.min = ;

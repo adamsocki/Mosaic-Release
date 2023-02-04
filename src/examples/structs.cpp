@@ -95,7 +95,11 @@ struct ModelRenderData
 	
 	vec3 position;
 	vec3 scale;
+	vec3 rotation;
+
+	real32 rotX;
 	real32 rotY;
+	real32 rotZ;
 
 	vec4 color;
 
@@ -172,13 +176,22 @@ struct MyData {
     Sprite sprite2;
 };
 
+enum AxisMode
+{
+	fixed_AxisMode,
+
+	xAxisMode,
+	yAxisMode,
+	zAxisMode,
+};
+
 enum EditorMode
 {
-	fixed_Mode,
+	fixed_EditorMode,
 
-	xPos_Mode,
-	yPos_Mode,
-	zPos_Mode,
+	posMode,
+	rotMode,
+	scaleMode,
 };
 
 struct Entity
@@ -191,6 +204,7 @@ struct Entity
 
 	bool isMouseOver;
 	bool isSelected;
+	AxisMode axisMode;
 	EditorMode editorMode;
 
 

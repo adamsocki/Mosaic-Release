@@ -98,7 +98,7 @@ void TestRender()
             {
                 real32 distanceToEntity = Distance(-Game->camera.pos, entity->modelRenderData.position);
                 DrawAABB(entity->modelRenderData.position, IdentityQuaternion(), V3(0.25f, 0.25f, 0.25f), V4(0.5f, 0.5f, 0.25f, 1.0), true);
-                entity->editorMode = fixed_Mode;
+                //entity->editorMode = fixed_EditorMode;
                 entity->modelRenderData.isMouseOver = true;
                 //bool xMode = false;
 
@@ -115,17 +115,13 @@ void TestRender()
                     entity->modelRenderData.isSelected = false;
                 }
 
-                if (entity->modelRenderData.isSelected)
-                {
-                    
-                }
-
+                
                 entity->modelRenderData.sprite = Data->sprites.wall1Texture;
             } 
             else
             {
                 entity->modelRenderData.isMouseOver = false;
-                entity->modelRenderData.sprite = Data->sprites.fernTexture;
+                entity->modelRenderData.sprite = Data->sprites.wall1Texture;
             }
 
             if (entity->modelRenderData.isMouseOver && !entity->modelRenderData.isSelected)
@@ -135,41 +131,111 @@ void TestRender()
 
             if (entity->modelRenderData.isSelected)
             {
+                // first choose editorMode
+
+                if (InputPressed(Keyboard, Input_1))
+                {
+                    entity->editorMode = posMode;
+                }
+                if (InputPressed(Keyboard, Input_2))
+                {
+                    entity->editorMode = rotMode;
+                }
+                if (InputPressed(Keyboard, Input_3))
+                {
+                    entity->editorMode = scaleMode;
+                }
+                if (InputPressed(Keyboard, Input_Tick))
+                {
+                    entity->editorMode = fixed_EditorMode;
+                }
+
+
                 if (InputHeld(Keyboard, Input_X))
                 {
-                    entity->editorMode = xPos_Mode;
+                    entity->axisMode = xAxisMode;
                 }
                 if (InputHeld(Keyboard, Input_Y))
                 {
-                    entity->editorMode = yPos_Mode;
+                    entity->axisMode = yAxisMode;
                 }
                 if (InputHeld(Keyboard, Input_Z))
                 {
-                    entity->editorMode = zPos_Mode;
+                    entity->axisMode = zAxisMode;
                 }
 
                 switch (entity->editorMode)
                 {
-                    case fixed_Mode:
+                    case posMode:
                     {
+                        switch (entity->axisMode)
+                        {
+                            case fixed_EditorMode:
+                            {
+                                break;
+                            }
+                            case xAxisMode:
+                            {
+                                entity->modelRenderData.position.x += -Data->mouse.positionPixel_delta.x * 0.1f;
+                                DrawLine(V3(-10000.0f, entity->modelRenderData.position.y, entity->modelRenderData.position.z), V3(20000.0f, 0.05f, 0.05f), V4(1.0f, 0.0f, 0.0f, 1.0f));
+                                break;
+                            }
+                            case yAxisMode:
+                            {
+                                entity->modelRenderData.position.y += -Data->mouse.positionPixel_delta.x * 0.1f;
+                                DrawLine(V3(entity->modelRenderData.position.x, -10000.0f, entity->modelRenderData.position.z), V3(0.05f, 20000.0f, 0.05f), V4(0.0f, 1.0f, 0.0f, 1.0f));
+                                break;
+                            }
+                            case zAxisMode:
+                            {
+                                entity->modelRenderData.position.z += -Data->mouse.positionPixel_delta.x * 0.1f;
+                                DrawLine(V3(entity->modelRenderData.position.x, entity->modelRenderData.position.y, -10000.0f), V3(0.05f, 0.05f, 20000.0f), V4(0.0f, 0.0f, 1.0f, 1.0f));
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
                         break;
                     }
-                    case xPos_Mode:
+                    case rotMode:
                     {
-                        entity->modelRenderData.position.x += -Data->mouse.positionPixel_delta.x * 0.1f;
-                        DrawLine(V3(-10000.0f, entity->modelRenderData.position.y, entity->modelRenderData.position.z), V3(20000.0f, 0.05f, 0.05f), V4(1.0f, 0.0f, 0.0f, 1.0f));
+                        // TODO Add this for rotation
                         break;
                     }
-                    case yPos_Mode:
+                    case scaleMode:
                     {
-                        entity->modelRenderData.position.y += -Data->mouse.positionPixel_delta.x * 0.1f;
-                        DrawLine(V3(entity->modelRenderData.position.x, -10000.0f, entity->modelRenderData.position.z), V3(0.05f, 20000.0f, 0.05f), V4(0.0f, 1.0f, 0.0f, 1.0f));
+                        switch (entity->axisMode)
+                        {
+                            case fixed_EditorMode:
+                            {
+                                break;
+                            }
+                            case xAxisMode:
+                            {
+                                entity->modelRenderData.scale.x += -Data->mouse.positionPixel_delta.x * 0.1f;
+                                DrawLine(V3(-10000.0f, entity->modelRenderData.position.y, entity->modelRenderData.position.z), V3(20000.0f, 0.05f, 0.05f), V4(1.0f, 0.0f, 0.0f, 1.0f));
+                                break;
+                            }
+                            case yAxisMode:
+                            {
+                                entity->modelRenderData.scale.y += -Data->mouse.positionPixel_delta.x * 0.1f;
+                                DrawLine(V3(entity->modelRenderData.position.x, -10000.0f, entity->modelRenderData.position.z), V3(0.05f, 20000.0f, 0.05f), V4(0.0f, 1.0f, 0.0f, 1.0f));
+                                break;
+                            }
+                            case zAxisMode:
+                            {
+                                entity->modelRenderData.scale.z += -Data->mouse.positionPixel_delta.x * 0.1f;
+                                DrawLine(V3(entity->modelRenderData.position.x, entity->modelRenderData.position.y, -10000.0f), V3(0.05f, 0.05f, 20000.0f), V4(0.0f, 0.0f, 1.0f, 1.0f));
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
                         break;
-                    }
-                    case zPos_Mode:
-                    {
-                        entity->modelRenderData.position.z += -Data->mouse.positionPixel_delta.x * 0.1f;
-                        DrawLine(V3(entity->modelRenderData.position.x, entity->modelRenderData.position.y, -10000.0f), V3(0.05f, 0.05f, 20000.0f), V4(0.0f, 0.0f, 1.0f, 1.0f));
                         break;
                     }
                     default:
@@ -178,9 +244,12 @@ void TestRender()
                     }
                 }
 
+
+                
+
                 if (InputReleased(Mouse, Input_X) || InputReleased(Mouse, Input_Y) || InputReleased(Mouse, Input_Z))
                 {
-                    entity->editorMode = fixed_Mode;
+                    entity->axisMode = fixed_AxisMode;
                 }
 
                 if (InputReleased(Mouse, Input_MouseLeft))
