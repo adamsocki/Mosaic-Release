@@ -182,10 +182,10 @@ void TestRender()
                     }
                 }
 
-                /*if (InputReleased(Mouse, Input_K) || InputReleased(Mouse, Input_K) || InputReleased(Mouse, Input_K)))
+                if (InputReleased(Mouse, Input_X) || InputReleased(Mouse, Input_Y) || InputReleased(Mouse, Input_Z))
                 {
-
-                }*/
+                    entity->editorMode = fixed_Mode;
+                }
 
                 if (InputReleased(Mouse, Input_MouseLeft))
                 {
