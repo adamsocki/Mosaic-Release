@@ -36,6 +36,10 @@ void CreateEntityPalatte_LE()
 	Data->le.ep.collapseButton.colorClick   = V4(1.0f, 1.0, 1.0f, 0.6f);
 }
 
+
+
+
+
 void LogicEntityPalatte_LE()
 {
 	// MOUSE COLLISSION
@@ -74,6 +78,19 @@ void LogicEntityPalatte_LE()
 		}
 		Data->le.ep.collapseButton.isMouseClick = false;
 	}
+
+
+	// Cycle through entity types
+
+		// Right & Left arrow
+
+		// name of entity type
+
+		// image of entity
+
+		// entity modifiers such as room number, etc.
+
+
 }
 
 void RenderEntityPalatte_LE()

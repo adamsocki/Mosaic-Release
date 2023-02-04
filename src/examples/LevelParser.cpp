@@ -426,6 +426,7 @@ void SaveAndWriteLevel()
 		EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
 		Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
 
+
 		
 		char leftParen[2] = "(";
 		char rightParen[2] = ")";
@@ -440,6 +441,11 @@ void SaveAndWriteLevel()
 		for (int i = 0; i < terrainBuffer->count; i++)
 		{
 		}
+
+		/*for (int i = 0; i < postBuffer->count; i++)
+		{
+
+		}*/
 
 		for (int i = 0; i < wallBuffer->count; i++)
 		{

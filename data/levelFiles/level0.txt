@@ -7,13 +7,6 @@ $wall
 0
 
 
-$wall
-#pos
-(-10,0,-10)
-#scale
-(5,20,100)
-#roomNum
-0
 
 
 @
