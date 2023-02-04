@@ -236,7 +236,6 @@ void TestRender()
                             }
                         }
                         break;
-                        break;
                     }
                     default:
                     {
@@ -244,8 +243,6 @@ void TestRender()
                     }
                 }
 
-
-                
 
                 if (InputReleased(Mouse, Input_X) || InputReleased(Mouse, Input_Y) || InputReleased(Mouse, Input_Z))
                 {

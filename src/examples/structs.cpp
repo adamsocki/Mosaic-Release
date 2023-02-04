@@ -413,6 +413,15 @@ struct EntityPalatte
 {
 	PalatteBackgroundEntity box;
 	Button collapseButton;
+	Button changeEntityLeftButton;
+	Button changeEntityRightButton;
+	Button createEntityButton;
+	Button deleteEntityButton;
+
+	EntityType activeEntity;
+
+
+	bool isCollapsed;
 };
 
 

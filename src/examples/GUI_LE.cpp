@@ -34,6 +34,91 @@ void CreateEntityPalatte_LE()
 	Data->le.ep.collapseButton.colorMouse   = V4(0.85f, 0.95f, 0.95f, 0.6f);
 	Data->le.ep.collapseButton.colorNoMouse = V4(0.6f, 0.7f, 0.7f, 0.6f);
 	Data->le.ep.collapseButton.colorClick   = V4(1.0f, 1.0, 1.0f, 0.6f);
+	Data->le.ep.collapseButton.color = {};
+	
+	
+	
+
+	// CHANGE ENTITY BUTTON - LEFT
+	Data->le.ep.changeEntityLeftButton = {};
+	Data->le.ep.changeEntityLeftButton.pos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.changeEntityLeftButton.pos.y = Data->le.ep.box.size.y - (Data->le.ep.box.size.y * 0.85f);
+	Data->le.ep.changeEntityLeftButton.size.x = Data->le.ep.box.size.x * 0.1f;
+	Data->le.ep.changeEntityLeftButton.size.y = Data->le.ep.box.size.x * 0.1f;
+	Data->le.ep.changeEntityLeftButton.posMin.x = Data->le.ep.changeEntityLeftButton.pos.x;
+	Data->le.ep.changeEntityLeftButton.posMin.y = Data->le.ep.changeEntityLeftButton.pos.y;
+	Data->le.ep.changeEntityLeftButton.posMax.x = Data->le.ep.changeEntityLeftButton.pos.x + Data->le.ep.changeEntityLeftButton.size.x;
+	Data->le.ep.changeEntityLeftButton.posMax.y = Data->le.ep.changeEntityLeftButton.pos.y + Data->le.ep.changeEntityLeftButton.size.y;
+	Data->le.ep.changeEntityLeftButton.text = "L";
+	Data->le.ep.changeEntityLeftButton.textPos.x = Data->le.ep.changeEntityLeftButton.pos.x + (Data->le.ep.changeEntityLeftButton.size.x * 0.2f);
+	Data->le.ep.changeEntityLeftButton.textPos.y = Data->le.ep.changeEntityLeftButton.pos.y + (Data->le.ep.changeEntityLeftButton.size.y * 0.8f);
+	Data->le.ep.changeEntityLeftButton.textSize = Data->le.ep.changeEntityLeftButton.size.y / 2;
+	Data->le.ep.changeEntityLeftButton.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+	Data->le.ep.changeEntityLeftButton.colorMouse = V4(0.85f, 0.7f, 0.95f, 0.6f);
+	Data->le.ep.changeEntityLeftButton.colorNoMouse = V4(0.5f, 0.7f, 0.95f, 0.6f);
+	Data->le.ep.changeEntityLeftButton.colorClick = V4(0.3f, 0.2f, 0.2f, 0.6f);
+	Data->le.ep.changeEntityLeftButton.color = V4(0.5f, 0.7f, 0.95f, 0.6f);
+
+	// CHANGE ENTITY BUTTON - RIGHT
+	Data->le.ep.changeEntityRightButton = {};
+	Data->le.ep.changeEntityRightButton.pos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.changeEntityRightButton.pos.y = Data->le.ep.box.size.y - (Data->le.ep.box.size.y * 0.775f);
+	Data->le.ep.changeEntityRightButton.size.x = Data->le.ep.box.size.x * 0.1f;
+	Data->le.ep.changeEntityRightButton.size.y = Data->le.ep.box.size.x * 0.1f;
+	Data->le.ep.changeEntityRightButton.posMin.x = Data->le.ep.changeEntityRightButton.pos.x;
+	Data->le.ep.changeEntityRightButton.posMin.y = Data->le.ep.changeEntityRightButton.pos.y;
+	Data->le.ep.changeEntityRightButton.posMax.x = Data->le.ep.changeEntityRightButton.pos.x + Data->le.ep.changeEntityRightButton.size.x;
+	Data->le.ep.changeEntityRightButton.posMax.y = Data->le.ep.changeEntityRightButton.pos.y + Data->le.ep.changeEntityRightButton.size.y;
+	Data->le.ep.changeEntityRightButton.text = "R";
+	Data->le.ep.changeEntityRightButton.textPos.x = Data->le.ep.changeEntityRightButton.pos.x + (Data->le.ep.changeEntityRightButton.size.x * 0.2f);
+	Data->le.ep.changeEntityRightButton.textPos.y = Data->le.ep.changeEntityRightButton.pos.y + (Data->le.ep.changeEntityRightButton.size.y * 0.8f);
+	Data->le.ep.changeEntityRightButton.textSize = Data->le.ep.changeEntityRightButton.size.y / 2;
+	Data->le.ep.changeEntityRightButton.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+	Data->le.ep.changeEntityRightButton.colorMouse = V4(0.85f, 0.7f, 0.95f, 0.6f);
+	Data->le.ep.changeEntityRightButton.colorNoMouse = V4(0.5f, 0.7f, 0.95f, 0.6f);
+	Data->le.ep.changeEntityRightButton.colorClick = V4(0.3f, 0.2f, 0.2f, 0.6f);
+	Data->le.ep.changeEntityRightButton.color = V4(0.5f, 0.7f, 0.95f, 0.6f);
+
+	// CREATE ENTITY BUTTON
+	Data->le.ep.createEntityButton = {};
+	Data->le.ep.createEntityButton.pos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.createEntityButton.pos.y = Data->le.ep.box.size.y - (Data->le.ep.box.size.y * 0.72f);
+	Data->le.ep.createEntityButton.size.x = Data->le.ep.box.size.x * 0.3f;
+	Data->le.ep.createEntityButton.size.y = Data->le.ep.box.size.x * 0.08f;
+	Data->le.ep.createEntityButton.posMin.x = Data->le.ep.createEntityButton.pos.x;
+	Data->le.ep.createEntityButton.posMin.y = Data->le.ep.createEntityButton.pos.y;
+	Data->le.ep.createEntityButton.posMax.x = Data->le.ep.createEntityButton.pos.x + Data->le.ep.createEntityButton.size.x;
+	Data->le.ep.createEntityButton.posMax.y = Data->le.ep.createEntityButton.pos.y + Data->le.ep.createEntityButton.size.y;
+	Data->le.ep.createEntityButton.text = "CREATE";
+	Data->le.ep.createEntityButton.textPos.x = Data->le.ep.createEntityButton.pos.x + (Data->le.ep.createEntityButton.size.x * 0.05f);
+	Data->le.ep.createEntityButton.textPos.y = Data->le.ep.createEntityButton.pos.y + (Data->le.ep.createEntityButton.size.y * 0.8f);
+	Data->le.ep.createEntityButton.textSize = Data->le.ep.createEntityButton.size.y / 2;
+	Data->le.ep.createEntityButton.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+	Data->le.ep.createEntityButton.colorMouse = V4(0.85f, 0.7f, 0.95f, 0.6f);
+	Data->le.ep.createEntityButton.colorNoMouse = V4(0.5f, 0.95f, 0.65f, 0.6f);
+	Data->le.ep.createEntityButton.colorClick = V4(0.9f, 0.2f, 0.2f, 0.6f);
+	Data->le.ep.createEntityButton.color = V4(0.5f, 0.7f, 0.95f, 0.6f);
+
+	// DELETE ENTITY BUTTON
+	Data->le.ep.deleteEntityButton = {};
+	Data->le.ep.deleteEntityButton.pos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.deleteEntityButton.pos.y = Data->le.ep.box.size.y - (Data->le.ep.box.size.y * 0.675f);
+	Data->le.ep.deleteEntityButton.size.x = Data->le.ep.box.size.x * 0.175f;
+	Data->le.ep.deleteEntityButton.size.y = Data->le.ep.box.size.x * 0.08f;
+	Data->le.ep.deleteEntityButton.posMin.x = Data->le.ep.deleteEntityButton.pos.x;
+	Data->le.ep.deleteEntityButton.posMin.y = Data->le.ep.deleteEntityButton.pos.y;
+	Data->le.ep.deleteEntityButton.posMax.x = Data->le.ep.deleteEntityButton.pos.x + Data->le.ep.deleteEntityButton.size.x;
+	Data->le.ep.deleteEntityButton.posMax.y = Data->le.ep.deleteEntityButton.pos.y + Data->le.ep.deleteEntityButton.size.y;
+	Data->le.ep.deleteEntityButton.text = "DEL";
+	Data->le.ep.deleteEntityButton.textPos.x = Data->le.ep.deleteEntityButton.pos.x + (Data->le.ep.deleteEntityButton.size.x * 0.075f);
+	Data->le.ep.deleteEntityButton.textPos.y = Data->le.ep.deleteEntityButton.pos.y + (Data->le.ep.deleteEntityButton.size.y * 0.8f);
+	Data->le.ep.deleteEntityButton.textSize = Data->le.ep.deleteEntityButton.size.y / 2;
+	Data->le.ep.deleteEntityButton.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+	Data->le.ep.deleteEntityButton.colorMouse = V4(0.85f, 0.7f, 0.95f, 0.6f);
+	Data->le.ep.deleteEntityButton.colorNoMouse = V4(0.5f, 0.5f, 0.25f, 0.6f);
+	Data->le.ep.deleteEntityButton.colorClick = V4(0.9f, 0.2f, 0.2f, 0.6f);
+	Data->le.ep.deleteEntityButton.color = V4(0.5f, 0.7f, 0.95f, 0.6f);
+
 }
 
 
@@ -42,7 +127,7 @@ void CreateEntityPalatte_LE()
 
 void LogicEntityPalatte_LE()
 {
-	// MOUSE COLLISSION
+	// MOUSE COLLISSION - COLLAPSE BUTTON
 	Data->le.ep.collapseButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.ep.collapseButton.posMin, Data->le.ep.collapseButton.posMax);
 	if (Data->le.ep.collapseButton.isMouseOver)
 	{	// MOUSE OVER DETECTION
@@ -66,8 +151,9 @@ void LogicEntityPalatte_LE()
 		Data->le.ep.collapseButton.color = Data->le.ep.collapseButton.colorNoMouse;
 	}
 
+
 	if (Data->le.ep.collapseButton.isMouseClick)
-	{	// TODO - CLICK EVENT TRIGGER
+	{	// MINIMIZE WINDOW
 		if (Data->le.ep.box.isCollapsed)
 		{
 			Data->le.ep.box.size = Data->le.ep.box.sizeCollapsed;
@@ -79,18 +165,118 @@ void LogicEntityPalatte_LE()
 		Data->le.ep.collapseButton.isMouseClick = false;
 	}
 
+	if (!Data->le.ep.box.isCollapsed)
+	{
+		// MOUSE COLLISSION - CHANGE ENTITY LEFT BUTTON
+		Data->le.ep.changeEntityLeftButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.ep.changeEntityLeftButton.posMin, Data->le.ep.changeEntityLeftButton.posMax);
+		if (Data->le.ep.changeEntityLeftButton.isMouseOver)
+		{	// MOUSE OVER DETECTION
+			Data->le.ep.changeEntityLeftButton.color = Data->le.ep.changeEntityLeftButton.colorMouse;
+			if (InputHeld(Mouse, Input_MouseLeft))
+			{	// CLICK EVENT DETECTION
+				Data->le.ep.changeEntityLeftButton.color = Data->le.ep.changeEntityLeftButton.colorClick;
+			}
+			else
+			{
+				Data->le.ep.changeEntityLeftButton.color = Data->le.ep.changeEntityLeftButton.colorMouse;
+			}
+			if (InputPressed(Mouse, Input_MouseLeft))
+			{	// CLICK EVENT DETECTION
+				// todo
+			}
+		}
+		else
+		{
+			Data->le.ep.changeEntityLeftButton.color = Data->le.ep.changeEntityLeftButton.colorNoMouse;
+		}
 
-	// Cycle through entity types
+		// MOUSE COLLISSION - CHANGE ENTITY RIGHT BUTTON
+		Data->le.ep.changeEntityRightButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.ep.changeEntityRightButton.posMin, Data->le.ep.changeEntityRightButton.posMax);
+		if (Data->le.ep.changeEntityRightButton.isMouseOver)
+		{	// MOUSE OVER DETECTION
+			Data->le.ep.changeEntityRightButton.color = Data->le.ep.changeEntityRightButton.colorMouse;
+			if (InputHeld(Mouse, Input_MouseRight))
+			{	// CLICK EVENT DETECTION
+				Data->le.ep.changeEntityRightButton.color = Data->le.ep.changeEntityRightButton.colorClick;
+			}
+			else
+			{
+				Data->le.ep.changeEntityRightButton.color = Data->le.ep.changeEntityRightButton.colorMouse;
+			}
+			if (InputPressed(Mouse, Input_MouseRight))
+			{	// CLICK EVENT DETECTION
+				// todo
+			}
+		}
+		else
+		{
+			Data->le.ep.changeEntityRightButton.color = Data->le.ep.changeEntityRightButton.colorNoMouse;
+		}
 
-		// Right & Left arrow
+		// MOUSE COLLISSION - CREAE ENTITY BUTTON
+		Data->le.ep.createEntityButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.ep.createEntityButton.posMin, Data->le.ep.createEntityButton.posMax);
+		if (Data->le.ep.createEntityButton.isMouseOver)
+		{	// MOUSE OVER DETECTION
+			Data->le.ep.createEntityButton.color = Data->le.ep.createEntityButton.colorMouse;
+			if (InputHeld(Mouse, Input_MouseLeft))
+			{	// CLICK EVENT DETECTION
+				Data->le.ep.createEntityButton.color = Data->le.ep.createEntityButton.colorClick;
+			}
+			else
+			{
+				Data->le.ep.createEntityButton.color = Data->le.ep.createEntityButton.colorMouse;
+			}
+			if (InputPressed(Mouse, Input_MouseLeft))
+			{	// CLICK EVENT DETECTION
+				// todo
+			}
+		}
+		else
+		{
+			Data->le.ep.createEntityButton.color = Data->le.ep.createEntityButton.colorNoMouse;
+		}
 
-		// name of entity type
+		// MOUSE COLLISSION - DELETE ENTITY BUTTON
+		Data->le.ep.deleteEntityButton.isMouseOver = TestPointAABB(Data->mouse.positionPixel, Data->le.ep.deleteEntityButton.posMin, Data->le.ep.deleteEntityButton.posMax);
+		if (Data->le.ep.deleteEntityButton.isMouseOver)
+		{	// MOUSE OVER DETECTION
+			Data->le.ep.deleteEntityButton.color = Data->le.ep.deleteEntityButton.colorMouse;
+			if (InputHeld(Mouse, Input_MouseLeft))
+			{	// CLICK EVENT DETECTION
+				Data->le.ep.deleteEntityButton.color = Data->le.ep.deleteEntityButton.colorClick;
+			}
+			else
+			{
+				Data->le.ep.deleteEntityButton.color = Data->le.ep.deleteEntityButton.colorMouse;
+			}
+			if (InputPressed(Mouse, Input_MouseLeft))
+			{	// CLICK EVENT DETECTION
+				// todo
+			}
+		}
+		else
+		{
+			Data->le.ep.deleteEntityButton.color = Data->le.ep.deleteEntityButton.colorNoMouse;
+		}
 
-		// image of entity
-
-		// entity modifiers such as room number, etc.
 
 
+
+		if (!Data->le.ep.isCollapsed)
+		{
+			//
+
+			// Cycle through entity types
+
+				// Right & Left arrow
+
+				// name of entity type
+
+				// image of entity
+
+				// entity modifiers such as room number, etc.
+		}
+	}
 }
 
 void RenderEntityPalatte_LE()
@@ -98,6 +284,30 @@ void RenderEntityPalatte_LE()
 	DrawRectScreen(Data->le.ep.box.pos, Data->le.ep.box.size, Data->le.ep.box.color);
 	DrawTextScreenPixel(&Game->serifFont, Data->le.ep.box.textPos, Data->le.ep.box.textSize, Data->le.ep.box.textColor, false, Data->le.ep.box.text);
 	DrawRectScreen(Data->le.ep.collapseButton.pos, Data->le.ep.collapseButton.size, Data->le.ep.collapseButton.color);
+
+
+	if (!Data->le.ep.box.isCollapsed)
+	{
+		// CHANGE ENTITY - LEFT BUTTON
+		DrawRectScreen(Data->le.ep.changeEntityLeftButton.pos, Data->le.ep.changeEntityLeftButton.size, Data->le.ep.changeEntityLeftButton.color);
+		DrawTextScreenPixel(&Game->serifFont, Data->le.ep.changeEntityLeftButton.textPos, Data->le.ep.changeEntityLeftButton.textSize, Data->le.ep.changeEntityLeftButton.textColor, false, Data->le.ep.changeEntityLeftButton.text);
+
+		// CHANGE ENTITY - RIGHT BUTTON
+		DrawRectScreen(Data->le.ep.changeEntityRightButton.pos, Data->le.ep.changeEntityRightButton.size, Data->le.ep.changeEntityRightButton.color);
+		DrawTextScreenPixel(&Game->serifFont, Data->le.ep.changeEntityRightButton.textPos, Data->le.ep.changeEntityRightButton.textSize, Data->le.ep.changeEntityRightButton.textColor, false, Data->le.ep.changeEntityRightButton.text);
+		
+		// CURRENT ENTITY LABEL
+		//DrawTextScreenPixel(&Game->serifFont, Data->le.ep.changeEntityRightButton.textPos, Data->le.ep.changeEntityRightButton.textSize, Data->le.ep.changeEntityRightButton.textColor, false, Data->le.ep.changeEntityRightButton.text);
+		
+		// CREATE ENTITY BUTTON
+		DrawRectScreen(Data->le.ep.createEntityButton.pos, Data->le.ep.createEntityButton.size, Data->le.ep.createEntityButton.color);
+		DrawTextScreenPixel(&Game->serifFont, Data->le.ep.createEntityButton.textPos, Data->le.ep.createEntityButton.textSize, Data->le.ep.createEntityButton.textColor, false, Data->le.ep.createEntityButton.text);
+
+		// DELETE DELETE BUTTON
+		DrawRectScreen(Data->le.ep.deleteEntityButton.pos, Data->le.ep.deleteEntityButton.size, Data->le.ep.deleteEntityButton.color);
+		DrawTextScreenPixel(&Game->serifFont, Data->le.ep.deleteEntityButton.textPos, Data->le.ep.deleteEntityButton.textSize, Data->le.ep.deleteEntityButton.textColor, false, Data->le.ep.deleteEntityButton.text);
+
+	}
 }
 
 
