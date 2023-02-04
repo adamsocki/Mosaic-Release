@@ -98,10 +98,10 @@ void TestRender()
             entity->modelRenderData.aabbSize = aabbSize;
 
             // TODO if more than one selected, only interact with the closest;
-            if (TestRayOBBIntersection(-Game->camera.pos, scaledRayPos, aabb_min, aabb_max, Identity4(), &intersection_distance))
+            if (TestRayOBBIntersection(-Game->camera.pos, scaledRayPos, aabb_min, aabb_max, Identity4(), &intersection_distance) && !Data->mousePicker.isEntitySelected)
             {
                 real32 distanceToEntity = Distance(-Game->camera.pos, entity->modelRenderData.position);
-                DrawAABB(entity->modelRenderData.position, IdentityQuaternion(), V3(0.25f, 0.25f, 0.25f), V3(0.5f, 0.5f, 0.25f, 1.0), true)
+                DrawAABB(entity->modelRenderData.position, IdentityQuaternion(), V3(0.25f, 0.25f, 0.25f), V4(0.5f, 0.5f, 0.25f, 1.0), true);
                 entity->editorMode = fixed_Mode;
                 entity->modelRenderData.isMouseOver = true;
                 //bool xMode = false;
@@ -119,23 +119,38 @@ void TestRender()
                     entity->modelRenderData.isSelected = false;
                 }
 
-
                 if (entity->modelRenderData.isSelected)
                 {
-                    if (InputHeld(Keyboard, Input_X))
-                    {
-                        entity->editorMode = xPos_Mode;
-                    }
-                    if (InputHeld(Keyboard, Input_Y))
-                    {
-                        entity->editorMode = yPos_Mode;
-                    }
-                    if (InputHeld(Keyboard, Input_Z))
-                    {
-                        entity->editorMode = zPos_Mode;
-                    }
+                    
                 }
 
+                entity->modelRenderData.sprite = Data->sprites.wall1Texture;
+            } 
+            else
+            {
+                entity->modelRenderData.isMouseOver = false;
+                entity->modelRenderData.sprite = Data->sprites.fernTexture;
+            }
+
+            if (entity->modelRenderData.isMouseOver && !entity->modelRenderData.isSelected)
+            {
+                DrawAABB(aabb_min, IdentityQuaternion(), aabbSize, entity->modelRenderData.aabbColor, true);
+            }
+
+            if (entity->modelRenderData.isSelected)
+            {
+                if (InputHeld(Keyboard, Input_X))
+                {
+                    entity->editorMode = xPos_Mode;
+                }
+                if (InputHeld(Keyboard, Input_Y))
+                {
+                    entity->editorMode = yPos_Mode;
+                }
+                if (InputHeld(Keyboard, Input_Z))
+                {
+                    entity->editorMode = zPos_Mode;
+                }
 
                 switch (entity->editorMode)
                 {
@@ -145,17 +160,19 @@ void TestRender()
                     }
                     case xPos_Mode:
                     {
-                        entity->modelRenderData.position.x = -Data->mouse.positionPixel_delta.x;
+                        entity->modelRenderData.position.x += -Data->mouse.positionPixel_delta.x * 0.1f;
                         DrawLine(V3(-10000.0f, entity->modelRenderData.position.y, entity->modelRenderData.position.z), V3(20000.0f, 0.05f, 0.05f), V4(1.0f, 0.0f, 0.0f, 1.0f));
                         break;
                     }
                     case yPos_Mode:
                     {
+                        entity->modelRenderData.position.y += -Data->mouse.positionPixel_delta.x * 0.1f;
                         DrawLine(V3(entity->modelRenderData.position.x, -10000.0f, entity->modelRenderData.position.z), V3(0.05f, 20000.0f, 0.05f), V4(0.0f, 1.0f, 0.0f, 1.0f));
                         break;
                     }
                     case zPos_Mode:
                     {
+                        entity->modelRenderData.position.z += -Data->mouse.positionPixel_delta.x * 0.1f;
                         DrawLine(V3(entity->modelRenderData.position.x, entity->modelRenderData.position.y, -10000.0f), V3(0.05f, 0.05f, 20000.0f), V4(0.0f, 0.0f, 1.0f, 1.0f));
                         break;
                     }
@@ -165,18 +182,20 @@ void TestRender()
                     }
                 }
 
-                
+                /*if (InputReleased(Mouse, Input_K) || InputReleased(Mouse, Input_K) || InputReleased(Mouse, Input_K)))
+                {
 
+                }*/
+
+                if (InputReleased(Mouse, Input_MouseLeft))
+                {
+                    Data->mousePicker.isEntitySelected = false;
+                    entity->modelRenderData.isSelected = false;
+                }
                 DrawAABB(aabb_min, IdentityQuaternion(), aabbSize, entity->modelRenderData.aabbColor, true);
-                entity->modelRenderData.sprite = Data->sprites.wall1Texture;
-            } 
-            else
-            {
-                entity->modelRenderData.isMouseOver = true;
-                entity->modelRenderData.sprite = Data->sprites.fernTexture;
+
             }
 
-             
             modelRenderData = entity->modelRenderData;
 
             PushBack(&postEntitiesToRender, modelRenderData);

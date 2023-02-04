@@ -27,6 +27,7 @@ void InitMousePicker()
 	Data->mousePicker.cam = &Game->camera;
 	Data->mousePicker.projectionMatrix = Game->camera.projection;
 	Data->mousePicker.viewMatrix = Game->camera.view;
+	Data->mousePicker.isEntitySelected = false;
 }
 
 //vec3 toWorldCoords(vec4 eyeCoord)

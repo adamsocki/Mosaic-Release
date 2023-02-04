@@ -146,6 +146,8 @@ struct MousePicker
 	mat4 projectionMatrix;
 	mat4 viewMatrix;
 	Camera* cam;
+
+	bool isEntitySelected;
 };
 
 struct CameraManager
