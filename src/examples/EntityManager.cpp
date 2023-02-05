@@ -192,6 +192,11 @@ void InitializeStartingEntities()
 		wallEntity->modelRenderData.position = V3(-10, 0, -50);
 		wallEntity->modelRenderData.scale = V3(5, 20, 100);
 		wallEntity->model = Data->rm.models.wall1Model;
+		wallEntity->mesh = Game->wall1Mesh;
+		wallEntity->editorMode = fixed_EditorMode;
+		wallEntity->modelRenderData.isSelected = false;
+		wallEntity->modelRenderData.isMouseOver = false;
+
 	}
 
 	for (int i = 0; i < 40; i++)
@@ -206,10 +211,6 @@ void InitializeStartingEntities()
 		postEntity->modelRenderData.isSelected = false;
 		postEntity->modelRenderData.isMouseOver = false;
 		postEntity->editorMode = fixed_EditorMode;
-
-
-		//postEntity->boundingBox.min = ;
-		//postEntity->model = Data->rm.models.postModel;
 	}
 }
 

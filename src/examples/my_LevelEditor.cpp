@@ -1,18 +1,12 @@
 MyData_LE* Data = NULL;
-char* entityList[] =
-{
-	"Terrain",
-	"Test",
-	"Fern",
-	"GUI",
-	"Post",
-	"Wall",
-	"Player"
-};
 
 
+
+
+#include "ReferenceList.h"
 
 #include "EntityManager.cpp"
+#include "EntityManagerLE.cpp"
 #include "CameraManager.cpp"
 ///#include "CameraManager_LE.cpp"
 #include "MouseManager.cpp"

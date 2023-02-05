@@ -154,6 +154,7 @@ struct MousePicker
 	Camera* cam;
 
 	bool isEntitySelected;
+	real32 shortestDistanceToEntityOnRay;
 };
 
 struct CameraManager
@@ -198,6 +199,7 @@ struct Entity
 {
 	Model model;
 	EntityHandle handle;
+	EntityType type;
 
 	vec3 position;
 	ModelRenderData modelRenderData;
@@ -374,7 +376,7 @@ struct Label : Box
 	real32 textSize;
 	vec4 textColor;
 
-
+	//char buffer[];
 };
 
 
@@ -397,7 +399,7 @@ struct Button : Box
 
 struct PalatteBackground : Box
 {
-	const char* text; 
+	char* text; 
 	vec2 textPos;
 	real32 textSize;
 	vec4 textColor;
@@ -416,6 +418,8 @@ struct LevelPalatte
 	PalatteBackground box;
 	Button saveButton;
 	Button loadButton;
+
+	Button currentLevel;
 };
 
 struct EntityPalatte
@@ -429,10 +433,18 @@ struct EntityPalatte
 
 	int32 activeEntity;
 	Label activeEntityLabel;
-	//char* activeEntityList[];
 	
+	//char* activeEntityList[];
+
+	Label activeEntityPosLabel;
+	Label activeEntityRotLabel;
+	Label activeEntityScaleLabel;
+
 
 	bool isCollapsed;
+
+
+	EntityHandle selectedEntityHandle;
 };
 
 

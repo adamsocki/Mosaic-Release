@@ -22,6 +22,10 @@ bool isNeg(char c)
 
 void LoadLevelParse(int32 currentLevel)
 {
+	// CLEAR ALL ENTITIES
+	InitializeEntityBuffers();
+
+
 	DynamicArray<TokenVal> tokens = MakeDynamicArray<TokenVal>(&Game->frameMem, 10000);
 	DynamicArray<Wall> walls = MakeDynamicArray<Wall>(&Game->frameMem, 10000);
 	DynamicArray<Door> doors = MakeDynamicArray<Door>(&Game->frameMem, 10000);
@@ -417,6 +421,10 @@ void SaveAndWriteLevel()
 	   "data/levelFiles/level0.txt",
 	   "data/levelFiles/level1.txt",
 	   "data/levelFiles/level2.txt",
+	   "data/levelFiles/level3.txt",
+	   "data/levelFiles/level4.txt",
+	   "data/levelFiles/level5.txt",
+	   "data/levelFiles/level6.txt",
 	};
 	if (OpenFileForWrite(path[Data->le.currentLevel], &file, &Game->frameMem, sizeof(Entity) * 10000))
 	{

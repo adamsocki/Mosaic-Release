@@ -1,4 +1,10 @@
 
+
+
+
+
+
+
 // LEVEL EDITOR 
 void CreateEntityPalatte_LE()
 {
@@ -136,6 +142,33 @@ void CreateEntityPalatte_LE()
 	Data->le.ep.activeEntityLabel.textSize = Data->le.ep.box.size.y * 0.03f;
 	Data->le.ep.activeEntityLabel.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
 
+	// ACTIVE ENTITY LABEL - POSITION
+	char pos_x[5];
+	sprintf(pos_x, "%.2f", 9.55f);
+
+	Data->le.ep.activeEntityPosLabel = {};
+	Data->le.ep.activeEntityPosLabel.textPos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.activeEntityPosLabel.textPos.y = Data->le.ep.box.size.y - (Data->le.ep.box.size.y * 0.59f);
+	//Data->le.ep.activeEntityPosLabel.buffer = "Pos: x";
+	//strncpy(Data->le.ep.activeEntityPosLabel.buffer, pos_x, sizeof(Data->le.ep.activeEntityPosLabel.buffer);
+	Data->le.ep.activeEntityPosLabel.textSize = Data->le.ep.box.size.y * 0.021f;
+	Data->le.ep.activeEntityPosLabel.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+
+	// ACTIVE ENTITY LABEL - ROTATION
+	Data->le.ep.activeEntityRotLabel = {};
+	Data->le.ep.activeEntityRotLabel.textPos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.activeEntityRotLabel.textPos.y = Data->le.ep.box.size.y - (Data->le.ep.box.size.y * 0.56f);
+	Data->le.ep.activeEntityRotLabel.text = "Rot: x:%.2f y:%.2f z:%.2f", 0.0f, 1.0f, 2.0f;
+	Data->le.ep.activeEntityRotLabel.textSize = Data->le.ep.box.size.y * 0.021f;
+	Data->le.ep.activeEntityRotLabel.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+
+	// ACTIVE ENTITY LABEL - SCALE
+	Data->le.ep.activeEntityScaleLabel = {};
+	Data->le.ep.activeEntityScaleLabel.textPos.x = Data->le.ep.box.pos.x + (Data->le.ep.box.size.x * 0.05f);
+	Data->le.ep.activeEntityScaleLabel.textPos.y = Data->le.ep.box.size.y - (Data->le.ep.box.size.y * 0.53f);
+	Data->le.ep.activeEntityScaleLabel.text = "Scale: x:%.2f y:%.2f z:%.2f", 0.0f, 1.0f, 2.0f;
+	Data->le.ep.activeEntityScaleLabel.textSize = Data->le.ep.box.size.y * 0.021f;
+	Data->le.ep.activeEntityScaleLabel.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
 
@@ -253,7 +286,7 @@ void LogicEntityPalatte_LE()
 			}
 			if (InputPressed(Mouse, Input_MouseLeft))
 			{	// CLICK EVENT DETECTION
-				// todo
+				CreateEntityInLE(entityTypes[Data->le.ep.activeEntity]);
 			}
 		}
 		else
@@ -288,15 +321,23 @@ void LogicEntityPalatte_LE()
 		Data->le.ep.activeEntityLabel.text = entityList[Data->le.ep.activeEntity];
 
 
+		Post* entity = (Post*)GetEntity(&Data->em, Data->le.ep.selectedEntityHandle);
+		// ENTITY LABEL - POS
+		//Data->le.ep.activeEntityPosLabel.text = "Pos: x:%.2f y:%.2f z:%.2f", 9.01f, entity->modelRenderData.position.y, entity->modelRenderData.position.z;
+		//Data->le.ep.activeEntityPosLabel.text = "Pos: x:%f y:%.2f z:%.2f", 9.01f, 9.03f, 4.44f;
+		// ENTITY LABEL - ROT
+		// ENTITY LABEL - SCALE
+
+
+
+
+
 		if (!Data->le.ep.isCollapsed)
 		{
-			//
 
 			// Cycle through entity types
 
-				// Right & Left arrow
-
-				// name of entity type
+				
 
 				// image of entity
 
@@ -332,13 +373,20 @@ void RenderEntityPalatte_LE()
 
 		// ACTIVE ENTITY LABEL
 		DrawTextScreenPixel(&Game->serifFont, Data->le.ep.activeEntityLabel.textPos, Data->le.ep.activeEntityLabel.textSize, Data->le.ep.activeEntityLabel.textColor, false, Data->le.ep.activeEntityLabel.text);
-		
+	
+		// ACTIVE ENTITY LABEL - POSITION
+		real32 posX;
+		real32 posY;
+		real32 posZ;
+		//DrawTextScreenPixel(&Game->serifFont, Data->le.ep.activeEntityPosLabel.textPos, Data->le.ep.activeEntityPosLabel.textSize, Data->le.ep.activeEntityPosLabel.textColor, false, Data->le.ep.activeEntityPosLabel.text);
+		// ACTIVE ENTITY LABEL - ROTATION
+		//DrawTextScreenPixel(&Game->serifFont, Data->le.ep.activeEntityRotLabel.textPos, Data->le.ep.activeEntityRotLabel.textSize, Data->le.ep.activeEntityRotLabel.textColor, false, Data->le.ep.activeEntityRotLabel.text);
+		// ACTIVE ENTITY LABEL - SCALE
+		//DrawTextScreenPixel(&Game->serifFont, Data->le.ep.activeEntityScaleLabel.textPos, Data->le.ep.activeEntityScaleLabel.textSize, Data->le.ep.activeEntityScaleLabel.textColor, false, Data->le.ep.activeEntityScaleLabel.text);
+
+
 	}
 }
-
-
-
-
 
 
 
@@ -392,6 +440,25 @@ void CreateLevelPalatte_LE()
 	Data->le.lp.loadButton.textPos.y = Data->le.lp.loadButton.pos.y + (Data->le.lp.loadButton.size.y * 0.8f);
 	Data->le.lp.loadButton.textSize = Data->le.lp.loadButton.size.y / 2;
 	Data->le.lp.loadButton.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
+
+	// CURRENT LEVEL BUTTON
+	Data->le.lp.currentLevel = {};
+	Data->le.lp.currentLevel.pos.x = Data->le.lp.box.pos.x + (Data->le.lp.box.size.x * 0.2f);
+	Data->le.lp.currentLevel.pos.y = Data->le.lp.box.size.y - (Data->le.lp.box.size.y * 0.8f);
+	Data->le.lp.currentLevel.size.x = Data->le.lp.box.size.x * 0.4f;
+	Data->le.lp.currentLevel.size.y = Data->le.lp.box.size.y * 0.3f;
+	Data->le.lp.currentLevel.posMin.x = Data->le.lp.currentLevel.pos.x;
+	Data->le.lp.currentLevel.posMin.y = Data->le.lp.currentLevel.pos.y;
+	Data->le.lp.currentLevel.posMax.x = Data->le.lp.currentLevel.pos.x + Data->le.lp.currentLevel.size.x;
+	Data->le.lp.currentLevel.posMax.y = Data->le.lp.currentLevel.pos.y + Data->le.lp.currentLevel.size.y;
+	//Data->le.lp.currentLevel.colorMouse = V4(0.1f, 1.0f, 0.1f, 0.6f);
+	Data->le.lp.currentLevel.colorNoMouse = V4(0.8f, 0.8, 0.5f, 0.6f);
+	Data->le.lp.currentLevel.colorClick = V4(0.8f, 0.8, 0.5f, 0.6f);
+	//Data->le.lp.currentLevel.text = "CURRENT LEVEL: %d", Data->le.currentLevel;
+	Data->le.lp.currentLevel.textPos.x = Data->le.lp.currentLevel.pos.x + (Data->le.lp.currentLevel.size.x * 0.05f);
+	Data->le.lp.currentLevel.textPos.y = Data->le.lp.currentLevel.pos.y + (Data->le.lp.currentLevel.size.y * 0.8f);
+	Data->le.lp.currentLevel.textSize = Data->le.lp.currentLevel.size.y / 2;
+	Data->le.lp.currentLevel.textColor = V4(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
 void LogicLevelPalatte_LE()
@@ -457,6 +524,9 @@ void LogicLevelPalatte_LE()
 		Data->le.lp.loadButton.isMouseClick = false;
 	}
 
+	// CURRENT LEVEL
+	//Data->le.lp.currentLevel.text = &Data->le.currentLevel;
+
 }
 
 void RenderLevelPalatte_LE()
@@ -468,5 +538,10 @@ void RenderLevelPalatte_LE()
 
 	DrawRectScreen(Data->le.lp.loadButton.pos, Data->le.lp.loadButton.size, Data->le.lp.loadButton.color);
 	DrawTextScreenPixel(&Game->serifFont, Data->le.lp.loadButton.textPos, Data->le.lp.loadButton.textSize, Data->le.lp.loadButton.textColor, false, Data->le.lp.loadButton.text);
+
+	DrawRectScreen(Data->le.lp.currentLevel.pos, Data->le.lp.currentLevel.size, Data->le.lp.currentLevel.color);
+	
+	int32 level = Data->le.currentLevel;
+	DrawTextScreenPixel(&Game->serifFont, Data->le.lp.currentLevel.textPos, Data->le.lp.currentLevel.textSize, Data->le.lp.currentLevel.textColor, false, "LEVEL: %d", level);
 
 }

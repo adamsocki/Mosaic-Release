@@ -7,6 +7,31 @@ $wall
 0
 
 
+$wall
+#pos
+(3,5,3)
+#scale
+(10,10,10)
+#roomNum
+0
+
+
+$wall
+#pos
+(76,5,76)
+#scale
+(10,10,10)
+#roomNum
+0
+
+
+$wall
+#pos
+(-10,0,-10)
+#scale
+(5,20,100)
+#roomNum
+0
 
 
 @
