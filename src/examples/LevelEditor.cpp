@@ -66,7 +66,12 @@ void TestRender()
 
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
-     if (true)
+    
+
+    
+    
+    
+    if (true)
      {
          
         for (int i = 0; i < 2; i++)

@@ -429,3 +429,34 @@ void MouseToObjectCollision(Entity* entity)
 Advance:
     int32 value;
 }
+
+
+
+
+
+
+
+void SelectAndControlObjectsByMouse()
+{
+
+    // Select All Objects using the ray
+
+    // Determine which object is the closest
+
+    // make that object the active object
+
+    // Conroll that object
+
+
+
+
+
+}
+
+
+
+
+void RenderSelectObjectsByMouse()
+{
+
+}

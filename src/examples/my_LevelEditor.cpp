@@ -70,25 +70,33 @@ void MyGameUpdate()
 	// *****
 	// LOGIC
 	// *****
-	// LogicEditMode();
+	
 	LogicPalatte_LE();										// UPDATE PALATTES LOGIC
 	Mover_LE();
+	InGameCameraUpdate();
+	UpdateMousePicker();
 
+		// Object Selection
+	SelectAndControlObjectsByMouse();
 
 	// ******
 	// RENDER
 	// ******
 
-	// RENDER MOUSE
-	//RenderMouse_LE();
+	 
+		// Object Selection Render
+	RenderSelectObjectsByMouse();
+
+
+	// 
 	// TODO - RENDER LEVEL SCENE
 
 	// TESTING
 	
-	InGameCameraUpdate();
-
-	UpdateMousePicker();
 	
+
+
+
 	TestRayMouse();
 	TestRender();
 	RenderPalatte_LE();										// RENDER PALATTE
