@@ -430,22 +430,62 @@ Advance:
     int32 value;
 }
 
+struct RayEntityColission
+{
+    EntityHandle handle;
+    real32 distanceAlongRay;
+};
 
 
+RayEntityColission PerformMouseRayTestOnEntity(Entity *entity)
+{
+
+    RayEntityColission rayEntityColission = {};
+    real32 distanceForRay = -500.0f;    // TODO - ADD THIS TO MOSUE PICKER
+
+    real32 intersection_distance;
+    mat4 ModelMatrix = TRS(entity->modelRenderData.position, Identity4(), entity->modelRenderData.scale.x);
+    vec3 scaledRayPos = V3(Data->mousePicker.mouseRay.x * distanceForRay, Data->mousePicker.mouseRay.y * distanceForRay, Data->mousePicker.mouseRay.z * distanceForRay);
+
+    vec3 aabb_max = {};
+    aabb_max.x = entity->modelRenderData.position.x + (entity->mesh.maxAABB.x * entity->modelRenderData.scale.x);
+    aabb_max.y = entity->modelRenderData.position.y + (entity->mesh.maxAABB.y * entity->modelRenderData.scale.y);
+    aabb_max.z = entity->modelRenderData.position.z + (entity->mesh.maxAABB.z * entity->modelRenderData.scale.z);
+
+    vec3 aabb_min = {};
+    aabb_min.x = entity->modelRenderData.position.x + (entity->mesh.minAABB.x * entity->modelRenderData.scale.x);
+    aabb_min.y = entity->modelRenderData.position.y + (entity->mesh.minAABB.y * entity->modelRenderData.scale.y);
+    aabb_min.z = entity->modelRenderData.position.z + (entity->mesh.minAABB.z * entity->modelRenderData.scale.z);
+
+    vec3 aabbSize = {};
+    aabbSize = aabb_max - aabb_min;
+    entity->modelRenderData.aabb_min = aabb_min;
+    entity->modelRenderData.aabbSize = aabbSize;
+
+    if (TestRayOBBIntersection(-Game->camera.pos, scaledRayPos, aabb_min, aabb_max, Identity4(), &intersection_distance) && !Data->mousePicker.isEntitySelected)
+    {
+    
+    }
 
 
+    return rayEntityColission;
+}
 
 
 void SelectAndControlObjectsByMouse()
 {
 
-    // Select All Objects using the ray
+    // TODO only test for limited amount of entities
 
-    // Determine which object is the closest
+    // TODO Select All Objects within the ray
 
-    // make that object the active object
+   
 
-    // Conroll that object
+    // TODO Determine which object is the closest
+
+    // TODO make that object the active object
+
+    // TODO Conroll that object
 
 
 
