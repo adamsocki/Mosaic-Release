@@ -1,4 +1,5 @@
 MyData_LE* Data = NULL;
+MemoryArena mouseSelection = {};
 
 
 
@@ -23,6 +24,8 @@ MyData_LE* Data = NULL;
 #include "Testing.cpp"
 
 
+DynamicArray<RayEntityColission> rayEntityColissions = {};
+
 
 void MyInit()
 {
@@ -35,6 +38,8 @@ void MyInit()
 	Data->sunLight.position = V3(1000.0f, 1000.0f, 1000.0f);
 	Data->sunLight.color = V3(1.0f, 1.0f, 1.0f);
 	
+	AllocateMemoryArena(&mouseSelection, Megabytes(2));
+	rayEntityColissions = MakeDynamicArray<RayEntityColission>(&mouseSelection, 100);
 
 	LoadSprites();
 	// TODO - INIT LEVEL EDITOR DATA
@@ -51,11 +56,13 @@ void MyInit()
 	//InitLevel_LE();										// TODO - INIT LEVEL
 
 	InitializeStartingEntities();
+	InitMousePicker();
 
 	Data->meshes.wall1Mesh = LoadOBJv2("data/wall1.obj");
 	InitOBJMesh(&Data->meshes.wall1Mesh);
 	
 	Data->rm.skyColor = RGB(0.12f, 0.14f, 0.0f);
+
 
 }
 
@@ -77,15 +84,30 @@ void MyGameUpdate()
 	UpdateMousePicker();
 
 		// Object Selection
-	SelectAndControlObjectsByMouse();
+	//SelectAndControlObjectsByMouse();
+	
+	
+
+	MouseLogicEntities(&rayEntityColissions);
 
 	// ******
 	// RENDER
 	// ******
 
+	RenderSelection(&rayEntityColissions);
+	RenderEntities();
+
+	//DeallocateDynamicArray(&rayEntityColissions);
 	 
 		// Object Selection Render
-	RenderSelectObjectsByMouse();
+	//RenderSelectObjectsByMouse();
+	//TestRayMouse();
+	
+
+
+
+	//TestRender(&rayEntityColissions);
+
 
 
 	// 
@@ -97,8 +119,6 @@ void MyGameUpdate()
 
 
 
-	TestRayMouse();
-	TestRender();
 	RenderPalatte_LE();										// RENDER PALATTE
 
 	//RenderLevel_LE(wallEntitiesToRender);

@@ -140,6 +140,12 @@ struct MouseData
 	vec2 positionPixel_delta;
 };
 
+struct RayEntityColission
+{
+	EntityHandle handle;
+	real32 distanceAlongRay;
+};
+
 struct MousePicker
 {
 	MouseData mouseData;
@@ -149,13 +155,19 @@ struct MousePicker
 	vec2 selectedEntityPos_delta;
 
 	vec3 mouseRay;
+	real32 lengthOfRay;
+
 	mat4 projectionMatrix;
 	mat4 viewMatrix;
 	Camera* cam;
 
 	bool isEntitySelected;
-	real32 shortestDistanceToEntityOnRay;
+	bool isMouseOverEntity;
+	RayEntityColission selectedEntity;
+	RayEntityColission mouseOverEntity;	
 };
+
+
 
 struct CameraManager
 {

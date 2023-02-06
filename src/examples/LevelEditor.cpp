@@ -52,24 +52,167 @@ void Mover_LE()
     ///cam->isWalkingForwardOrBackward = player->isWalkingForwardOrBackward;
 }
 
-void TestRender()
+
+void MouseLogicEntities(DynamicArray<RayEntityColission>* rayEntityColissions)
 {
     EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
     Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
     EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
     Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
 
-   // vec3 aabb_min = V3(-1.0f, -1.0f, -1.0f);
-   // vec3 aabb_max = V3(1.0f, 1.0f, 1.0f);
+    if (!Data->mousePicker.isEntitySelected)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            //ModelRenderData modelRenderData = {};
+            Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);
+            if (entity != NULL)
+            {
+                PerformMouseRayTestOnEntity(entity, rayEntityColissions);
 
-    Data->mousePicker.shortestDistanceToEntityOnRay = 0.0f;
+            }
+        }
+
+        for (int i = 0; i < wallBuffer->count; i++)
+        {
+            //ModelRenderData modelRenderData = {};
+            Wall* entity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[i].handle);
+            if (entity != NULL)
+            {
+                entity->modelRenderData.sprite = Data->sprites.wall1Texture;
+                PerformMouseRayTestOnEntity(entity, rayEntityColissions);
+            }
+        }
+        FindNearestMouseOverArray(*rayEntityColissions);
+        SelectNearestWithClick(*rayEntityColissions);
+    }
+    else
+    {
+        // control selected entity
+        switch (Data->mousePicker.selectedEntity.handle.type)
+        {
+        case EntityType_Wall:
+        {
+            Wall* entity = (Wall*)GetEntity(&Data->em, Data->mousePicker.selectedEntity.handle);
+            ControlSelectedEntity(entity);
+            break;
+        }
+        case EntityType_Post:
+        {
+            Post* entity = (Post*)GetEntity(&Data->em, Data->mousePicker.selectedEntity.handle);
+            ControlSelectedEntity(entity);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+        }
+        RayEntityColission entityColission = Data->mousePicker.selectedEntity;
+        
+        PushBack(rayEntityColissions, entityColission);
+        
+        if (InputReleased(Mouse, Input_MouseLeft))
+        {
+            //entity->modelRenderData.aabbColor = V4(1);
+            DynamicArrayClear(rayEntityColissions);
+           // AllocateDynamicArray(rayEntityColissions);
+            Data->mousePicker.isEntitySelected = false;
+        }
+    }
+
+
+}
+
+void RenderSelection(DynamicArray<RayEntityColission>* rayEntityColissions)
+{
+    // render moused entity
+    if (rayEntityColissions->count > 0)
+    {
+
+        
+        switch (Data->mousePicker.mouseOverEntity.handle.type)
+        {
+            case EntityType_Wall:
+            {
+                Wall* entity = (Wall*)GetEntity(&Data->em, Data->mousePicker.mouseOverEntity.handle);
+                RenderSelectedEntityElements(entity);
+                break;
+            }
+            case EntityType_Post:
+            {
+                Post* entity = (Post*)GetEntity(&Data->em, Data->mousePicker.mouseOverEntity.handle);
+                RenderSelectedEntityElements(entity);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+
+        DynamicArrayClear(rayEntityColissions);
+
+        
+    }
+
+    
+}
+
+void RenderEntities()
+{
+
+    EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
+    Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
+    EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
+    Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
+
+    DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
+    DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
+
+    for (int i = 0; i < 2; i++)
+    {
+        ModelRenderData modelRenderData = {};
+        Post* entity = (Post*)GetEntity(&Data->em, postEntitiesInBuffer[i].handle);
+
+        if (entity != NULL)
+        {
+            modelRenderData = entity->modelRenderData;
+        }
+
+        // TODO - WORKING ON NOW if more than one selected, only interact with the closest;
+        PushBack(&postEntitiesToRender, modelRenderData);
+    }
+    for (int i = 0; i < wallBuffer->count; i++)
+    {
+        ModelRenderData modelRenderData = {};
+        Wall* entity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[i].handle);
+        if (entity != NULL)
+        {
+            modelRenderData = entity->modelRenderData;
+        }
+        PushBack(&wallEntitiesToRender, modelRenderData);
+
+    }
+
+    DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Game->modelShader, Data->rm.skyColor, true);
+    DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Game->modelShader, Data->rm.skyColor);
+}
+
+void TestRender(DynamicArray<RayEntityColission> *rayEntityColissions)
+{
+    EntityTypeBuffer* wallBuffer = &Data->em.buffers[EntityType_Wall];
+    Wall* wallEntitiesInBuffer = (Wall*)wallBuffer->entities;
+    EntityTypeBuffer* postBuffer = &Data->em.buffers[EntityType_Post];
+    Post* postEntitiesInBuffer = (Post*)postBuffer->entities;
 
     DynamicArray<ModelRenderData> postEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     DynamicArray<ModelRenderData> wallEntitiesToRender = MakeDynamicArray<ModelRenderData>(&Game->frameMem, 100);
     
 
     
-    
+  
+    bool anEntityIsSelected = false;
     
     if (true)
      {
@@ -82,15 +225,22 @@ void TestRender()
             
             if (entity != NULL)
             {
+
+
+               // MouseToObjectCollision(entity);
+            
                 
-                MouseToObjectCollision(entity);
+                
+                
+                
                 modelRenderData = entity->modelRenderData;
+            
+            
+            
+            
             }
 
             // TODO - WORKING ON NOW if more than one selected, only interact with the closest;
-            
-
-
             PushBack(&postEntitiesToRender, modelRenderData);
         }
         for (int i = 0; i < wallBuffer->count; i++)
@@ -99,8 +249,10 @@ void TestRender()
             Wall* entity = (Wall*)GetEntity(&Data->em, wallEntitiesInBuffer[i].handle);
             if (entity != NULL)
             {
-                entity->modelRenderData.sprite = Data->sprites.wall1Texture;
-                MouseToObjectCollision(entity);
+               // PerformMouseRayTestOnEntity(entity, rayEntityColissions);
+
+                
+                //MouseToObjectCollision(entity);
 
                 modelRenderData = entity->modelRenderData;
             }
@@ -109,6 +261,56 @@ void TestRender()
         }
         DrawOBJModels(postEntitiesToRender, Data->sunLight, &Game->postMesh, &Game->modelShader, Data->rm.skyColor, true);
         DrawOBJModels(wallEntitiesToRender, Data->sunLight, &Data->meshes.wall1Mesh, &Game->modelShader, Data->rm.skyColor);
+    }
+
+    FindNearestMouseOverArray(*rayEntityColissions);
+
+    // control selected entity
+    if (rayEntityColissions->count > 0)
+    {
+        switch (Data->mousePicker.mouseOverEntity.handle.type)
+        {
+            case EntityType_Wall:
+            {
+                Wall* entity = (Wall*)GetEntity(&Data->em, Data->mousePicker.mouseOverEntity.handle);
+                //ControlSelectedEntity(entity);
+                break;
+            }
+            case EntityType_Post:
+            {
+                Post* entity = (Post*)GetEntity(&Data->em, Data->mousePicker.mouseOverEntity.handle);
+                ControlSelectedEntity(entity);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // render selected entity
+    if (rayEntityColissions->count > 0)
+    {
+        switch (Data->mousePicker.selectedEntity.handle.type)
+        {
+            case EntityType_Wall:
+            {
+                Wall* entity = (Wall*)GetEntity(&Data->em, Data->mousePicker.selectedEntity.handle);
+                RenderSelectedEntityElements(entity);
+                break;
+            }
+            case EntityType_Post:
+            {
+                Post* entity = (Post*)GetEntity(&Data->em, Data->mousePicker.selectedEntity.handle);
+                RenderSelectedEntityElements(entity);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
     }
     
     DeallocateDynamicArray(&postEntitiesToRender);

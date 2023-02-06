@@ -196,6 +196,8 @@ void InitializeStartingEntities()
 		wallEntity->editorMode = fixed_EditorMode;
 		wallEntity->modelRenderData.isSelected = false;
 		wallEntity->modelRenderData.isMouseOver = false;
+		wallEntity->modelRenderData.sprite = Data->sprites.wall1Texture;
+
 
 	}
 
@@ -211,6 +213,7 @@ void InitializeStartingEntities()
 		postEntity->modelRenderData.isSelected = false;
 		postEntity->modelRenderData.isMouseOver = false;
 		postEntity->editorMode = fixed_EditorMode;
+		postEntity->modelRenderData.sprite = Data->sprites.wall1Texture;
 	}
 }
 
