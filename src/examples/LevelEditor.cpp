@@ -112,13 +112,13 @@ void MouseLogicEntities(DynamicArray<RayEntityColission>* rayEntityColissions)
         
         PushBack(rayEntityColissions, entityColission);
         
-        if (InputReleased(Mouse, Input_MouseLeft))
-        {
-            //entity->modelRenderData.aabbColor = V4(1);
-            DynamicArrayClear(rayEntityColissions);
-           // AllocateDynamicArray(rayEntityColissions);
-            Data->mousePicker.isEntitySelected = false;
-        }
+        //if (InputReleased(Mouse, Input_MouseLeft))
+        //{
+        //    //entity->modelRenderData.aabbColor = V4(1);
+        //    DynamicArrayClear(rayEntityColissions);
+        //   // AllocateDynamicArray(rayEntityColissions);
+        //    Data->mousePicker.isEntitySelected = false;
+        //}
     }
 
 

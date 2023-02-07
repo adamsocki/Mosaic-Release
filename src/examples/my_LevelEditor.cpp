@@ -94,8 +94,8 @@ void MyGameUpdate()
 	// RENDER
 	// ******
 
-	RenderSelection(&rayEntityColissions);
 	RenderEntities();
+	RenderSelection(&rayEntityColissions);
 
 	//DeallocateDynamicArray(&rayEntityColissions);
 	 

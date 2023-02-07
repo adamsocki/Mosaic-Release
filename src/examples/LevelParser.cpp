@@ -35,8 +35,8 @@ void LoadLevelParse(int32 currentLevel)
 	char* path[] =
 	{
 	   "data/levelFiles/level0.txt",
-	   "data/levelEditor/level1.txt",
-	   "data/levelEditor/level2.txt"
+	   "data/levelFiles/level1.txt",
+	   "data/levelFiles/level2.txt"
 	};
 
 	// boiler plate code
