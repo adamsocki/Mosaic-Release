@@ -531,17 +531,24 @@ void SelectNearestWithClick(DynamicArray<RayEntityColission> rayEntityColissions
 void ControlSelectedEntity(Entity* entity)
 {
 
-
+    // CONTROL FOR RELEASING SELECTED ENTITY
     if (InputHeld(Mouse, Input_MouseLeft))
     {
-        Data->mousePicker.isEntitySelected = true;
-        entity->modelRenderData.isSelected = true;
+        //Data->mousePicker.isEntitySelected = true;
+        //entity->modelRenderData.isSelected = true;
        // entity->modelRenderData.aabbColor = V4(0.0f, 1.0f, 0.0f, 1.0f);
     }
-    if (InputReleased(Mouse, Input_MouseLeft))
+    if (InputPressed(Mouse, Input_MouseLeft))
     {
         Data->mousePicker.isEntitySelected = false;
         entity->modelRenderData.isSelected = false;
+        entity->axisMode = fixed_AxisMode;
+
+    }
+
+    if (InputReleased(Mouse, Input_X) || InputReleased(Mouse, Input_Y) || InputReleased(Mouse, Input_Z))
+    {
+        entity->axisMode = fixed_AxisMode;
     }
 
     if (InputPressed(Keyboard, Input_1))
@@ -641,12 +648,6 @@ void ControlSelectedEntity(Entity* entity)
     }
     }
     SetEntityAABB(entity);
-
-    /*if (InputReleased(Mouse, Input_X) || InputReleased(Mouse, Input_Y) || InputReleased(Mouse, Input_Z))
-    {
-        entity->axisMode = fixed_AxisMode;
-    }*/
-
    
 }
 
