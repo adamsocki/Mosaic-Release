@@ -24,7 +24,7 @@ void LoadLevelParse(int32 currentLevel)
 {
 	// CLEAR ALL ENTITIES
 	InitializeEntityBuffers();
-
+	Data->mousePicker.isEntitySelected = false;
 
 	DynamicArray<TokenVal> tokens = MakeDynamicArray<TokenVal>(&Game->frameMem, 10000);
 	DynamicArray<Wall> walls = MakeDynamicArray<Wall>(&Game->frameMem, 10000);
@@ -384,6 +384,12 @@ void LoadLevelParse(int32 currentLevel)
 		wallEntity->handle = wallHandle;
 		wallEntity->modelRenderData.position = walls[i].modelRenderData.position;
 		wallEntity->modelRenderData.scale = walls[i].modelRenderData.scale;
+		wallEntity->model = Data->rm.models.wall1Model;
+		wallEntity->mesh = Game->wall1Mesh;
+		wallEntity->editorMode = fixed_EditorMode;
+		wallEntity->modelRenderData.isSelected = false;
+		wallEntity->modelRenderData.isMouseOver = false;
+		wallEntity->modelRenderData.sprite = Data->sprites.wall1Texture;
 
 	}
 
