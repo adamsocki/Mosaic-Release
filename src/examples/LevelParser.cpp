@@ -81,7 +81,6 @@ void LoadLevelParse(int32 currentLevel)
 				{
 					c = ReadChar(&file);
 				}
-
 			}
 
 			if (c == '(')
@@ -140,10 +139,8 @@ void LoadLevelParse(int32 currentLevel)
 
 		AddToken:
 			PushBack(&tokens, t);
-
 		Advance:
 			int32 baba = 0;
-
 		}
 		CloseFile(&file);
 	}

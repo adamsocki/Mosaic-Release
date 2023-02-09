@@ -288,7 +288,6 @@ OBJMesh LoadOBJv2(const char* modelPath)
                 vec3 normal = {};
                 std::string arr = {};
 
-
                 while (myLine[i] != '\0')
                 {
                     if (myLine[i] != delim) {
@@ -319,7 +318,6 @@ OBJMesh LoadOBJv2(const char* modelPath)
                         }
                         case 3:
                         {
-                            //vertex.z = strtod(arr, NULL);
                             normal.z = std::stof(arr);
                             arr.clear();
 
@@ -332,7 +330,6 @@ OBJMesh LoadOBJv2(const char* modelPath)
                         }
                         }
                         j++;
-                        // arr[100] = {};
                     }
                     if (myLine[i + 1] == '\0')
                     {
@@ -342,7 +339,6 @@ OBJMesh LoadOBJv2(const char* modelPath)
                     i++;
                 }
                 PushBack(&normals, normal);
-                //myLine[i];
             }
             else if (myLine.substr(0, 2) == "f ")
             {
