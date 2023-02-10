@@ -202,7 +202,7 @@ void DrawOBJModels(DynamicArray<ModelRenderData> modelRenderData, Light light, O
 
     for (int i = 0; i < modelRenderData.count; i++)
     {
-        mat4 model = TRS(modelRenderData[i].position, AxisAngle(V3(0, 1, 0), modelRenderData[i].rotY), modelRenderData[i].scale);
+        mat4 model = TRS(modelRenderData[i].position, modelRenderData[i].rotation, modelRenderData[i].scale);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, modelRenderData[i].sprite.textureID);
 

@@ -10,5 +10,6 @@ void LoadSprites()
     LoadSprite(&Data->sprites.newPlusSel, "data/newPlusSel.png");
     LoadSprite(&Data->sprites.fernTexture, "data/fern.png");
     LoadSprite(&Data->sprites.wall1Texture, "data/wall1.png");
+    LoadSprite(&Data->sprites.door_greenTexture, "data/door_green.png");
 
 }

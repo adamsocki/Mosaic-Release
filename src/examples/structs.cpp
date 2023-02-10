@@ -7,6 +7,7 @@ enum EntityType
 	EntityType_Post,
 	EntityType_Wall,
 	EntityType_Player,
+	EntityType_Door,
 
 	EntityType_Count,
 };
@@ -40,6 +41,7 @@ struct GameSprites
 	Sprite newPlusSel;
 	Sprite wall1Texture;
 	Sprite stallTexture;
+	Sprite door_greenTexture;
 };
 
 struct EntityHandle {
@@ -95,7 +97,7 @@ struct ModelRenderData
 	
 	vec3 position;
 	vec3 scale;
-	vec3 rotation;
+	quaternion rotation;
 
 	real32 rotX;
 	real32 rotY;
@@ -126,6 +128,7 @@ struct EntityMesh
 	OBJMesh wall1Mesh;
 	OBJMesh postMesh;
 	OBJMesh playerMesh;
+	OBJMesh doorMesh;
 };
 
 struct MouseData
@@ -268,6 +271,9 @@ struct Post : Entity
 };
 struct Door : Entity
 {
+	bool isOpen;
+	bool isLocked;
+	
 
 };
 

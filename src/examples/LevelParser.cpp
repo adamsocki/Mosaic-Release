@@ -172,6 +172,10 @@ void LoadLevelParse(int32 currentLevel)
 						bool xPosAdded = false;
 						bool yPosAdded = false;
 						bool zPosAdded = false;
+						bool xRotAdded = false;
+						bool yRotAdded = false;
+						bool zRotAdded = false;
+						bool wRotAdded = false;
 						bool xScaleAdded = false;
 						bool yScaleAdded = false;
 						bool zScaleAdded = false;
@@ -212,6 +216,35 @@ void LoadLevelParse(int32 currentLevel)
 						}
 						tokenIndex++;
 						t = tokens[tokenIndex];
+						//if (strncmp(t.start, "rot", t.length) == 0)
+						//{
+						//	tokenIndex++;
+						//	t = tokens[tokenIndex];
+
+						//	// LOOP OVER UNTIL DONE WITH POSITIONS
+						//	while (t.type != TokenType_RightParen)
+						//	{
+						//		tokenIndex++;
+						//		t = tokens[tokenIndex];
+						//		if (t.type == TokenType_Integer)
+						//		{
+						//			if (!xRotAdded)
+						//			{
+						//				xRotAdded = true;
+						//				w.modelRenderData.rotation.x = strtoll(t.start, NULL, 10);
+						//			}
+						//			else if (!yRotAdded)
+						//			{
+						//				yRotAdded = true;
+						//				w.modelRenderData.rotation.y = strtoll(t.start, NULL, 10);
+						//			}
+						//			else if (!zRotAdded)
+						//			{
+
+						//			}
+						//		}
+						//	}
+						//}
 						if (strncmp(t.start, "scale", t.length) == 0)
 						{
 							tokenIndex++;
@@ -222,7 +255,7 @@ void LoadLevelParse(int32 currentLevel)
 							{
 								tokenIndex++;
 								t = tokens[tokenIndex];
-								vec2 position;
+								/*vec2 position;*/
 								if (t.type == TokenType_Integer)
 								{
 									if (!xScaleAdded)
@@ -381,6 +414,7 @@ void LoadLevelParse(int32 currentLevel)
 		wallEntity->handle = wallHandle;
 		wallEntity->modelRenderData.position = walls[i].modelRenderData.position;
 		wallEntity->modelRenderData.scale = walls[i].modelRenderData.scale;
+		wallEntity->modelRenderData.rotation = walls[i].modelRenderData.rotation;
 		wallEntity->model = Data->rm.models.wall1Model;
 		wallEntity->mesh = Game->wall1Mesh;
 		wallEntity->editorMode = fixed_EditorMode;
@@ -389,6 +423,7 @@ void LoadLevelParse(int32 currentLevel)
 		wallEntity->modelRenderData.sprite = Data->sprites.wall1Texture;
 
 	}
+	
 
 	DeallocateDynamicArray(&tokens);
 	DeallocateDynamicArray(&walls);

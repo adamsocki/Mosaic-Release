@@ -614,6 +614,18 @@ void ControlSelectedEntity(Entity* entity)
     case rotMode:
     {
         // TODO Add this for rotation
+        switch (entity->axisMode)
+        {
+        case xAxisMode:
+        {
+            //entity->
+            break;
+        }
+        default:
+        {
+            break;
+        }
+        }
         break;
     }
     case scaleMode:

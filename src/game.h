@@ -125,6 +125,7 @@ struct GameMemory {
     OBJMesh wall1Mesh;
     OBJMesh postMesh;
     OBJMesh playerMesh;
+    OBJMesh doorMesh;
 
     InputManager inputManager;
     InputDevice *keyboard;

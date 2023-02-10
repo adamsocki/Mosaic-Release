@@ -133,6 +133,13 @@ void InitializeEntityBuffers()
 	playerBuffer->entities = (Player*)malloc(playerBuffer->capacity * playerBuffer->sizeInBytes);
 	memset(playerBuffer->entities, 0, sizeof(Player) * playerBuffer->capacity);
 
+	EntityTypeBuffer* doorBuffer = &Data->em.buffers[EntityType_Door];
+	doorBuffer->capacity = 1;
+	doorBuffer->sizeInBytes = sizeof(Door);
+	doorBuffer->count = 0;
+	doorBuffer->entities = (Door*)malloc(doorBuffer->capacity * doorBuffer->sizeInBytes);
+	memset(doorBuffer->entities, 0, sizeof(Door) * doorBuffer->capacity);
+
 }
 
 void InitializeStartingEntities()
@@ -152,6 +159,7 @@ void InitializeStartingEntities()
 	playerEntity->handle = playerHandle;
 	playerEntity->modelRenderData.position = V3(-0.0f, -0.0f, 0.0f);
 	playerEntity->modelRenderData.scale = V3(3.0f, 3.0f, 3.0f);
+	playerEntity->modelRenderData.rotation = IdentityQuaternion();
 	playerEntity->modelRenderData.modifiedLighting = true;
 	playerEntity->runSpeed = 20.0f;
 	playerEntity->turnSpeed = 160.0f;
@@ -170,6 +178,7 @@ void InitializeStartingEntities()
 		testStallEntity->handle = testStallHandle;
 		testStallEntity->modelRenderData.position = V3(-0.0f, (i * 3.0f) * 10.0f, i* 10.0f);
 		testStallEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
+		testStallEntity->modelRenderData.rotation = IdentityQuaternion();
 		testStallEntity->model = Data->rm.models.testStallModel;
 	}
 
@@ -180,6 +189,7 @@ void InitializeStartingEntities()
 		fernEntity->handle = fernHandle;
 		fernEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
 		fernEntity->modelRenderData.scale = V3(10.0f, 10.0f, 10.0f);
+		fernEntity->modelRenderData.rotation = IdentityQuaternion();
 		fernEntity->model = Data->rm.models.testStallModel;
 	}
 
@@ -191,6 +201,7 @@ void InitializeStartingEntities()
 		wallEntity->handle = wallHandle;
 		wallEntity->modelRenderData.position = V3(-10, 0, -50);
 		wallEntity->modelRenderData.scale = V3(5, 20, 100);
+		wallEntity->modelRenderData.rotation = IdentityQuaternion();
 		wallEntity->model = Data->rm.models.wall1Model;
 		wallEntity->mesh = Game->wall1Mesh;
 		wallEntity->editorMode = fixed_EditorMode;
@@ -208,6 +219,7 @@ void InitializeStartingEntities()
 		postEntity->handle = postHandle;
 		postEntity->modelRenderData.position = V3(RandfRange(0, 40) * 1.0f, 0.0f, RandfRange(0, 100));
 		postEntity->modelRenderData.scale = V3(3.0f, 3.0f, 3.0f);
+		postEntity->modelRenderData.rotation = IdentityQuaternion();
 		postEntity->isMouseOver = false;
 		postEntity->mesh = Game->postMesh;
 		postEntity->modelRenderData.isSelected = false;

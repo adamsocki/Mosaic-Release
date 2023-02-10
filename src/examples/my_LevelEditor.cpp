@@ -62,8 +62,6 @@ void MyInit()
 	InitOBJMesh(&Data->meshes.wall1Mesh);
 	
 	Data->rm.skyColor = RGB(0.12f, 0.14f, 0.0f);
-
-
 }
 
 void MyGameUpdate()
@@ -71,8 +69,6 @@ void MyGameUpdate()
 	ClearColor(V4(0.4f, 0.4f, 0.4f, 1.0f));
 
 	UpdateMouseData();										// MOUSE DATA
-	
-	
 
 	// *****
 	// LOGIC
@@ -84,10 +80,6 @@ void MyGameUpdate()
 	UpdateMousePicker();
 
 		// Object Selection
-	//SelectAndControlObjectsByMouse();
-	
-	
-
 	MouseLogicEntities(&rayEntityColissions);
 
 	// ******
@@ -97,30 +89,15 @@ void MyGameUpdate()
 	RenderEntities();
 	RenderSelection(&rayEntityColissions);
 
-	//DeallocateDynamicArray(&rayEntityColissions);
-	 
-		// Object Selection Render
-	//RenderSelectObjectsByMouse();
-	//TestRayMouse();
+	DeallocateDynamicArray(&rayEntityColissions);
 	
-
-
-
-	//TestRender(&rayEntityColissions);
-
-
-
-	// 
-	// TODO - RENDER LEVEL SCENE
-
-	// TESTING
-	
-	
-
-
 
 	RenderPalatte_LE();										// RENDER PALATTE
 
-	//RenderLevel_LE(wallEntitiesToRender);
-
 }
+
+
+
+
+
+// TODO - ROTATION OF ITEMS IN LEVEL

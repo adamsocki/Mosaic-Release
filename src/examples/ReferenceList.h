@@ -1,5 +1,5 @@
 
-EntityType entityTypes[7] =
+EntityType entityTypes[8] =
 {
 	EntityType_Terrain,
 	EntityType_Test,
@@ -7,7 +7,8 @@ EntityType entityTypes[7] =
 	EntityType_GUI,
 	EntityType_Post,
 	EntityType_Wall,
-	EntityType_Player
+	EntityType_Player,
+	EntityType_Door
 };
 char* entityList[] =
 {
@@ -17,5 +18,6 @@ char* entityList[] =
 	"GUI",
 	"Post",
 	"Wall",
-	"Player"
+	"Player",
+	"Door"
 };
